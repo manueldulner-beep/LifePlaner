@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <meta name="theme-color" content="#f65a9c">
+
+<!-- 🩸 LIFEPLANER – IPHONE APP -->
+
+<link
+  rel="manifest"
+  href="./manifest.webmanifest"
+>
+
+<meta
+  name="apple-mobile-web-app-capable"
+  content="yes"
+>
+
+<meta
+  name="apple-mobile-web-app-status-bar-style"
+  content="default"
+>
+
+<meta
+  name="apple-mobile-web-app-title"
+  content="LifePlaner"
+>
+
+<link
+  rel="icon"
+  type="image/png"
+  href="./icon-192.png"
+>
+
+<link
+  rel="apple-touch-icon"
+  href="./apple-touch-icon.png"
+>
+
+  <meta name="description"
+        content="LifePlaner – Dein persönlicher Anime-Kalender für Training, Arbeit, Gewicht und Alltag.">
+
+  <title>LifePlaner ♡</title>
+
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./lifeplaner-erweiterung.css">
+
+  <script src="./app-neu.js" defer></script>
+  <script src="./lifeplaner-erweiterung.js" defer></script>
+  <script src="./lifeplaner-einkauf.js" defer></script>
+</head>
+
+<body data-theme="chopper">
+
+  <div class="layout">
+
+    <!-- NAVIGATION -->
+    <aside class="sidebar">
+
+      <div class="logo">
+        ♡ Life<span>Planer</span>
+        <small>Dein Anime-Alltagsplaner</small>
+      </div>
+
+     
+<!-- Normale Navigation für den PC -->
+<nav id="navigation" aria-label="Hauptnavigation"></nav>
+
+<!-- Kleine Navigation für das Handy -->
+
+<!-- SCHWEBENDES HANDY-MENÜ -->
+
+
+<div id="mobile-menu" class="mobile-menu">
+  <div id="mobile-menu-panel" class="mobile-menu-panel" hidden>
+
+    
+
+
+<button type="button" data-mobile-page="calendar">
+  📅
+  <span>Mein Kalender</span>
+  <small>Termine & Planung</small>
+</button>
+
+
+
+<button type="button" data-mobile-page="einkaufsliste">
+
+  🛒
+  <span>Meine Einkaufsliste</span>
+  <small>Alles für den Einkauf</small>
+</button>
+
+<button type="button" disabled>
+  💰
+  <span>Meine Finanzen</span>
+  <small>Geld & Überblick</small>
+</button>
+
+<button type="button" id="chopper-backpack">
+  🎒
+  <span>Choppers Rucksack</span>
+  <small>Alle weiteren Bereiche</small>
+</button>
+
+
+   <div class="mobile-menu-divider" hidden></div>
+<div id="chopper-backpack-panel" hidden>
+
+    <button type="button" data-mobile-page="training">
+      💪 <span>Training</span>
+    </button>
+
+    <button type="button" data-mobile-page="work">
+      💼 <span>Arbeit</span>
+    </button>
+  <button type="button" data-mobile-page="vacation-planner">
+  🌴 <span>Urlaubsplaner</span>
+</button>
+
+    <button type="button" data-mobile-page="weight">
+      ⚖️ <span>Gewicht</span>
+    </button>
+
+    <button type="button" data-mobile-page="notes">
+      📝 <span>Notizen</span>
+    </button>
+
+    <button type="button" data-mobile-page="settings">
+      ⚙️ <span>Einstellungen</span>
+    </button>
+
+  </div> <!-- Ende Choppers Rucksack -->
+
+  </div> <!-- Ende mobile-menu-panel -->
+
+  
+<button
+  type="button"
+  id="mobile-menu-toggle"
+  class="mobile-menu-toggle"
+  aria-label="Menü öffnen"
+  aria-expanded="false"
+  aria-controls="mobile-menu-panel">
+
+<!-- 🍓 Chopper bleibt unverändert -->
+<img
+  class="mobile-menu-chopper"
+  src="chopper-shaker-zu.png"
+  alt="">
+
+<!-- 👁️ Mini-Itachi für Crimson -->
+<span class="mobile-menu-itachi" aria-hidden="true">
+  <img
+    class="mobile-menu-itachi-image"
+    src="mini-itachi.png"
+    alt="">
+  <span class="mobile-menu-sharingan"></span>
+</span>
+
+
+</button>
+
+
+</div>
+
+
+
+      <div class="side-footer">
+        ✿ Plane deinen schönsten Tag ✿
+      </div>
+
+    </aside>
+
+    <!-- HAUPTINHALT -->
+    <main class="main">
+
+      <!-- ANIME HEADER -->
+      <header class="hero">
+
+        <div class="hero-content">
+
+          <span class="edition" id="edition">
+            💗 Chopper Edition
+          </span>
+
+          <h1 id="greeting">
+            Willkommen zurück ♡
+          </h1>
+
+          <p>
+            Dein Tag, dein Rhythmus, dein LifePlaner.
+          </p>
+
+          <span class="date-pill" id="today-label">
+            Datum wird geladen ...
+          </span>
+
+        </div>
+
+        <!-- Nur ein einziges Maskottchen-Element -->
+        <div class="mascot"
+             id="mascot"
+             aria-hidden="true"></div>
+
+      </header>
+
+      <!-- HOME, KALENDER, TRAINING,
+           ARBEIT, GEWICHT, NOTIZEN,
+           EINSTELLUNGEN -->
+      <section id="content"
+               aria-live="polite"></section>
+
+    </main>
+
+  </div>
+
+  <!-- EDITOR FÜR TERMINE, AUFGABEN UND NOTIZEN -->
+  <dialog id="editor">
+
+    <form id="editor-form">
+
+      
+<div class="editor-title-row">
+  <h2 id="editor-title">Bearbeiten</h2>
+
+  <button
+    type="button"
+    id="editor-delete-task"
+    class="danger"
+    data-action="delete-task-from-editor"
+    aria-label="Aufgabe löschen"
+    title="Aufgabe löschen"
+    hidden>
+    🗑️
+  </button>
+</div>
+
+
+      <div id="editor-fields"></div>
+
+      <div class="actions">
+
+        <button type="button"
+                class="secondary"
+                id="cancel-editor">
+          Abbrechen
+        </button>
+
+        <button type="submit">
+          Speichern
+        </button>
+
+      </div>
+
+    </form>
+
+  </dialog>
+
+  <!-- GEWICHT: MODAL BOTTOM SHEET -->
+  <dialog id="weight-sheet" class="weight-sheet">
+
+    <form id="weight-form">
+
+      <div class="sheet-handle"></div>
+
+      <div class="row">
+        <h2>⚖️ Gewicht eintragen</h2>
+
+        <button type="button"
+                class="secondary"
+                id="close-weight-sheet"
+                aria-label="Schließen">
+          ✕
+        </button>
+      </div>
+
+      <div class="field">
+        <label for="weight-date">Datum</label>
+
+        <input type="date"
+               id="weight-date"
+               name="date"
+               required>
+      </div>
+
+      <div class="field">
+        <label for="weight-value">
+          Körpergewicht (kg)
+        </label>
+
+        
+<!-- Normales Eingabefeld für Chopper und Neo2050 -->
+<input type="number"
+       id="weight-value"
+       name="weight"
+       min="20"
+       max="400"
+       step="0.01"
+       inputmode="decimal"
+       placeholder="z. B. 80,50"
+       required>
+
+<!-- 🩸 ITACHI – GEWICHTS-ZAHLENRÄDER -->
+<div class="crimson-weight-picker">
+
+  <div class="crimson-picker-display">
+    <strong id="crimson-weight-display">72,4</strong>
+    <span>kg</span>
+  </div>
+
+  <div class="crimson-picker-wheels">
+
+    <div class="crimson-picker-column">
+      <small>KILOGRAMM</small>
+      <div id="crimson-kg-wheel"
+           class="crimson-picker-wheel"></div>
+    </div>
+
+    <div class="crimson-picker-column">
+      <small>KOMMASTELLE</small>
+      <div id="crimson-decimal-wheel"
+           class="crimson-picker-wheel"></div>
+    </div>
+
+  </div>
+
+</div>
+
+      </div>
+
+      
+      <button type="submit"
+        class="weight-save-button">
+  Gewicht speichern
+</button>
+
+    </form>
+
+  </dialog>
+
+  <!-- BACKUP IMPORT -->
+  <input type="file"
+         id="import-file"
+         accept=".json,application/json"
+         hidden>
+
+<!-- 🩸 LIFEPLANER – SERVICE WORKER -->
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("./sw.js")
+        .then(() => {
+          console.log("🩸 LifePlaner PWA aktiviert");
+        })
+        .catch(error => {
+          console.error(
+            "LifePlaner PWA Fehler:",
+            error
+          );
+        });
+    });
+  }
+</script>
+
+</body>
+
+</html>

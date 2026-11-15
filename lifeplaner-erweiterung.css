@@ -1,0 +1,4283 @@
+/* 🌴 Chopper – kompakter Urlaubsplaner auf dem Handy */
+@media (max-width: 480px) {
+
+  /* Nur Choppers Urlaubsplaner */
+  body[data-theme="chopper"] .lp-vacation-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  /* Hauptkarten platzsparender */
+  body[data-theme="chopper"] .lp-vacation-grid > .card {
+    min-width: 0 !important;
+    width: 100% !important;
+    padding: 12px !important;
+    margin: 0 !important;
+  }
+
+  /* Bundesland + Jahr / Von + Bis nebeneinander */
+  body[data-theme="chopper"] .lp-vacation-settings {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  body[data-theme="chopper"] .lp-vacation-settings .field {
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Eingabefelder passend zur schmalen Spalte */
+  body[data-theme="chopper"] .lp-vacation-settings input,
+  body[data-theme="chopper"] .lp-vacation-settings select {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    font-size: 12px !important;
+    padding: 8px 4px !important;
+  }
+
+  /* Beide Statistik-Kacheln nebeneinander */
+  body[data-theme="chopper"] .lp-vacation-stats {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  body[data-theme="chopper"] .lp-vacation-stat {
+    min-width: 0 !important;
+    padding: 9px 6px !important;
+    text-align: center !important;
+  }
+
+  body[data-theme="chopper"] .lp-vacation-stat span,
+  body[data-theme="chopper"] .lp-vacation-stat small {
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  body[data-theme="chopper"] .lp-vacation-stat strong {
+    font-size: 17px !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  /* Überschriften kompakter */
+  body[data-theme="chopper"] .lp-vacation-grid h2 {
+    font-size: 17px !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* Weniger Abstand zwischen Texten und Feldern */
+  body[data-theme="chopper"] .lp-vacation-grid .field {
+    gap: 4px !important;
+  }
+
+  body[data-theme="chopper"] .lp-vacation-grid p {
+    margin: 6px 0 !important;
+  }
+}
+/* =========================================
+   ITACHI HOME – NUR CRIMSON
+   ========================================= */
+
+body[data-theme="crimson"] .itachi-home {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  align-items: stretch;
+}
+
+/* Gewicht, Heute und Kalender: volle Breite */
+body[data-theme="crimson"] .itachi-home > :not(
+  .itachi-home-work,
+  .itachi-home-workday
+) {
+  grid-column: 1 / -1 !important;
+}
+
+/* Arbeit und Arbeitstag: nebeneinander */
+body[data-theme="crimson"] .itachi-home-work {
+  grid-column: 1 !important;
+}
+
+body[data-theme="crimson"] .itachi-home-workday {
+  grid-column: 2 !important;
+}
+
+/* Karten kompakter */
+body[data-theme="crimson"] .itachi-home > .card {
+  min-width: 0;
+  padding: 12px !important;
+  margin: 0 !important;
+  height: auto !important;
+}
+
+/* Überschriften */
+body[data-theme="crimson"] .itachi-home .card h2 {
+  font-size: 15px !important;
+  margin: 0 0 9px !important;
+}
+
+/* Termine und Aufgaben */
+body[data-theme="crimson"] .itachi-home-today-content {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+body[data-theme="crimson"] .itachi-home-today-content > section {
+  min-width: 0;
+}
+
+body[data-theme="crimson"] .itachi-home-today-content h3 {
+  font-size: 13px;
+  margin: 0 0 8px;
+}
+
+/* Weniger Abstand innerhalb der Karten */
+body[data-theme="crimson"] .itachi-home .stack {
+  gap: 6px !important;
+}
+
+body[data-theme="crimson"] .itachi-home .item {
+  padding: 8px !important;
+  min-width: 0;
+}
+
+/* Kleine Arbeitskacheln */
+body[data-theme="crimson"] .itachi-home-work,
+body[data-theme="crimson"] .itachi-home-workday {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+body[data-theme="crimson"] .itachi-home-work button,
+body[data-theme="crimson"] .itachi-home-workday button {
+  width: 100%;
+  margin-top: auto;
+  font-size: 12px;
+  padding: 9px 5px;
+}
+
+body[data-theme="crimson"] .itachi-home-workday .big-status {
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+
+/* Sehr schmale Handys */
+@media (max-width: 380px) {
+  body[data-theme="crimson"] .itachi-home-today-content {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-theme="crimson"] .itachi-home > .card {
+    padding: 10px !important;
+  }
+}
+
+/* =========================================
+   ITACHI HOME – GEWICHT KOMPAKT
+   NUR CRIMSON
+   ========================================= */
+
+/* Gewichtskarte über die ganze Breite */
+body[data-theme="crimson"]
+.itachi-home > .weight-overview {
+  grid-column: 1 / -1 !important;
+  min-width: 0 !important;
+  padding: 12px !important;
+  margin: 0 !important;
+}
+
+/* Drei Gewichtswerte nebeneinander */
+body[data-theme="crimson"]
+.itachi-home .weight-kpis {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 7px !important;
+  margin: 10px 0 !important;
+}
+
+/* Einzelne Gewichtskacheln */
+body[data-theme="crimson"]
+.itachi-home .weight-kpi {
+  min-width: 0 !important;
+  padding: 9px 5px !important;
+  margin: 0 !important;
+  text-align: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+}
+
+/* Kleine Beschriftungen */
+body[data-theme="crimson"]
+.itachi-home .weight-kpi > span {
+  font-size: 10px !important;
+  line-height: 1.25 !important;
+  overflow-wrap: anywhere;
+}
+
+/* Gewichtszahlen */
+body[data-theme="crimson"]
+.itachi-home .weight-kpi > strong {
+  font-size: clamp(12px, 3.7vw, 17px) !important;
+  line-height: 1.2 !important;
+  white-space: nowrap;
+}
+
+/* Datum und Veränderungen */
+body[data-theme="crimson"]
+.itachi-home .weight-kpi > small {
+  font-size: 9px !important;
+  line-height: 1.3 !important;
+  overflow-wrap: anywhere;
+}
+
+/* Überschrift und Eintragen-Button */
+body[data-theme="crimson"]
+.itachi-home .weight-overview > .row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  flex-wrap: wrap;
+}
+
+body[data-theme="crimson"]
+.itachi-home .weight-overview > .row button {
+  font-size: 11px !important;
+  padding: 8px 10px !important;
+}
+
+/* Gewichtsverlauf-Button */
+body[data-theme="crimson"]
+.itachi-home .weight-overview > button {
+  font-size: 11px !important;
+  padding: 9px !important;
+}
+
+/* =========================================
+   ITACHI HOME – FEINSCHLIFF
+   NUR CRIMSON
+   ========================================= */
+
+/* Abstand zwischen den Hauptkarten */
+body[data-theme="crimson"] .itachi-home {
+  gap: 8px !important;
+  align-content: start !important;
+}
+
+/* Kompakte Innenabstände */
+body[data-theme="crimson"] .itachi-home > .card {
+  padding: 10px !important;
+}
+
+/* Weniger Abstand unter Überschriften */
+body[data-theme="crimson"] .itachi-home .card h2 {
+  margin-bottom: 6px !important;
+  line-height: 1.3 !important;
+}
+
+/* Termine und Aufgaben kompakter */
+body[data-theme="crimson"] .itachi-home-today-content {
+  gap: 8px !important;
+}
+
+body[data-theme="crimson"] .itachi-home-today-content h3 {
+  margin-bottom: 5px !important;
+}
+
+/* Kleine Abstände zwischen Einträgen */
+body[data-theme="crimson"] .itachi-home .stack {
+  gap: 5px !important;
+}
+
+/* Buttons etwas flacher */
+body[data-theme="crimson"] .itachi-home .card button:not(.day) {
+  min-height: 0;
+  line-height: 1.3;
+}
+
+/* Training und Arbeitstag gleichmäßig */
+body[data-theme="crimson"] .itachi-home-work,
+body[data-theme="crimson"] .itachi-home-workday {
+  gap: 6px !important;
+}
+
+/* Lange Texte sollen nicht überlaufen */
+body[data-theme="crimson"] .itachi-home-work,
+body[data-theme="crimson"] .itachi-home-workday {
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
+   ITACHI HOME – HEUTE OPTIMIEREN
+   NUR CRIMSON
+   ========================================= */
+
+/* Termine und Aufgaben nebeneinander */
+body[data-theme="crimson"]
+.itachi-home-today-content {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  align-items: start;
+}
+
+/* Beide Bereiche sauber begrenzen */
+body[data-theme="crimson"]
+.itachi-home-today-content > section {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Kleine Bereichsüberschriften */
+body[data-theme="crimson"]
+.itachi-home-today-content h3 {
+  font-size: 12px !important;
+  line-height: 1.3;
+}
+
+/* Termine platzsparend */
+body[data-theme="crimson"]
+.itachi-home-events .item {
+  padding: 7px !important;
+  font-size: 12px;
+}
+
+/* Lange Terminnamen umbrechen */
+body[data-theme="crimson"]
+.itachi-home-events .item strong {
+  overflow-wrap: anywhere;
+}
+
+/* Termin-Button kompakter */
+body[data-theme="crimson"]
+.itachi-home-events > button {
+  width: 100%;
+  font-size: 11px !important;
+  padding: 8px 5px !important;
+  margin-top: 7px;
+}
+
+/* Auf schmalen Handys untereinander */
+@media (max-width: 380px) {
+  body[data-theme="crimson"]
+  .itachi-home-today-content {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* =========================================
+   ITACHI – AUFGABEN MEHR PLATZ
+   NUR CRIMSON HOME
+   ========================================= */
+
+body[data-theme="crimson"]
+.itachi-home .itachi-home-today-content {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 12px !important;
+}
+
+body[data-theme="crimson"]
+.itachi-home .itachi-home-tasks {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+body[data-theme="crimson"]
+.itachi-home .itachi-home-tasks .item {
+  padding: 12px !important;
+  margin-bottom: 7px !important;
+}
+
+body[data-theme="crimson"]
+.itachi-home .itachi-home-tasks button,
+body[data-theme="crimson"]
+.itachi-home .itachi-home-tasks input {
+  max-width: 100%;
+}
+
+body[data-theme="crimson"]
+.itachi-home .itachi-home-tasks h3 {
+  margin-bottom: 10px !important;
+}
+
+/* =====================================
+   CRIMSON – KEIN KARTEN-LADEEFFEKT
+   ===================================== */
+
+body[data-theme="crimson"] .card {
+  animation: none !important;
+}
+
+/* 🩸 CRIMSON HOME – EDLE KARTEN */
+body[data-theme="crimson"] .itachi-home > .card {
+  background: linear-gradient(
+    145deg,
+    rgba(42, 18, 27, 0.96),
+    rgba(17, 13, 20, 0.98)
+  );
+
+  border: 1px solid rgba(190, 45, 70, 0.28);
+  border-radius: 20px;
+
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  padding: 18px;
+}
+
+/* Überschriften etwas eleganter */
+body[data-theme="crimson"] .itachi-home > .card > h2 {
+  margin-top: 0;
+  margin-bottom: 14px;
+  font-size: 1.08rem;
+  letter-spacing: 0.2px;
+}
+
+/* 🩸 CRIMSON – TERMINE UND AUFGABEN NEBENEINANDER */
+
+body[data-theme="crimson"] .itachi-home-today-content {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: start;
+}
+
+body[data-theme="crimson"] .itachi-home-today-content > .itachi-home-events,
+body[data-theme="crimson"] .itachi-home-today-content > .itachi-home-tasks {
+  min-width: 0;
+  width: auto !important;
+}
+
+/* 🩸 CRIMSON – TERMINE FEINSCHLIFF */
+
+body[data-theme="crimson"] .itachi-home-events {
+  background: rgba(130, 24, 49, 0.12);
+  border: 1px solid rgba(210, 55, 85, 0.22);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+body[data-theme="crimson"] .itachi-home-events h3 {
+  color: #ff829a;
+  margin-top: 0;
+}
+
+body[data-theme="crimson"] .itachi-home-today-content > h3 {
+  background: rgba(255, 255, 255, 0.035);
+  border-top: 1px solid rgba(210, 55, 85, 0.22);
+  padding: 12px 10px 4px;
+  margin: 8px 0 0;
+  border-radius: 12px 12px 0 0;
+}
+
+/* 🩸 CRIMSON – HEUTE & MORGEN DESIGN */
+
+/* Termine untereinander statt nebeneinander */
+body[data-theme="crimson"]
+.itachi-home .itachi-home-today-content {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0 !important;
+}
+
+/* HEUTE – dunkles Rot */
+body[data-theme="crimson"]
+.itachi-home .itachi-home-events {
+  background: linear-gradient(125deg, #391621, #25121a);
+  border: 1px solid #87394c;
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+/* HEUTE – Überschrift */
+body[data-theme="crimson"]
+.itachi-home .itachi-home-events h3 {
+  color: #ff9aab;
+  font-size: 14px !important;
+  margin: 0 0 10px !important;
+}
+
+/* MORGEN – Überschrift */
+body[data-theme="crimson"]
+.itachi-home-today-content > h3 {
+  background: #1b141b;
+  border: 1px solid #4b303c;
+  border-bottom: 0;
+  border-radius: 14px 14px 0 0;
+  color: #dbc4ce;
+  padding: 12px 12px 6px;
+  margin: 0 !important;
+  font-size: 14px !important;
+}
+
+/* MORGEN – Termine */
+body[data-theme="crimson"]
+.itachi-home-today-content > h3 + .stack {
+  background: #1b141b;
+  border: 1px solid #4b303c;
+  border-top: 0;
+  border-radius: 0 0 14px 14px;
+  padding: 6px 12px 12px;
+}
+
+/* 🩸 CRIMSON – TERMIN-BUTTON VEREDeln */
+
+body[data-theme="crimson"]
+.itachi-home .itachi-home-today-content > button[data-action="add-event"] {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px 14px;
+
+  background: linear-gradient(
+    110deg,
+    #8d1c36,
+    #bb2c4c
+  );
+
+  border: 1px solid #d34d68;
+  border-radius: 12px;
+
+  color: #fff0f3;
+  font-size: 13px;
+  font-weight: 700;
+
+  box-shadow: 0 4px 16px rgba(190, 35, 70, 0.18);
+}
+
+/* 🩸 CRIMSON – TERMIN-SEITENSTREIFEN */
+
+/* Heute: kräftiger roter Streifen */
+body[data-theme="crimson"]
+.itachi-home .itachi-home-events .item {
+  border-left: 3px solid #db4764 !important;
+  border-radius: 10px;
+  background: rgba(12, 7, 12, 0.35);
+}
+
+/* Morgen: dezenter roter Streifen */
+body[data-theme="crimson"]
+.itachi-home .itachi-home-today-content > h3 + .stack .item {
+  border-left: 3px solid #946474 !important;
+  border-radius: 10px;
+  background: rgba(12, 7, 12, 0.3);
+}
+
+/* 🩸 CRIMSON – ELEGANTE UHRZEIT-EINGABE */
+
+body[data-theme="crimson"]
+#editor-fields input[type="time"] {
+  display: block;
+  width: 100%;
+  min-height: 38px;
+padding: 8px 10px;
+
+  background: #21131b;
+  color: #ff9cb1;
+
+  border: 1px solid #a94762;
+  border-radius: 12px;
+
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+
+  color-scheme: dark;
+  box-sizing: border-box;
+}
+
+/* Uhrzeit beim Antippen hervorheben */
+body[data-theme="crimson"]
+#editor-fields input[type="time"]:focus {
+  outline: none;
+  border-color: #ff829e;
+  box-shadow: 0 0 0 3px rgba(220, 65, 100, 0.16);
+}
+
+/* 🩸 CRIMSON – KOMPAKTE UHRZEIT */
+body[data-theme="crimson"]
+#editor-fields input[type="time"] {
+  width: 135px;
+  max-width: 100%;
+}
+
+/* 🩸 CRIMSON – UHRZEIT BEI AUFGABEN */
+
+body[data-theme="crimson"] .task-time {
+  display: inline-block;
+  padding: 3px 8px;
+  margin-right: 5px;
+
+  background: rgba(170, 45, 77, 0.18);
+  border: 1px solid rgba(220, 85, 115, 0.35);
+  border-radius: 7px;
+
+  color: #ff9cb1;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 🩸 CRIMSON – AUFGABEN-BUTTONS */
+
+body[data-theme="crimson"]
+.itachi-home-tasks .item button.secondary,
+body[data-theme="crimson"]
+.itachi-home-tasks .item button.danger {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  padding: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+  font-size: 17px;
+  line-height: 1;
+
+  transition: background 0.2s, border-color 0.2s,
+              transform 0.2s;
+}
+
+/* ✎ BEARBEITEN */
+body[data-theme="crimson"]
+.itachi-home-tasks .item button.secondary {
+  background: rgba(150, 60, 90, 0.16);
+  border: 1px solid rgba(220, 110, 140, 0.3);
+  color: #ff9cb1;
+}
+
+/* × LÖSCHEN */
+body[data-theme="crimson"]
+.itachi-home-tasks .item button.danger {
+  background: rgba(100, 25, 40, 0.16);
+  border: 1px solid rgba(190, 65, 85, 0.3);
+  color: #e77b91;
+}
+
+/* Kleine Reaktion beim Antippen */
+body[data-theme="crimson"]
+.itachi-home-tasks .item button.secondary:active,
+body[data-theme="crimson"]
+.itachi-home-tasks .item button.danger:active {
+  transform: scale(0.92);
+}
+
+body[data-theme="crimson"]
+.itachi-home-tasks .item button.danger:hover {
+  background: rgba(190, 40, 65, 0.28);
+  border-color: #dc5575;
+}
+
+/* 🩸 CRIMSON – LANGE AUFGABEN SAUBER ANZEIGEN */
+
+body[data-theme="crimson"]
+.itachi-home-tasks .item > .row {
+  align-items: flex-start;
+  gap: 10px;
+}
+
+body[data-theme="crimson"]
+.itachi-home-tasks .item label {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+body[data-theme="crimson"]
+.itachi-home-tasks .item .item-title {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+body[data-theme="crimson"]
+.itachi-home-tasks .item label input[type="checkbox"] {
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+body[data-theme="crimson"]
+.itachi-home-tasks .item > .row > div {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+
+/* 🩸 CRIMSON – FLEXIBLE AUFGABEN-BUTTONS */
+
+body[data-theme="crimson"]
+.itachi-home-tasks .item > .row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+body[data-theme="crimson"]
+.itachi-home-tasks .item > .row > label {
+  flex: 1 1 auto;
+  min-width: min(100%, 180px);
+  width: auto;
+}
+
+body[data-theme="crimson"]
+.itachi-home-tasks .item > .row > div {
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+  flex: 0 0 auto;
+  width: auto;
+  margin-left: auto;
+}
+
+body[data-theme="crimson"] .routine-task-done {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+/* 🩸 CRIMSON – Tagesplan */
+body[data-theme="crimson"] .crimson-day-plan {
+  background: linear-gradient(
+    145deg,
+    #1c1018 0%,
+    #110b12 60%,
+    #270d18 100%
+  );
+
+  border: 1px solid rgba(220, 40, 65, 0.45);
+  border-radius: 22px;
+
+  padding: 20px 16px;
+
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.35),
+    0 0 22px rgba(190, 20, 45, 0.12);
+}
+
+body[data-theme="crimson"] .crimson-day-plan h3 {
+  color: #ff526a;
+  font-size: 1.15rem;
+  letter-spacing: 0.5px;
+  margin: 0 0 18px;
+  text-shadow: 0 0 14px rgba(255, 55, 80, 0.3);
+}
+
+/* 🩸 CRIMSON – Routinen auf dem Handy */
+@media (max-width: 600px) {
+  body[data-theme="crimson"] .routine-section .item > .row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  body[data-theme="crimson"] .routine-section .item > .row > div:first-child {
+    width: 100%;
+    min-width: 0;
+  }
+
+  body[data-theme="crimson"] .routine-section .item > .row > button {
+    width: 100%;
+    white-space: normal;
+  }
+}
+
+/* 🩸 CRIMSON – kompakte Routine-Buttons */
+@media (max-width: 600px) {
+  body[data-theme="crimson"] .routine-section .item > .row > button {
+    width: auto;
+    max-width: 100%;
+    align-self: flex-start;
+
+    padding: 9px 14px;
+    font-size: 0.85rem;
+    line-height: 1.3;
+
+    border-radius: 12px;
+    white-space: normal;
+  }
+}
+
+/* 🩸 CRIMSON – edle Routine-Karten */
+body[data-theme="crimson"] .routine-section:not(.crimson-day-plan) > .item {
+  position: relative;
+  overflow: hidden;
+
+  background: linear-gradient(
+    135deg,
+    rgba(35, 12, 24, 0.95),
+    rgba(18, 9, 17, 0.98)
+  );
+
+  border: 1px solid rgba(220, 50, 75, 0.35);
+  border-radius: 20px;
+
+  padding: 18px 16px;
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+body[data-theme="crimson"] .routine-section:not(.crimson-day-plan) > .item::before {
+  content: "";
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  left: 0;
+
+  width: 3px;
+  border-radius: 0 4px 4px 0;
+
+  background: linear-gradient(
+    to bottom,
+    #ff365c,
+    #8b1833
+  );
+
+  box-shadow: 0 0 12px rgba(255, 40, 75, 0.35);
+}
+
+/* 🩸 CRIMSON – Routine-Überschriften */
+body[data-theme="crimson"] .routine-section:not(.crimson-day-plan) > .item > .row > div:first-child {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+body[data-theme="crimson"] .routine-section:not(.crimson-day-plan) > .item > .row > div:first-child > strong {
+  color: #fff0f3;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+body[data-theme="crimson"] .routine-section:not(.crimson-day-plan) > .item > .row > div:first-child > .muted {
+  color: #d995a5;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+/* 🩸 CRIMSON – aufklappbare Routinen */
+body[data-theme="crimson"] .crimson-routine-card > summary {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px 0;
+  list-style: none;
+}
+
+body[data-theme="crimson"] .crimson-routine-card > summary::-webkit-details-marker {
+  display: none;
+}
+
+body[data-theme="crimson"] .crimson-routine-card > summary strong {
+  color: #fff0f3;
+  font-size: 1.05rem;
+}
+
+body[data-theme="crimson"] .crimson-routine-card > summary .muted {
+  color: #d995a5;
+  font-size: 0.8rem;
+}
+
+body[data-theme="crimson"] .crimson-routine-card[open] > .row {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(220, 50, 75, 0.2);
+}
+
+/* 🩸 CRIMSON – Aufklapp-Pfeil */
+body[data-theme="crimson"] .crimson-routine-card > summary {
+  position: relative;
+  padding-right: 32px;
+}
+
+body[data-theme="crimson"] .crimson-routine-card > summary::after {
+  content: "⌄";
+  position: absolute;
+  right: 4px;
+  top: 50%;
+
+  color: #ff526a;
+  font-size: 1.6rem;
+  line-height: 1;
+
+  transform: translateY(-50%);
+  transition: transform 0.25s ease;
+}
+
+body[data-theme="crimson"] .crimson-routine-card[open] > summary::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* 🩸 CRIMSON – Routinenstatus */
+body[data-theme="crimson"] .crimson-routine-status {
+  color: #a79a9e;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+body[data-theme="crimson"] .crimson-routine-status.is-active {
+  color: #ff526a;
+}
+
+/* 🩸 CRIMSON – kompakter Routinenkopf */
+body[data-theme="crimson"] .crimson-routine-card > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 4px;
+}
+
+body[data-theme="crimson"] .crimson-routine-card > summary > strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+body[data-theme="crimson"] .crimson-routine-status {
+  grid-column: 2;
+  grid-row: 1;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
+body[data-theme="crimson"] .crimson-routine-card > summary > .muted {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+/* 🩸 CRIMSON – kompakte Routine-Karten */
+body[data-theme="crimson"] .crimson-routine-card {
+  padding: 11px 13px;
+  border-radius: 14px;
+  margin-bottom: 7px;
+}
+
+body[data-theme="crimson"] .crimson-routine-card > summary {
+  padding: 0 24px 0 0;
+  row-gap: 3px;
+}
+
+body[data-theme="crimson"] .crimson-routine-card > summary strong {
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+body[data-theme="crimson"] .crimson-routine-card > summary .muted {
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+body[data-theme="crimson"] .crimson-routine-card > summary::after {
+  right: 0;
+  font-size: 1.3rem;
+}
+
+/* 🩸 CRIMSON – moderne Aktiv-Status-Pillen */
+body[data-theme="crimson"] .crimson-routine-status {
+  grid-column: 2;
+  grid-row: 1;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-right: 10px;
+  padding: 5px 10px;
+  border-radius: 999px;
+
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+
+  color: #ff8995;
+  background: rgba(190, 35, 55, 0.13);
+  border: 1px solid rgba(255, 90, 110, 0.25);
+}
+
+body[data-theme="crimson"] .crimson-routine-status.is-active {
+  color: #69e5a0;
+  background: rgba(35, 180, 100, 0.13);
+  border-color: rgba(105, 229, 160, 0.35);
+}
+
+/* 🩸 CRIMSON – Routinen bleiben im Container */
+body[data-theme="crimson"] .routine-section:not(.crimson-day-plan) {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+body[data-theme="crimson"] .routine-section:not(.crimson-day-plan) > .crimson-routine-card {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+/* 🩸 CRIMSON – kompakte Routine-Aufgaben */
+body[data-theme="crimson"] .crimson-routine-card > .stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+body[data-theme="crimson"] .crimson-routine-card > .stack > .item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 9px 11px;
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+body[data-theme="crimson"] .crimson-routine-card > .stack > .item .task-time {
+  flex-shrink: 0;
+  min-width: 46px;
+
+  color: #ff657b;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 🩸 CRIMSON – kompakter Routine-Editor */
+body[data-theme="crimson"] #editor-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+body[data-theme="crimson"] #editor-fields > .field {
+  margin: 0;
+  padding: 0;
+}
+
+body[data-theme="crimson"] #editor-fields > .field > label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+body[data-theme="crimson"] #editor-fields input:not([type="checkbox"]),
+body[data-theme="crimson"] #editor-fields select {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 40px;
+  padding: 8px 11px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+/* 🩸 CRIMSON – kein Auto-Zoom im Editor */
+body[data-theme="crimson"] #editor input,
+body[data-theme="crimson"] #editor select,
+body[data-theme="crimson"] #editor textarea {
+  font-size: 16px;
+}
+
+/* 🩸 CRIMSON – iPhone Eingabe-Zoom verhindern */
+@media screen and (max-width: 768px) {
+  body[data-theme="crimson"] #editor input,
+  body[data-theme="crimson"] #editor select,
+  body[data-theme="crimson"] #editor textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* 🩸 CRIMSON – Kompakte Routine-Aufgaben */
+
+body[data-theme="crimson"] #editor-fields
+button[data-action="edit-routine-task"] {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  margin: 0;
+  text-align: left;
+
+  color: #f5e9ec;
+  background: linear-gradient(135deg, #241b22, #17151b);
+  border: 1px solid #713040;
+  border-radius: 13px;
+
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+body[data-theme="crimson"] #editor-fields
+button[data-action="edit-routine-task"]:active {
+  background: #3c202a;
+  border-color: #e34865;
+}
+
+/* 🩸 CRIMSON – Wochentage als Auswahlkacheln */
+
+body[data-theme="crimson"] #editor-fields
+.field:has(input[name^="day_"]) {
+  display: inline-flex;
+  position: relative;
+  margin: 3px;
+  padding: 0;
+}
+
+body[data-theme="crimson"] #editor-fields
+.field:has(input[name^="day_"]) > label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  height: 44px;
+  padding: 0 8px;
+  margin: 0;
+
+  background: #252329;
+  border: 1px solid #51404a;
+  border-radius: 11px;
+  color: #eee5e9;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+body[data-theme="crimson"] #editor-fields
+.field:has(input[name^="day_"]) > input {
+  accent-color: #e34865;
+}
+
+body[data-theme="crimson"] #editor-fields
+.field:has(input[name^="day_"]:checked) > label {
+  background: #77263b;
+  border-color: #f05a78;
+  color: white;
+}
+
+/* 🩸 Crimson – Wochentags-Kacheln */
+
+body[data-theme="crimson"] #editor-fields
+.crimson-day-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  height: 44px;
+  padding: 0 10px;
+  margin: 0;
+  border: 1px solid #51404a;
+  border-radius: 11px;
+  background: #252329;
+  cursor: pointer;
+}
+
+body[data-theme="crimson"] #editor-fields
+.crimson-day-tile input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+body[data-theme="crimson"] #editor-fields
+.crimson-day-tile:has(input:checked) {
+  background: #77263b;
+  border-color: #f05a78;
+}
+
+body[data-theme="crimson"] #editor-fields
+.crimson-day-tile span {
+  color: #eee5e9;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* 🩸 CRIMSON – Wochentage nebeneinander */
+
+body[data-theme="crimson"] #editor-fields:has(
+  input[name^="day_"]
+) {
+  display: block;
+}
+
+body[data-theme="crimson"] #editor-fields
+.field:has(input[name^="day_"]) {
+  
+display: inline-flex;
+
+  width: calc((100% - 42px) / 7);
+  margin: 3px;
+  vertical-align: top;
+}
+
+body[data-theme="crimson"] #editor-fields
+.crimson-day-tile {
+  min-width: 0;
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 🩸 Crimson – Überschrift im Routinen-Editor */
+
+body[data-theme="crimson"] #editor-fields
+button[data-action="routine-section-heading"] {
+  width: 100%;
+  padding: 12px 0 8px;
+  margin-top: 12px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #713040;
+  border-radius: 0;
+  color: #ff7188;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  pointer-events: none;
+}
+
+/* 🩸 CRIMSON – Aufgabe hinzufügen */
+
+body[data-theme="crimson"] #editor-fields
+button[data-action="add-task-from-routine-editor"] {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 16px;
+
+  background: linear-gradient(135deg, #922c46, #5d1c30);
+  border: 1px solid #ed5876;
+  border-radius: 13px;
+
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+
+  transition: background 0.2s, transform 0.15s;
+}
+
+body[data-theme="crimson"] #editor-fields
+button[data-action="add-task-from-routine-editor"]:active {
+  background: #a93350;
+  transform: scale(0.98);
+}
+
+/* 🩸 CRIMSON – Routine löschen */
+
+body[data-theme="crimson"] #editor-fields
+button[data-action="delete-routine"] {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 14px;
+  padding: 11px 14px;
+
+  background: transparent;
+  border: 1px solid #713040;
+  border-radius: 12px;
+
+  color: #e58b9c;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+
+  transition: background 0.2s, border-color 0.2s;
+}
+
+body[data-theme="crimson"] #editor-fields
+button[data-action="delete-routine"]:active {
+  background: #481d2b;
+  border-color: #f05a78;
+  color: #ffffff;
+}
+
+/* 🩸 CRIMSON – Editor-Abbrechen-Button */
+
+body[data-theme="crimson"] #cancel-editor {
+  min-height: 46px;
+  padding: 12px 18px;
+
+  background: #29252b;
+  border: 1px solid #5c4650;
+  border-radius: 12px;
+
+  color: #ded2d7;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+body[data-theme="crimson"] #cancel-editor:active {
+  background: #40313a;
+}
+
+/* 🩸 CRIMSON – Editor-Speichern-Button */
+
+body[data-theme="crimson"] #editor-form
+button[type="submit"] {
+  min-height: 46px;
+  padding: 12px 18px;
+
+  background: linear-gradient(135deg, #a52e4a, #741e35);
+  border: 1px solid #ed5876;
+  border-radius: 12px;
+
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+
+  box-shadow: 0 3px 12px rgba(180, 35, 68, 0.2);
+  transition: transform 0.15s, background 0.2s;
+}
+
+body[data-theme="crimson"] #editor-form
+button[type="submit"]:active {
+  transform: scale(0.97);
+  background: #ba3654;
+}
+
+/* 🩸 CRIMSON – Editor-Buttons nebeneinander */
+
+body[data-theme="crimson"] #editor-form {
+  display: flex;
+  flex-direction: column;
+}
+
+body[data-theme="crimson"] #editor-form > button,
+body[data-theme="crimson"] #editor-form > .actions {
+  box-sizing: border-box;
+}
+
+/* 🩸 CRIMSON – Speichern & Abbrechen nebeneinander */
+
+body[data-theme="crimson"] #editor-form > .actions {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+  margin-top: 16px;
+}
+
+body[data-theme="crimson"] #editor-form > .actions > button {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+  box-sizing: border-box;
+}
+
+/* 🩸 Crimson – Routine-Aufgaben Swipe-Animation */
+
+body[data-theme="crimson"] #editor-fields
+button[data-action="edit-routine-task"] {
+  touch-action: pan-y;
+  will-change: transform;
+}
+
+/* Crimson – Editorüberschriften ohne sichtbaren Platz */
+body[data-theme="crimson"] #editor-title[hidden] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+}
+
+/* Itachi Crimson – blauen Fokusrahmen entfernen */
+body[data-theme="crimson"] #editor:focus {
+  outline: none !important;
+}
+
+/* ==========================================
+   ITACHI CRIMSON – EDITOR 2.0
+   Mobile First
+   Nur Crimson
+   ========================================== */
+
+body[data-theme="crimson"] #editor {
+  width: min(420px, calc(100% - 24px));
+  max-height: min(85dvh, 760px);
+  padding: 16px;
+  margin: auto;
+
+  background: #1c171f;
+  border: 1px solid #57303c;
+  border-radius: 18px;
+
+  color: #f5e8ec;
+  box-shadow: 0 20px 65px rgba(0,0,0,.65);
+
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #75404e transparent;
+}
+
+/* Kein störender Fokusrahmen */
+body[data-theme="crimson"] #editor:focus {
+  outline: none !important;
+}
+
+/* Editor ohne unnötige Abstände */
+body[data-theme="crimson"] #editor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+/* Versteckte Überschrift belegt keinen Platz */
+body[data-theme="crimson"] .editor-title-row:has(
+  #editor-title[hidden]
+) {
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+}
+
+/* Felder kompakt untereinander */
+body[data-theme="crimson"] #editor-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+body[data-theme="crimson"] #editor-fields > .field {
+  margin: 0;
+  padding: 0;
+  gap: 5px;
+  min-width: 0;
+}
+
+/* Kleine, dezente Beschriftungen */
+body[data-theme="crimson"] #editor-fields
+.field > label {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #d6a3ae;
+  opacity: 1;
+}
+
+/* Eingabefelder */
+body[data-theme="crimson"] #editor-fields
+input:not([type="checkbox"]),
+body[data-theme="crimson"] #editor-fields
+select,
+body[data-theme="crimson"] #editor-fields
+textarea {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  margin: 0;
+
+  background: #28202a;
+  border: 1px solid #65404b;
+  border-radius: 10px;
+
+  color: #f5e8ec;
+  font-size: 16px !important;
+  box-shadow: none;
+}
+
+/* Textfelder nicht unnötig hoch */
+body[data-theme="crimson"] #editor-fields
+textarea {
+  min-height: 75px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+/* Aktives Eingabefeld */
+body[data-theme="crimson"] #editor-fields
+input:focus,
+body[data-theme="crimson"] #editor-fields
+select:focus,
+body[data-theme="crimson"] #editor-fields
+textarea:focus {
+  outline: none;
+  border-color: #e45b76;
+  box-shadow: 0 0 0 2px rgba(228,91,118,.14);
+}
+
+/* Aufgaben und sonstige Editor-Buttons */
+body[data-theme="crimson"] #editor-fields
+button {
+  min-height: 42px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+/* Footer-Buttons */
+body[data-theme="crimson"] #editor-form
+> .actions {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: 9px;
+  width: 100%;
+  margin-top: 15px;
+}
+
+body[data-theme="crimson"] #editor-form
+> .actions > button {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 8px;
+  margin: 0;
+  border-radius: 11px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Abbrechen */
+body[data-theme="crimson"] #cancel-editor {
+  background: #302930;
+  border: 1px solid #59434b;
+  color: #f0dce2;
+}
+
+/* Speichern */
+body[data-theme="crimson"] #editor-form
+button[type="submit"] {
+  background: linear-gradient(
+    135deg,
+    #b33652,
+    #85233d
+  );
+  border: 1px solid #cb526d;
+  color: #fff;
+}
+
+/* Schmale Handys */
+@media (max-width: 480px) {
+  body[data-theme="crimson"] #editor {
+    width: calc(100% - 20px);
+    max-height: 88dvh;
+    padding: 13px;
+    border-radius: 16px;
+  }
+
+  body[data-theme="crimson"] #editor-fields {
+    gap: 9px;
+  }
+}
+
+/* ==========================================
+   ITACHI CRIMSON – DARK MINIMAL EDITOR 3.0
+   Nur Crimson | Mobile First
+   ========================================== */
+
+/* Dunkler, neutraler Editor */
+body[data-theme="crimson"] #editor {
+  background: #141417 !important;
+  border: 1px solid #303036 !important;
+  border-radius: 18px !important;
+  color: #f1edf0;
+  box-shadow: 0 24px 65px rgba(0,0,0,.75);
+}
+
+/* Tastatur-Fix beibehalten */
+body[data-theme="crimson"] #editor:focus {
+  outline: none !important;
+}
+
+/* Eingabefelder – Anthrazit statt Lila */
+body[data-theme="crimson"] #editor-fields
+input:not([type="checkbox"]),
+body[data-theme="crimson"] #editor-fields
+select,
+body[data-theme="crimson"] #editor-fields
+textarea {
+  background: #202024 !important;
+  border: 1px solid #37373e !important;
+  color: #f3eef1 !important;
+  border-radius: 10px !important;
+  box-shadow: none;
+}
+
+/* Dezente Beschriftungen */
+body[data-theme="crimson"] #editor-fields
+.field > label:not(.crimson-day-tile) {
+  color: #a5a1a8 !important;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Fokus nur beim aktiven Eingabefeld */
+body[data-theme="crimson"] #editor-fields
+input:focus,
+body[data-theme="crimson"] #editor-fields
+select:focus,
+body[data-theme="crimson"] #editor-fields
+textarea:focus {
+  border-color: #a83b50 !important;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(168,59,80,.12) !important;
+}
+
+/* Aufgabenliste: eigene Abstände */
+body[data-theme="crimson"] #editor-fields
+.field:has(> button[data-action="edit-routine-task"]) {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Einzelne Aufgaben-Karten */
+body[data-theme="crimson"] #editor-fields
+button[data-action="edit-routine-task"] {
+  display: flex !important;
+  align-items: center;
+  width: 100%;
+  min-height: 49px;
+
+  margin: 0 !important;
+  padding: 12px 14px !important;
+
+  background: #222226 !important;
+  border: 1px solid #35353b !important;
+  border-left: 3px solid #a6384e !important;
+  border-radius: 11px !important;
+
+  color: #eee9ed !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.45;
+  text-align: left;
+
+  white-space: normal;
+  overflow-wrap: anywhere;
+
+  box-shadow: none !important;
+  transition: background .15s, border-color .15s;
+}
+
+/* Abstand zwischen zwei Aufgaben */
+body[data-theme="crimson"] #editor-fields
+.field:has(> button[data-action="edit-routine-task"])
++ .field:has(> button[data-action="edit-routine-task"]) {
+  margin-top: 9px !important;
+}
+
+/* Beim Antippen */
+body[data-theme="crimson"] #editor-fields
+button[data-action="edit-routine-task"]:active {
+  background: #30252b !important;
+  border-color: #944052 !important;
+}
+
+/* Dezente Aufgabenüberschrift */
+body[data-theme="crimson"] #editor-fields
+button[data-action="routine-section-heading"] {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid #303036 !important;
+  border-radius: 0 !important;
+
+  padding: 10px 0 !important;
+  margin: 9px 0 4px !important;
+
+  color: #c04b60 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-align: left;
+  box-shadow: none !important;
+}
+
+/* Aufgabe hinzufügen – dezenter Button */
+body[data-theme="crimson"] #editor-fields
+button[data-action="add-task-from-routine-editor"] {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 12px !important;
+
+  background: #1b1b1f !important;
+  border: 1px dashed #713744 !important;
+  border-radius: 11px !important;
+
+  color: #d46b7e !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+/* Routine löschen – zurückhaltend */
+body[data-theme="crimson"] #editor-fields
+button[data-action="delete-routine"] {
+  margin-top: 12px !important;
+  background: transparent !important;
+  border: 1px solid #493038 !important;
+  color: #c77a88 !important;
+  font-size: 12px !important;
+}
+
+/* Footer */
+body[data-theme="crimson"] #cancel-editor {
+  background: #29292e !important;
+  border: 1px solid #3c3c43 !important;
+  color: #e5dfe3 !important;
+}
+
+body[data-theme="crimson"] #editor-form
+button[type="submit"] {
+  background: #a82d45 !important;
+  border: 1px solid #b83b54 !important;
+  color: white !important;
+}
+
+/* Kleine Handys */
+@media (max-width: 480px) {
+  body[data-theme="crimson"] #editor {
+    padding: 14px !important;
+  }
+
+  body[data-theme="crimson"] #editor-fields
+  button[data-action="edit-routine-task"] {
+    padding: 11px 12px !important;
+    min-height: 48px;
+  }
+}
+
+/* ==========================================
+   ITACHI CRIMSON – KOMPAKTE UHRZEITFELDER
+   ========================================== */
+
+body[data-theme="crimson"] #editor-fields
+input[type="time"] {
+  display: block !important;
+
+  width: 132px !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+
+  min-height: 42px !important;
+  height: 42px !important;
+
+  padding: 7px 10px !important;
+
+  background: #202024 !important;
+  border: 1px solid #37373e !important;
+  border-radius: 10px !important;
+
+  color: #f3eef1 !important;
+  font-size: 16px !important;
+  color-scheme: dark;
+}
+
+/* Uhrzeitfeld beim Antippen */
+body[data-theme="crimson"] #editor-fields
+input[type="time"]:focus {
+  border-color: #a83b50 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(168,59,80,.12) !important;
+}
+
+/* ==========================================
+   ITACHI CRIMSON – PREMIUM TASK CHECKBOX
+   Nur im Tagesplan
+   ========================================== */
+
+/* Aufgaben-Karten */
+body[data-theme="crimson"]
+.crimson-day-plan .item {
+  position: relative;
+  border: 1px solid #34343a;
+  border-radius: 13px;
+  background: #1e1e22;
+  transition:
+    background .2s ease,
+    border-color .2s ease;
+}
+
+/* Checkbox – dunkel und clean */
+body[data-theme="crimson"]
+.crimson-day-plan .item
+input[type="checkbox"][data-action] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+
+  position: relative;
+  display: inline-grid !important;
+  place-items: center;
+
+  flex: 0 0 25px;
+  width: 25px !important;
+  height: 25px !important;
+  min-width: 25px !important;
+  min-height: 25px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: #17171b !important;
+  border: 2px solid #69646b !important;
+  border-radius: 8px !important;
+
+  cursor: pointer;
+  vertical-align: middle;
+  touch-action: manipulation;
+
+  transition:
+    background .18s ease,
+    border-color .18s ease,
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+/* Weißes Häkchen */
+body[data-theme="crimson"]
+.crimson-day-plan .item
+input[type="checkbox"][data-action]::after {
+  content: "";
+  width: 6px;
+  height: 11px;
+
+  border: solid #fff;
+  border-width: 0 2.5px 2.5px 0;
+
+  transform: rotate(45deg) scale(0.3);
+  opacity: 0;
+
+  transition:
+    transform .18s ease,
+    opacity .18s ease;
+}
+
+/* Erledigt */
+body[data-theme="crimson"]
+.crimson-day-plan .item
+input[type="checkbox"][data-action]:checked {
+  background: #a72f49 !important;
+  border-color: #c0445c !important;
+  box-shadow: 0 0 0 4px rgba(167,47,73,.12);
+}
+
+body[data-theme="crimson"]
+.crimson-day-plan .item
+input[type="checkbox"][data-action]:checked::after {
+  transform: rotate(45deg) scale(1);
+  opacity: 1;
+}
+
+/* Kleiner Druck-Effekt */
+body[data-theme="crimson"]
+.crimson-day-plan .item
+input[type="checkbox"][data-action]:active {
+  transform: scale(.88);
+}
+
+/* Erledigte Aufgaben-Karte */
+body[data-theme="crimson"]
+.crimson-day-plan .item:has(
+  input[type="checkbox"][data-action]:checked
+) {
+  background: #211c20;
+  border-color: #57323b;
+}
+
+/* Erledigte Schrift bleibt gut lesbar */
+body[data-theme="crimson"]
+.crimson-day-plan .routine-task-done {
+  text-decoration: none !important;
+  opacity: 1 !important;
+  color: #c9bfc4 !important;
+}
+
+/* Tastatur-Bedienung */
+body[data-theme="crimson"]
+.crimson-day-plan .item
+input[type="checkbox"][data-action]:focus-visible {
+  outline: 2px solid #e06a80 !important;
+  outline-offset: 4px;
+}
+
+/* Animation reduzieren, falls gewünscht */
+@media (prefers-reduced-motion: reduce) {
+  body[data-theme="crimson"]
+  .crimson-day-plan .item,
+  body[data-theme="crimson"]
+  .crimson-day-plan .item
+  input[type="checkbox"][data-action],
+  body[data-theme="crimson"]
+  .crimson-day-plan .item
+  input[type="checkbox"][data-action]::after {
+    transition: none !important;
+  }
+}
+
+/* ==========================================
+   ITACHI CRIMSON – TAGESPLAN TASK CARDS 2.0
+   ========================================== */
+
+body[data-theme="crimson"]
+.crimson-day-plan .item {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+
+  min-height: 58px;
+  padding: 12px 13px !important;
+  margin-bottom: 10px;
+
+  background: linear-gradient(
+    135deg,
+    #241018,
+    #1b1016
+  ) !important;
+
+  border: 1px solid #63303e !important;
+  border-radius: 13px !important;
+
+  box-shadow: 0 3px 12px rgba(0,0,0,.15);
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background .18s ease,
+    border-color .18s ease,
+    transform .12s ease;
+}
+
+/* Beim Antippen */
+body[data-theme="crimson"]
+.crimson-day-plan .item:active {
+  background: #371622 !important;
+  transform: scale(.99);
+}
+
+/* Checkbox im passenden Rot */
+body[data-theme="crimson"]
+.crimson-day-plan .item
+input[type="checkbox"][data-action] {
+  flex: 0 0 25px;
+  width: 25px !important;
+  height: 25px !important;
+
+  background: #1b0f15 !important;
+  border-color: #985064 !important;
+  border-radius: 8px !important;
+}
+
+/* Erledigte Checkbox */
+body[data-theme="crimson"]
+.crimson-day-plan .item
+input[type="checkbox"][data-action]:checked {
+  background: #e31945 !important;
+  border-color: #ff355c !important;
+  box-shadow: 0 0 0 4px rgba(227,25,69,.13);
+}
+
+/* Erledigte Karte */
+body[data-theme="crimson"]
+.crimson-day-plan .item:has(
+  input[type="checkbox"]:checked
+) {
+  background: linear-gradient(
+    135deg,
+    #38121f,
+    #250f18
+  ) !important;
+
+  border-color: #a32b49 !important;
+}
+
+/* Uhrzeit */
+body[data-theme="crimson"]
+.crimson-day-plan .item .task-time {
+  color: #ffb2c0;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Aufgabentext */
+body[data-theme="crimson"]
+.crimson-day-plan .item > span:not(.task-time) {
+  color: #f4e8ed;
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+/* Erledigte Aufgabe bleibt lesbar */
+body[data-theme="crimson"]
+.crimson-day-plan .item .routine-task-done {
+  color: #d6b6c0 !important;
+  text-decoration: none !important;
+  opacity: 1 !important;
+}
+
+/* Kleine Typ-Beschriftung */
+body[data-theme="crimson"]
+.crimson-day-plan .item small.muted {
+  color: #b17c8c;
+  font-size: 10px;
+  opacity: .85;
+}
+
+/* Weniger Animation, wenn gewünscht */
+@media (prefers-reduced-motion: reduce) {
+  body[data-theme="crimson"]
+  .crimson-day-plan .item {
+    transition: none !important;
+  }
+}
+
+/* ==========================================
+   ITACHI CRIMSON – SHARINGAN CHECK 4.0
+   ========================================== */
+
+/* Dunkle Aufgabenkarte */
+body[data-theme="crimson"]
+.crimson-day-plan .item {
+  position: relative;
+  overflow: visible;
+
+  background: #141316 !important;
+  border: 1px solid #373039 !important;
+  border-radius: 14px !important;
+
+  min-height: 60px;
+  padding: 13px 14px !important;
+
+  box-shadow: 0 5px 16px rgba(0,0,0,.25);
+
+  transition:
+    background .22s ease,
+    border-color .22s ease,
+    box-shadow .22s ease,
+    transform .16s ease;
+}
+
+/* Kleine Reaktion beim Antippen */
+body[data-theme="crimson"]
+.crimson-day-plan .item:active {
+  transform: scale(.985);
+}
+
+/* Checkbox */
+body[data-theme="crimson"]
+.crimson-day-plan .item
+input[type="checkbox"][data-action] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+
+  display: grid !important;
+  place-items: center;
+  position: relative;
+
+  width: 29px !important;
+  height: 29px !important;
+  min-width: 29px !important;
+  min-height: 29px !important;
+  flex: 0 0 29px;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: #111013 !important;
+  border: 2px solid #70606a !important;
+  border-radius: 9px !important;
+
+  cursor: pointer;
+
+  transition:
+    background .2s ease,
+    border-color .2s ease,
+    box-shadow .25s ease,
+    transform .2s cubic-bezier(.2,1.6,.4,1);
+}
+
+/* Weißer Haken */
+body[data-theme="crimson"]
+.crimson-day-plan .item
+input[type="checkbox"][data-action]::after {
+  content: "";
+  width: 7px;
+  height: 13px;
+
+  border: solid white;
+  border-width: 0 3px 3px 0;
+
+  opacity: 0;
+  transform: rotate(45deg) scale(0);
+
+  transition:
+    opacity .16s ease,
+    transform .25s cubic-bezier(.2,1.7,.3,1);
+}
+
+/* Aktiviertes Häkchen */
+body[data-theme="crimson"]
+.crimson-day-plan .item
+input[type="checkbox"][data-action]:checked {
+  background: #f01945 !important;
+  border-color: #ff4569 !important;
+
+  box-shadow:
+    0 0 0 4px rgba(240,25,69,.14),
+    0 0 18px rgba(240,25,69,.3);
+}
+
+/* Haken springt rein */
+body[data-theme="crimson"]
+.crimson-day-plan .item
+input[type="checkbox"][data-action]:checked::after {
+  opacity: 1;
+  transform: rotate(45deg) scale(1);
+}
+
+/* Erledigte Karte */
+body[data-theme="crimson"]
+.crimson-day-plan .item:has(
+  input[type="checkbox"][data-action]:checked
+) {
+  background: #220d15 !important;
+  border-color: #f02b50 !important;
+
+  box-shadow:
+    0 4px 18px rgba(0,0,0,.3),
+    0 0 18px rgba(240,25,69,.1);
+}
+
+/* Aufgabentext */
+body[data-theme="crimson"]
+.crimson-day-plan .item > span:not(.task-time) {
+  color: #f5eff2 !important;
+  font-weight: 500;
+}
+
+/* Erledigt, aber gut lesbar */
+body[data-theme="crimson"]
+.crimson-day-plan .item .routine-task-done {
+  color: #e4c7cf !important;
+  opacity: 1 !important;
+  text-decoration: none !important;
+}
+
+/* Uhrzeit als klarer Akzent */
+body[data-theme="crimson"]
+.crimson-day-plan .item .task-time {
+  color: #ff9bae !important;
+}
+
+/* Fokus für Tastaturbedienung */
+body[data-theme="crimson"]
+.crimson-day-plan .item
+input[type="checkbox"][data-action]:focus-visible {
+  outline: 2px solid #ff7892 !important;
+  outline-offset: 4px;
+}
+
+/* Animationen bei Bedarf reduzieren */
+@media (prefers-reduced-motion: reduce) {
+  body[data-theme="crimson"]
+  .crimson-day-plan .item,
+  body[data-theme="crimson"]
+  .crimson-day-plan .item
+  input[type="checkbox"][data-action],
+  body[data-theme="crimson"]
+  .crimson-day-plan .item
+  input[type="checkbox"][data-action]::after {
+    transition: none !important;
+  }
+}
+
+/* ==========================================
+   ITACHI CRIMSON – SHARINGAN FINISH 5.0
+   ========================================== */
+
+/* Fortschrittsleiste direkt unter Tagesplan */
+body[data-theme="crimson"]
+.crimson-day-plan + .row + .progress {
+  height: 12px !important;
+  padding: 2px !important;
+  margin: 13px 0 18px !important;
+
+  background: #250f19 !important;
+  border: 1px solid #582033 !important;
+  border-radius: 999px !important;
+
+  overflow: hidden;
+  box-shadow: inset 0 2px 5px #0008;
+}
+
+/* Roter Fortschrittsbalken */
+body[data-theme="crimson"]
+.crimson-day-plan + .row + .progress > div {
+  height: 100% !important;
+  border-radius: 999px !important;
+
+  background: linear-gradient(
+    90deg,
+    #a8082e 0%,
+    #ed1745 55%,
+    #ff5475 100%
+  ) !important;
+
+  box-shadow: 0 0 12px #f0194570;
+
+  transition: width .35s ease;
+}
+
+/* Erledigte Karte: leuchtender Rand */
+body[data-theme="crimson"]
+.crimson-day-plan .item:has(
+  input[type="checkbox"]:checked
+) {
+  border-color: #e92b51 !important;
+}
+
+/* Der Haken bekommt einen stärkeren Glow */
+body[data-theme="crimson"]
+.crimson-day-plan .item
+input[type="checkbox"]:checked {
+  box-shadow:
+    0 0 0 4px #f0194524,
+    0 0 22px #f0194570 !important;
+}
+
+/* Einmaliger Pop beim Erledigen */
+@keyframes crimsonTaskPop {
+  0% {
+    transform: scale(.97);
+    box-shadow: 0 0 0 #f0194500;
+  }
+  45% {
+    transform: scale(1.018);
+    box-shadow: 0 0 22px #f0194555;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Kurzer Ring um das Häkchen */
+@keyframes crimsonCheckPulse {
+  0% {
+    box-shadow: 0 0 0 0 #ff315877;
+  }
+  100% {
+    box-shadow: 0 0 0 11px #ff315800;
+  }
+}
+
+/* Animation nur bei neuer Erledigung */
+body[data-theme="crimson"]
+.crimson-day-plan .item.crimson-just-checked {
+  animation: crimsonTaskPop .38s ease-out;
+}
+
+body[data-theme="crimson"]
+.crimson-day-plan
+.crimson-just-checked
+input[type="checkbox"]:checked {
+  animation: crimsonCheckPulse .45s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-theme="crimson"]
+  .crimson-day-plan .item.crimson-just-checked,
+  body[data-theme="crimson"]
+  .crimson-day-plan
+  .crimson-just-checked
+  input[type="checkbox"]:checked {
+    animation: none !important;
+  }
+}
+
+/* ==========================================
+   ITACHI CRIMSON – 100% SHARINGAN FINISH
+   ========================================== */
+
+body[data-theme="crimson"]
+.crimson-day-plan.crimson-goal-complete {
+  border-color: #a52a48 !important;
+}
+
+body[data-theme="crimson"]
+.crimson-goal-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  margin-top: 12px;
+  padding: 11px 14px;
+
+  background: #210e16;
+  border: 1px solid #92304a;
+  border-radius: 12px;
+
+  color: #ff7892;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+
+/* Kurzes Aufleuchten beim Erreichen von 100% */
+@keyframes crimsonGoalFlash {
+  0% {
+    box-shadow: 0 0 0 rgba(255,40,80,0);
+  }
+  40% {
+    box-shadow:
+      0 0 22px rgba(255,40,80,.4),
+      inset 0 0 14px rgba(255,40,80,.12);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(255,40,80,0);
+  }
+}
+
+@keyframes crimsonGoalMessageIn {
+  from {
+    opacity: 0;
+    transform: translateY(7px) scale(.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+body[data-theme="crimson"]
+.crimson-goal-just-finished {
+  animation: crimsonGoalFlash .8s ease-out;
+}
+
+body[data-theme="crimson"]
+.crimson-goal-just-finished
+.crimson-goal-message {
+  animation: crimsonGoalMessageIn .4s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-theme="crimson"]
+  .crimson-goal-just-finished,
+  body[data-theme="crimson"]
+  .crimson-goal-message {
+    animation: none !important;
+  }
+}
+
+/* ==========================================
+   ITACHI – SHARINGAN PROGRESS 7.0
+   ========================================== */
+
+/* Dunkler Chakra-Kanal */
+body[data-theme="crimson"]
+.crimson-day-plan + .row + .progress {
+  position: relative;
+
+  height: 15px !important;
+  padding: 3px !important;
+
+  background: #190b11 !important;
+  border: 1px solid #632136 !important;
+  border-radius: 999px !important;
+
+  overflow: visible !important;
+
+  box-shadow:
+    inset 0 2px 7px rgba(0,0,0,.9),
+    0 0 9px rgba(140,12,43,.16);
+}
+
+/* Blutrotes Sharingan-Chakra */
+body[data-theme="crimson"]
+.crimson-day-plan + .row + .progress > div {
+  position: relative;
+
+  height: 100% !important;
+  border-radius: 999px !important;
+
+  background: linear-gradient(
+    90deg,
+    #580d20 0%,
+    #a91434 55%,
+    #d92b4b 100%
+  ) !important;
+
+  box-shadow:
+    0 0 8px rgba(183,22,59,.65),
+    0 0 18px rgba(154,12,46,.32),
+    inset 0 1px 2px rgba(255,150,170,.3);
+
+  transition: width .4s ease;
+}
+
+/* Feiner Chakra-Schimmer */
+body[data-theme="crimson"]
+.crimson-day-plan + .row + .progress > div::before {
+  content: "";
+  position: absolute;
+  inset: 1px 3px auto;
+  height: 1px;
+  border-radius: 999px;
+  background: rgba(255,173,188,.4);
+}
+
+/* Statt Neon-Lichtpunkt: dunkles Siegel */
+body[data-theme="crimson"]
+.crimson-day-plan + .row + .progress > div::after {
+  content: "";
+  position: absolute;
+  right: -2px;
+  top: 50%;
+
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+
+  background: #19080f;
+  border: 2px solid #d63a59;
+
+  box-shadow:
+    0 0 7px rgba(213,36,73,.65);
+
+  transform: translateY(-50%);
+}
+
+/* Bei 0 % kein Siegel */
+body[data-theme="crimson"]
+.crimson-day-plan + .row + .progress
+> div[style*="width:0%"]::after {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-theme="crimson"]
+  .crimson-day-plan + .row + .progress > div {
+    transition: none !important;
+  }
+}
+
+/* ==========================================
+   ITACHI – UCHIHA CHAKRA 8.0
+   ========================================== */
+
+body[data-theme="crimson"]
+.crimson-day-plan + .row + .progress {
+  position: relative;
+  height: 17px !important;
+  padding: 3px !important;
+  margin: 18px 0 30px !important;
+
+  background: #190a10 !important;
+  border: 1px solid #70233a !important;
+  border-radius: 999px !important;
+  overflow: visible !important;
+
+  box-shadow:
+    inset 0 2px 8px #000b,
+    0 0 10px #9c153022;
+}
+
+/* Chakra-Füllung */
+body[data-theme="crimson"]
+.crimson-day-plan + .row + .progress > div {
+  position: relative;
+  height: 100% !important;
+  border-radius: 999px !important;
+
+  background: linear-gradient(
+    90deg,
+    #590b1e,
+    #aa1236,
+    #e4385b
+  ) !important;
+
+  box-shadow:
+    0 0 9px #bd1d4688,
+    0 0 19px #9c153044,
+    inset 0 1px 2px #ffb0c055;
+
+  transition: width .45s ease;
+}
+
+/* Dunkles Siegel am Balkenende */
+body[data-theme="crimson"]
+.crimson-day-plan + .row + .progress > div::after {
+  content: "";
+  position: absolute;
+  right: -3px;
+  top: 50%;
+
+  width: 11px;
+  height: 11px;
+
+  border-radius: 50%;
+  background: #17060c;
+  border: 2px solid #e4385b;
+
+  box-shadow: 0 0 9px #e4385b99;
+  transform: translateY(-50%);
+}
+
+/* Chakra-Impuls beim Tagesziel */
+@keyframes uchihaChakraAwaken {
+  0%, 100% {
+    box-shadow:
+      0 0 9px #bd1d4688,
+      0 0 19px #9c153044;
+  }
+  45% {
+    box-shadow:
+      0 0 15px #ff3158,
+      0 0 35px #e21b50aa,
+      0 0 55px #a70d3655;
+  }
+}
+
+body[data-theme="crimson"]
+.crimson-goal-just-finished
+~ .row + .progress > div {
+  animation: uchihaChakraAwaken .9s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-theme="crimson"]
+  .crimson-day-plan + .row + .progress > div {
+    transition: none !important;
+  }
+
+  body[data-theme="crimson"]
+  .crimson-goal-just-finished
+  ~ .row + .progress > div {
+    animation: none !important;
+  }
+}
+
+/* Uchiha-Meilensteine */
+body[data-theme="crimson"]
+.uchiha-milestones {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+
+  margin-top: -22px;
+  margin-bottom: 18px;
+
+  color: #75636b;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+body[data-theme="crimson"]
+.uchiha-milestones span {
+  white-space: nowrap;
+  transition: color .25s ease;
+}
+
+body[data-theme="crimson"]
+.uchiha-milestones span.active {
+  color: #f34b6e;
+  text-shadow: 0 0 8px #c11d4666;
+}
+
+/* ==========================================
+   ITACHI – AKATSUKI CHAKRA BAR
+   ========================================== */
+
+/* Schwarze Chakra-Fassung */
+body[data-theme="crimson"]
+.crimson-day-plan + .row + .progress {
+  position: relative;
+
+  height: 17px !important;
+  padding: 3px !important;
+  margin: 16px 0 18px !important;
+
+  background: #13080d !important;
+  border: 1px solid #632036 !important;
+  border-radius: 999px !important;
+
+  overflow: visible !important;
+
+  box-shadow:
+    inset 0 2px 7px rgba(0,0,0,.9),
+    0 0 8px rgba(120,12,35,.15);
+}
+
+/* Blutrotes Sharingan-Chakra */
+body[data-theme="crimson"]
+.crimson-day-plan + .row + .progress > div {
+  position: relative;
+
+  height: 100% !important;
+  border-radius: 999px !important;
+
+  background: linear-gradient(
+    90deg,
+    #570b1b 0%,
+    #9f102c 42%,
+    #d52b48 80%,
+    #ef5870 100%
+  ) !important;
+
+  box-shadow:
+    0 0 6px rgba(185,18,52,.7),
+    0 0 15px rgba(125,9,34,.3),
+    inset 0 1px 2px rgba(255,150,165,.25);
+
+  transition: width .4s ease;
+}
+
+/* Feiner Chakra-Glanz */
+body[data-theme="crimson"]
+.crimson-day-plan + .row + .progress > div::before {
+  content: "";
+  position: absolute;
+
+  top: 1px;
+  left: 5px;
+  right: 5px;
+  height: 1px;
+
+  background: rgba(255,170,185,.35);
+  border-radius: 999px;
+}
+
+/* Keine Punkte oder Siegel am Ende */
+body[data-theme="crimson"]
+.crimson-day-plan + .row + .progress > div::after {
+  content: none !important;
+}
+
+/* Keine zusätzlichen Meilensteine */
+body[data-theme="crimson"]
+.uchiha-milestones {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-theme="crimson"]
+  .crimson-day-plan + .row + .progress > div {
+    transition: none !important;
+  }
+}
+
+/* ITACHI – AUFGABEN HEADER */
+
+body[data-theme="crimson"]
+.crimson-tasks-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+body[data-theme="crimson"]
+.crimson-tasks-header h2 {
+  margin: 0 !important;
+  color: #f0e6e9;
+}
+
+body[data-theme="crimson"]
+.crimson-tasks-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+body[data-theme="crimson"]
+.crimson-tasks-actions button {
+  min-height: 38px;
+  padding: 8px 11px !important;
+
+  background: #281018 !important;
+  border: 1px solid #9b2a45 !important;
+  border-radius: 10px !important;
+
+  color: #ff9eb3 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  white-space: nowrap;
+
+  box-shadow: none !important;
+}
+
+body[data-theme="crimson"]
+.crimson-tasks-actions button:active {
+  background: #451323 !important;
+  transform: scale(.97);
+}
+
+@media (max-width: 380px) {
+  body[data-theme="crimson"]
+  .crimson-tasks-actions button {
+    padding: 8px !important;
+    font-size: 11px !important;
+  }
+}
+
+/* Crimson: kompakter Aufgaben-Header */
+body[data-theme="crimson"]
+.itachi-home-tasks .crimson-tasks-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+body[data-theme="crimson"]
+.itachi-home-tasks .crimson-tasks-header h2 {
+  margin: 0 !important;
+  font-size: clamp(15px, 4vw, 19px);
+  white-space: nowrap;
+}
+
+body[data-theme="crimson"]
+.itachi-home-tasks .crimson-tasks-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+body[data-theme="crimson"]
+.itachi-home-tasks .crimson-tasks-actions button {
+  min-height: 40px;
+  padding: 8px 9px !important;
+  font-size: 11px !important;
+  white-space: nowrap;
+}
+
+/* ITACHI – TAGESAUFGABEN SWIPE */
+
+body[data-theme="crimson"]
+.crimson-day-plan .item[data-longpress-task] {
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  will-change: transform;
+}
+
+/* ==========================================
+   ITACHI – CHAKRA SWIPE DELETE
+   ========================================== */
+
+body[data-theme="crimson"]
+.crimson-day-plan .item.crimson-swipe-vanish {
+  pointer-events: none;
+
+  animation:
+    crimsonSwipeVanish .28s
+    cubic-bezier(.4, 0, 1, 1)
+    forwards !important;
+}
+
+@keyframes crimsonSwipeVanish {
+  0% {
+    opacity: 1;
+    transform: translateX(-90px) scale(1);
+    filter: brightness(1);
+    box-shadow: 0 0 0 transparent;
+  }
+
+  45% {
+    opacity: .8;
+    transform: translateX(-115px) scale(.98);
+    filter: brightness(1.6);
+    box-shadow:
+      0 0 18px rgba(190, 20, 55, .6),
+      inset 0 0 16px rgba(160, 10, 40, .35);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-170px) scale(.94);
+    filter: brightness(.6);
+    box-shadow: 0 0 0 transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-theme="crimson"]
+  .crimson-day-plan .item.crimson-swipe-vanish {
+    animation-duration: .01ms !important;
+  }
+}
+
+/* 🩸 ITACHI – MANGEKYO LÖSCHEFFEKT */
+
+body[data-theme="crimson"]
+.crimson-day-plan .item.crimson-swipe-vanish {
+  pointer-events: none !important;
+  transform-origin: center !important;
+
+  animation: itachiDelete 0.55s
+    cubic-bezier(.22, .61, .36, 1)
+    forwards !important;
+}
+
+@keyframes itachiDelete {
+  0% {
+    opacity: 1;
+    transform: translateX(-70px) scale(1);
+    filter: brightness(1);
+  }
+
+  25% {
+    opacity: 1;
+    transform: translateX(-85px) scale(1.04);
+    filter: brightness(2);
+    background: rgba(170, 0, 40, .9);
+    box-shadow:
+      0 0 12px #ff1744,
+      0 0 30px rgba(255, 0, 60, .6),
+      inset 0 0 20px rgba(255, 0, 50, .5);
+  }
+
+  55% {
+    opacity: .75;
+    transform: translateX(-120px) scale(.95);
+    filter: blur(2px) brightness(1.4);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-250px) scale(.75);
+    filter: blur(9px);
+  }
+}
+
+
+/* 🩸 ITACHI – LEUCHTENDE FORTSCHRITTSZAHLEN */
+
+body[data-theme="crimson"] .crimson-progress-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: visible;
+
+margin: 0 0 -8px !important;
+position: relative;
+z-index: 2;
+  padding: 0 !important;
+  min-height: 0 !important;
+}
+
+body[data-theme="crimson"] .crimson-progress-label strong {
+  position: relative;
+top: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  line-height: 1.1;
+
+  color: #ff6b88;
+
+  text-shadow:
+    0 0 5px rgba(255, 40, 85, 0.9),
+    0 0 12px rgba(200, 0, 50, 0.65);
+}
+
+/* 🩸 ITACHI – GEWICHT AUF DER STARTSEITE */
+
+body[data-theme="crimson"] .crimson-weight-home {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+body[data-theme="crimson"] .crimson-weight-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+body[data-theme="crimson"] .crimson-weight-header h2 {
+  margin: 0;
+}
+
+body[data-theme="crimson"] .crimson-weight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+body[data-theme="crimson"] .crimson-weight-stat {
+  min-width: 0;
+  padding: 16px 8px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #211018, #140b11);
+  border: 1px solid rgba(180, 42, 77, 0.3);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+body[data-theme="crimson"] .crimson-weight-stat span {
+  color: #bd8a9c;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+body[data-theme="crimson"] .crimson-weight-stat strong {
+  color: #ff6686;
+  font-size: clamp(19px, 5vw, 28px);
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-shadow: 0 0 12px rgba(255, 40, 85, 0.3);
+}
+
+body[data-theme="crimson"] .crimson-weight-stat:nth-child(2) strong {
+  color: #f5d6df;
+  text-shadow: none;
+}
+
+body[data-theme="crimson"] .crimson-weight-stat small {
+  color: #a77d8c;
+  font-size: 11px;
+}
+
+body[data-theme="crimson"] .crimson-weight-history {
+  align-self: center;
+}
+
+/* 🩸 ITACHI – GEWICHTSVERÄNDERUNG */
+
+body[data-theme="crimson"] .crimson-weight-change {
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+body[data-theme="crimson"] .crimson-weight-change.down {
+  color: #4ade80;
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.35);
+}
+
+body[data-theme="crimson"] .crimson-weight-change.up {
+  color: #ff526f;
+  text-shadow: 0 0 8px rgba(255, 82, 111, 0.4);
+}
+
+body[data-theme="crimson"] .crimson-weight-change.neutral {
+  color: #a98a95;
+}
+
+/* 🩸 ITACHI – GEWICHT EINGABEMENÜ */
+
+body[data-theme="crimson"] #weight-sheet {
+  background: linear-gradient(160deg, #1c0d16, #100a10);
+  color: #f5dce4;
+  border: 1px solid rgba(190, 40, 80, 0.5);
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -10px 45px rgba(130, 0, 40, 0.3);
+}
+
+body[data-theme="crimson"] #weight-sheet::backdrop {
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(5px);
+}
+
+body[data-theme="crimson"] #weight-sheet h2 {
+  color: #ff7594;
+  font-weight: 800;
+  text-shadow: 0 0 12px rgba(255, 40, 85, 0.25);
+}
+
+body[data-theme="crimson"] #weight-sheet label {
+  color: #d3a2b2;
+  font-weight: 600;
+}
+
+body[data-theme="crimson"] #weight-value {
+  font-size: 32px;
+  font-weight: 800;
+  text-align: center;
+  color: #ff6686;
+  background: #200e18;
+  border: 1px solid #78304a;
+  border-radius: 14px;
+  padding: 14px;
+  box-sizing: border-box;
+  width: 100%;
+  text-shadow: 0 0 10px rgba(255, 40, 85, 0.3);
+}
+
+body[data-theme="crimson"] #weight-date {
+  background: #200e18;
+  color: #f5dce4;
+  border: 1px solid #78304a;
+  border-radius: 12px;
+  padding: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  color-scheme: dark;
+}
+
+body[data-theme="crimson"] #weight-sheet button[type="submit"] {
+  background: linear-gradient(135deg, #a51e42, #78122f);
+  color: white;
+  font-weight: 800;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 0 18px rgba(180, 20, 65, 0.25);
+}
+
+/* 🩸 ITACHI – IPHONE-GEWICHTSSCROLLER */
+
+/* In anderen Themes unsichtbar */
+.crimson-weight-picker {
+  display: none;
+}
+
+/* Nur Crimson */
+body[data-theme="crimson"] #weight-sheet #weight-value {
+  display: none;
+}
+
+body[data-theme="crimson"] .crimson-weight-picker {
+  display: block;
+  margin: 12px 0 18px;
+}
+
+body[data-theme="crimson"] .crimson-picker-display {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+body[data-theme="crimson"] .crimson-picker-display strong {
+  font-size: 42px;
+  font-weight: 800;
+  color: #ff6686;
+  text-shadow: 0 0 18px rgba(255, 40, 85, 0.45);
+}
+
+body[data-theme="crimson"] .crimson-picker-display span {
+  font-size: 18px;
+  color: #cba0ae;
+}
+
+body[data-theme="crimson"] .crimson-picker-wheels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+body[data-theme="crimson"] .crimson-picker-column {
+  min-width: 0;
+  text-align: center;
+}
+
+body[data-theme="crimson"] .crimson-picker-column small {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #b88a9b;
+}
+
+body[data-theme="crimson"] .crimson-picker-wheel {
+  height: 240px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  border-radius: 16px;
+  background:
+    linear-gradient(
+      to bottom,
+      #120a10 0%,
+      transparent 35%,
+      transparent 65%,
+      #120a10 100%
+    ),
+    #1d1018;
+  border: 1px solid #512137;
+  position: relative;
+  touch-action: pan-y;
+}
+
+body[data-theme="crimson"] .crimson-picker-wheel::-webkit-scrollbar {
+  display: none;
+}
+
+body[data-theme="crimson"] .crimson-picker-item {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: center;
+  font-size: 20px;
+  color: #785260;
+  transition: color 0.15s, font-size 0.15s;
+}
+
+body[data-theme="crimson"] .crimson-picker-item.selected {
+  font-size: 30px;
+  font-weight: 800;
+  color: #ff6686;
+  text-shadow: 0 0 12px rgba(255, 40, 85, 0.45);
+}
+
+/* 🩸 ITACHI – KOMPAKTER GEWICHTSSCROLLER */
+
+body[data-theme="crimson"] .crimson-picker-display {
+  margin-bottom: 10px;
+}
+
+body[data-theme="crimson"] .crimson-picker-display strong {
+  font-size: 30px;
+}
+
+body[data-theme="crimson"] .crimson-picker-display span {
+  font-size: 14px;
+}
+
+body[data-theme="crimson"] .crimson-picker-wheels {
+  gap: 8px;
+  max-width: 250px;
+  margin: 0 auto;
+}
+
+body[data-theme="crimson"] .crimson-picker-wheel {
+  height: 190px;
+  border-radius: 12px;
+  scroll-snap-type: y mandatory;
+}
+
+body[data-theme="crimson"] .crimson-picker-item {
+  height: 38px;
+  font-size: 16px;
+}
+
+body[data-theme="crimson"] .crimson-picker-item.selected {
+  font-size: 22px;
+}
+
+body[data-theme="crimson"] .crimson-picker-column small {
+  margin-bottom: 5px;
+  font-size: 9px;
+}
+
+body[data-theme="crimson"] #weight-sheet .field {
+  margin-bottom: 10px;
+}
+
+body[data-theme="crimson"] #weight-sheet .muted {
+  font-size: 11px;
+  margin: 8px 0;
+}
+
+/* 🩸 ITACHI – MINI GEWICHTS-PICKER */
+
+/* Gesamtes Fenster kompakter */
+body[data-theme="crimson"] #weight-sheet {
+  width: min(300px, calc(100vw - 28px));
+  max-width: 300px;
+  max-height: 85dvh;
+  padding: 12px 14px;
+  box-sizing: border-box;
+  border-radius: 18px;
+  margin: auto;
+  overflow-y: auto;
+}
+
+/* Abstände im Fenster reduzieren */
+body[data-theme="crimson"] #weight-form {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+body[data-theme="crimson"] #weight-sheet .row {
+  margin-bottom: 0;
+}
+
+body[data-theme="crimson"] #weight-sheet h2 {
+  font-size: 16px;
+  margin: 0;
+}
+
+body[data-theme="crimson"] #weight-sheet .field {
+  margin: 0;
+}
+
+body[data-theme="crimson"] #weight-sheet label {
+  font-size: 11px;
+  margin-bottom: 4px;
+}
+
+body[data-theme="crimson"] #weight-date {
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+/* Große Gewichtsanzeige verkleinern */
+body[data-theme="crimson"] .crimson-picker-display {
+  margin: 3px 0 7px;
+  gap: 5px;
+}
+
+body[data-theme="crimson"] .crimson-picker-display strong {
+  font-size: 27px;
+}
+
+body[data-theme="crimson"] .crimson-picker-display span {
+  font-size: 13px;
+}
+
+/* Zahlenräder enger zusammen */
+body[data-theme="crimson"] .crimson-picker-wheels {
+  max-width: 210px;
+  gap: 6px;
+  margin: 0 auto;
+}
+
+/* Zahlenrad kompakter */
+body[data-theme="crimson"] .crimson-picker-wheel {
+  height: 190px;
+  border-radius: 10px;
+  background: #1b1018;
+  border: 1px solid #4f2638;
+}
+
+/* Zahlen */
+body[data-theme="crimson"] .crimson-picker-item {
+  height: 38px;
+  font-size: 15px;
+}
+
+body[data-theme="crimson"] .crimson-picker-item.selected {
+  font-size: 21px;
+  color: #ff7a99;
+  font-weight: 800;
+}
+
+/* Auswahlstreifen in der Mitte */
+body[data-theme="crimson"] .crimson-picker-column {
+  position: relative;
+}
+
+body[data-theme="crimson"] .crimson-picker-column::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  top: calc(50% + 7px);
+  transform: translateY(-50%);
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 85, 125, 0.65);
+  background: rgba(150, 30, 65, 0.18);
+  box-shadow: 0 0 12px rgba(180, 30, 70, 0.12);
+  pointer-events: none;
+}
+
+/* Kleine Beschriftungen */
+body[data-theme="crimson"] .crimson-picker-column small {
+  font-size: 9px;
+  margin-bottom: 4px;
+}
+
+/* Hinweistext kompakt */
+body[data-theme="crimson"] #weight-sheet .muted {
+  font-size: 10px;
+  line-height: 1.3;
+  margin: 3px 0;
+}
+
+/* Speichern-Button kleiner */
+body[data-theme="crimson"] #weight-sheet .weight-save-button {
+  padding: 10px;
+  font-size: 13px;
+  border-radius: 10px;
+}
+
+/* Schließen-Button */
+body[data-theme="crimson"] #close-weight-sheet {
+  padding: 5px 9px;
+  font-size: 13px;
+}
+
+/* 🩸 ITACHI – KOMPAKTE DATUMSAUSWAHL */
+
+body[data-theme="crimson"] #weight-sheet #weight-date {
+  width: 155px;
+  max-width: 100%;
+  height: 32px;
+  min-height: 0;
+  padding: 3px 8px;
+  font-size: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(170, 55, 85, 0.45);
+  background: #1c1018;
+  color: #f5dce4;
+  box-shadow: none;
+}
+
+body[data-theme="crimson"] #weight-sheet
+.field:has(#weight-date) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0;
+}
+
+body[data-theme="crimson"] #weight-sheet
+.field:has(#weight-date) label {
+  margin: 0;
+  font-size: 12px;
+}
+
+/* 🩸 ITACHI – WEIGHT APP BOTTOM SHEET */
+
+/* Das Fenster kommt von unten */
+body[data-theme="crimson"] #weight-sheet {
+  position: fixed;
+  inset: auto 0 0 0;
+
+  width: 100%;
+  max-width: 100%;
+  max-height: min(85dvh, 520px);
+
+  margin: 0;
+  padding: 14px 18px max(18px, env(safe-area-inset-bottom));
+
+  box-sizing: border-box;
+  border-radius: 22px 22px 0 0;
+
+  background: #1a0e16;
+  border: 1px solid #66283e;
+  border-bottom: none;
+
+  overflow-y: auto;
+
+  /* Anfangs unterhalb des Bildschirms */
+  transform: translateY(105%);
+  transition: transform 0.3s cubic-bezier(.2,.8,.2,1);
+}
+
+/* Beim Öffnen hochfahren */
+body[data-theme="crimson"] #weight-sheet[open] {
+  transform: translateY(0);
+}
+
+/* Hintergrund abdunkeln */
+body[data-theme="crimson"] #weight-sheet::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+/* Inhalt bleibt angenehm schmal */
+body[data-theme="crimson"] #weight-form {
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+}
+
+/* Griff oben wie in der Weight-App */
+body[data-theme="crimson"] #weight-sheet .sheet-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 99px;
+  background: #875164;
+  margin: 0 auto 12px;
+}
+
+/* Datum als kompakte Zeile */
+body[data-theme="crimson"] #weight-sheet
+.field:has(#weight-date) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: #291620;
+
+  margin: 4px 0 8px;
+}
+
+/* Datum-Beschriftung */
+body[data-theme="crimson"] #weight-sheet
+.field:has(#weight-date) label {
+  margin: 0;
+  font-size: 13px;
+  color: #e6b7c7;
+}
+
+/* Datum-Auswahl rechts */
+body[data-theme="crimson"] #weight-date {
+  width: 145px;
+  max-width: 60%;
+  height: 30px;
+  min-height: 0;
+
+  padding: 3px 6px;
+  font-size: 12px;
+
+  background: transparent;
+  border: none;
+  box-shadow: none;
+
+  color: #ff9eb8;
+  color-scheme: dark;
+}
+
+/* Weniger Abstand */
+body[data-theme="crimson"] .crimson-weight-picker {
+  margin: 5px 0 10px;
+}
+
+body[data-theme="crimson"] .crimson-picker-display {
+  margin: 4px 0 8px;
+}
+
+/* Speichern */
+body[data-theme="crimson"] #weight-sheet .weight-save-button {
+  width: 100%;
+  margin-top: 6px;
+}
+
+/* 🩸 ITACHI – LEERE TODO-LISTE */
+
+body[data-theme="crimson"] .crimson-todo-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 24px 12px;
+  text-align: center;
+  color: #f0c5d3;
+}
+
+body[data-theme="crimson"] .crimson-todo-empty-icon {
+  font-size: 25px;
+  color: #c45a7c;
+}
+
+body[data-theme="crimson"] .crimson-todo-empty small {
+  font-size: 12px;
+  color: #a78392;
+}
+
+/* 🩸 CRIMSON SMART CALENDAR V1 */
+
+body[data-theme="crimson"] .crimson-smart-calendar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+body[data-theme="crimson"] .crimson-calendar-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+body[data-theme="crimson"] .crimson-calendar-topbar strong {
+  font-size: 25px;
+  color: #fff0f5;
+  letter-spacing: -0.5px;
+}
+
+body[data-theme="crimson"] .crimson-calendar-today {
+  border: none;
+  border-radius: 20px;
+  padding: 9px 16px;
+  background: #371925;
+  color: #ff8caa;
+  font-weight: 700;
+}
+
+body[data-theme="crimson"] .crimson-calendar-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border-radius: 13px;
+  background: #25141e;
+}
+
+body[data-theme="crimson"] .crimson-calendar-tabs button {
+  padding: 10px 5px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #aa8999;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+body[data-theme="crimson"] .crimson-calendar-tabs button.active {
+  background: #8e2947;
+  color: white;
+  box-shadow: 0 2px 10px #0004;
+}
+
+body[data-theme="crimson"] .crimson-calendar-main {
+  padding: 10px 0;
+}
+
+body[data-theme="crimson"] .crimson-calendar-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+}
+
+body[data-theme="crimson"] .crimson-calendar-week-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 2px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  color: #eee0e7;
+}
+
+body[data-theme="crimson"] .crimson-calendar-week-day small {
+  font-size: 11px;
+  color: #b99aa8;
+}
+
+body[data-theme="crimson"] .crimson-calendar-week-day strong {
+  font-size: 19px;
+}
+
+body[data-theme="crimson"] .crimson-calendar-week-day.active {
+  background: #9d2b4c;
+  color: white;
+}
+
+body[data-theme="crimson"] .crimson-calendar-event-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+body[data-theme="crimson"] .crimson-calendar-event-dot.visible {
+  background: #ff8ba9;
+}
+
+body[data-theme="crimson"] .crimson-calendar-day-heading {
+  padding: 22px 12px;
+  text-align: center;
+  color: #f4d9e3;
+  font-size: 19px;
+}
+
+body[data-theme="crimson"] .crimson-calendar-agenda {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 16px;
+  border: 1px solid #4c293a;
+  border-radius: 18px;
+  background: #1e121b;
+}
+
+body[data-theme="crimson"] .crimson-calendar-agenda-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+body[data-theme="crimson"] .crimson-calendar-agenda-head h3 {
+  margin: 0;
+  font-size: 15px;
+  color: #ffb2c7;
+}
+
+body[data-theme="crimson"] .crimson-calendar-agenda-head button {
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #a52d51;
+  color: white;
+  font-size: 24px;
+}
+
+body[data-theme="crimson"] .crimson-smart-event {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-left: 3px solid #ef6088;
+  border-radius: 10px;
+  background: #321c29;
+  color: #fff0f5;
+  text-align: left;
+}
+
+body[data-theme="crimson"] .crimson-smart-event-time {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: #ff92b0;
+}
+
+body[data-theme="crimson"] .crimson-smart-event-title {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+
+body[data-theme="crimson"] .crimson-calendar-empty {
+  padding: 20px 8px;
+  text-align: center;
+  color: #a98d9b;
+  font-size: 13px;
+}
+
+/* 🩸 CRIMSON – SMART CALENDAR TODOS */
+
+body[data-theme="crimson"] .crimson-calendar-todos {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 17px;
+  border: 1px solid #512b3d;
+  border-radius: 18px;
+  background: #1e121b;
+}
+
+body[data-theme="crimson"] .crimson-calendar-todos-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+body[data-theme="crimson"] .crimson-calendar-todos-head h3 {
+  margin: 0;
+  font-size: 17px;
+  color: #ffe6ee;
+}
+
+body[data-theme="crimson"] .crimson-calendar-todos-head span {
+  color: #ff92af;
+  font-size: 12px;
+}
+
+body[data-theme="crimson"] .crimson-calendar-todo-progress {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #452536;
+}
+
+body[data-theme="crimson"] .crimson-calendar-todo-progress > div {
+  height: 100%;
+  border-radius: inherit;
+  background: #ec6089;
+  transition: width 0.25s ease;
+}
+
+body[data-theme="crimson"] .crimson-calendar-todo-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+body[data-theme="crimson"] .crimson-calendar-todo-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 11px;
+  background: #2c1a26;
+  color: #f8e6ee;
+  cursor: pointer;
+}
+
+body[data-theme="crimson"] .crimson-calendar-todo-item input {
+  width: 19px;
+  height: 19px;
+  accent-color: #d94470;
+  flex-shrink: 0;
+}
+
+body[data-theme="crimson"] .crimson-calendar-todo-item span {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+body[data-theme="crimson"] .crimson-calendar-todo-item .is-done {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+body[data-theme="crimson"] .crimson-calendar-todo-item small {
+  color: #c69bac;
+  font-size: 11px;
+}
+
+body[data-theme="crimson"] .crimson-calendar-todo-empty {
+  padding: 20px 8px;
+  text-align: center;
+  font-size: 13px;
+  color: #ad8b9b;
+}
+
+body[data-theme="crimson"] .crimson-calendar-add-todo {
+  width: 100%;
+  padding: 13px;
+  border: 1px dashed #8c405c;
+  border-radius: 12px;
+  background: rgba(150, 40, 78, 0.12);
+  color: #ff9ab6;
+  font-weight: 700;
+}
+
+/* 🩸 SMART CALENDAR – TODO BEARBEITEN */
+
+body[data-theme="crimson"] .crimson-calendar-edit-todo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: 32px;
+  height: 32px;
+  padding: 0;
+
+  border: 1px solid #6d354b;
+  border-radius: 9px;
+
+  background: #402333;
+  color: #ff9cb6;
+
+  font-size: 18px;
+  cursor: pointer;
+}
+
+body[data-theme="crimson"] .crimson-calendar-edit-todo:active {
+  background: #9b3153;
+  color: white;
+}
+
+/* ==========================================
+   🩸 CRIMSON SMART CALENDAR V3
+   APPLE-STYLE TAGES-ZEITACHSE
+   ========================================== */
+
+body[data-theme="crimson"] .crimson-day-timeline {
+  overflow: hidden;
+  border: 1px solid #492637;
+  border-radius: 18px;
+  background: #160e16;
+}
+
+body[data-theme="crimson"] .crimson-timeline-scroll {
+  max-height: 620px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #71354d transparent;
+}
+
+body[data-theme="crimson"] .crimson-timeline-hour {
+  display: grid;
+  grid-template-columns: 57px minmax(0, 1fr);
+  min-height: 68px;
+}
+
+body[data-theme="crimson"] .crimson-timeline-hour-label {
+  padding: 0 8px 0 0;
+  transform: translateY(-7px);
+  text-align: right;
+  font-size: 11px;
+  font-weight: 600;
+  color: #987f8d;
+}
+
+body[data-theme="crimson"] .crimson-timeline-hour-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  padding: 5px 7px 7px;
+  border-top: 1px solid #38222f;
+  border-left: 1px solid #38222f;
+}
+
+body[data-theme="crimson"] .crimson-timeline-entry {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 42px;
+  padding: 10px;
+  border: none;
+  border-left: 3px solid #e25a83;
+  border-radius: 9px;
+  background: #422236;
+  color: #fff0f5;
+  text-align: left;
+  cursor: pointer;
+}
+
+body[data-theme="crimson"] .crimson-timeline-entry.task {
+  border-left-color: #a58df3;
+  background: #30253d;
+}
+
+body[data-theme="crimson"] .crimson-timeline-entry.done {
+  opacity: 0.5;
+}
+
+body[data-theme="crimson"] .crimson-timeline-entry-time {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ff9cb6;
+}
+
+body[data-theme="crimson"] .crimson-timeline-entry-title {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+body[data-theme="crimson"] .crimson-timeline-allday {
+  display: grid;
+  grid-template-columns: 57px minmax(0, 1fr);
+  gap: 7px;
+  padding: 12px 7px 12px 0;
+  border-bottom: 1px solid #492637;
+}
+
+body[data-theme="crimson"] .crimson-timeline-allday > span {
+  padding-top: 12px;
+  text-align: right;
+  font-size: 10px;
+  color: #a98b9a;
+}
+
+body[data-theme="crimson"] .crimson-timeline-allday > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+body[data-theme="crimson"] .crimson-day-timeline button:active {
+  filter: brightness(1.25);
+}
+
+/* ==========================================
+   🩸 CRIMSON SMART CALENDAR V4
+   Präzise Zeitblöcke
+   ========================================== */
+
+body[data-theme="crimson"] .crimson-timeline-v4
+.crimson-timeline-scroll {
+  max-height: 650px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+body[data-theme="crimson"] .crimson-timeline-canvas {
+  position: relative;
+  min-width: 0;
+  background: #160e16;
+}
+
+body[data-theme="crimson"] .crimson-timeline-grid-hour {
+  position: absolute;
+  left: 57px;
+  right: 0;
+  height: 1px;
+  border-top: 1px solid #3a2531;
+}
+
+body[data-theme="crimson"] .crimson-timeline-grid-hour span {
+  position: absolute;
+  top: -8px;
+  right: calc(100% + 8px);
+  width: 47px;
+  text-align: right;
+  color: #a58b99;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+body[data-theme="crimson"] .crimson-time-block {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+
+  min-width: 0;
+  overflow: hidden;
+
+  padding: 7px 9px;
+  border: none;
+  border-left: 3px solid #f06c95;
+  border-radius: 8px;
+
+  background: #64283f;
+  color: #fff1f6;
+  text-align: left;
+  cursor: pointer;
+}
+
+body[data-theme="crimson"] .crimson-time-block.task {
+  background: #393052;
+  border-left-color: #b19aff;
+}
+
+body[data-theme="crimson"] .crimson-time-block.done {
+  opacity: 0.45;
+}
+
+body[data-theme="crimson"] .crimson-time-block strong {
+  font-size: 11px;
+  color: #ffb4c9;
+}
+
+body[data-theme="crimson"] .crimson-time-block span {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+body[data-theme="crimson"] .crimson-time-block:active {
+  filter: brightness(1.3);
+}
+
+/* ==========================================
+   🩸 CRIMSON V6 – SMART SCHEDULING
+   ========================================== */
+
+body[data-theme="crimson"] .crimson-smart-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  padding: 18px;
+
+  border: 1px solid #5c3044;
+  border-radius: 18px;
+
+  background: linear-gradient(
+    145deg,
+    #24131f,
+    #160e17
+  );
+}
+
+body[data-theme="crimson"]
+.crimson-smart-suggestions-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+body[data-theme="crimson"]
+.crimson-smart-suggestions-head h3,
+body[data-theme="crimson"]
+.crimson-smart-suggestions h3 {
+  margin: 0;
+  color: #ffe8ef;
+  font-size: 17px;
+}
+
+body[data-theme="crimson"]
+.crimson-smart-suggestions-head span {
+  color: #ff91ad;
+  font-size: 11px;
+}
+
+body[data-theme="crimson"] .crimson-smart-hint {
+  margin: 0;
+  color: #b99eab;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+body[data-theme="crimson"] .crimson-smart-task-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 14px;
+
+  background: #2c1b29;
+  border: 1px solid #4d2c3e;
+  border-radius: 13px;
+}
+
+body[data-theme="crimson"]
+.crimson-smart-task-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+body[data-theme="crimson"]
+.crimson-smart-task-heading strong {
+  color: #fff0f5;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+body[data-theme="crimson"]
+.crimson-smart-task-heading small {
+  flex-shrink: 0;
+  color: #b9a0ad;
+  font-size: 11px;
+}
+
+body[data-theme="crimson"]
+.crimson-smart-slot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+body[data-theme="crimson"] .crimson-smart-slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+
+  width: 100%;
+  padding: 12px;
+
+  border: 1px solid #80425c;
+  border-radius: 10px;
+
+  background: rgba(190, 57, 103, 0.14);
+  color: #ffd8e4;
+
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+body[data-theme="crimson"]
+.crimson-smart-slot span:last-child {
+  color: #ff93b1;
+  white-space: nowrap;
+}
+
+body[data-theme="crimson"]
+.crimson-smart-slot:active {
+  background: #78344f;
+}
+
+body[data-theme="crimson"]
+.crimson-smart-no-slot {
+  margin: 0;
+  color: #b69ba8;
+  font-size: 12px;
+}
+
+/* 🩸 CRIMSON – FREIE ZEIT ANKLICKEN */
+
+body[data-theme="crimson"]
+.crimson-timeline-canvas {
+  cursor: crosshair;
+}
+
+body[data-theme="crimson"]
+.crimson-time-block {
+  cursor: pointer;
+}
+
+/* 🩸 CRIMSON – TIMELINE DRAG & DROP */
+
+.crimson-timeline-v4 .crimson-time-block {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.crimson-timeline-v4 .crimson-time-block:active {
+  cursor: grabbing;
+  filter: brightness(1.15);
+}
+
+/* 🩸 CRIMSON – TERMINDAUER ZIEHEN */
+
+.crimson-timeline-v4 .crimson-time-block {
+  overflow: visible;
+}
+
+.crimson-timeline-v4 .crimson-resize-handle {
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: -5px;
+  height: 12px;
+  border-radius: 8px;
+  background: #ff304f;
+  border: 2px solid rgba(255,255,255,.75);
+  box-shadow: 0 2px 8px rgba(0,0,0,.35);
+  cursor: ns-resize;
+  touch-action: none;
+  z-index: 5;
+}
+
+.crimson-timeline-v4 .crimson-resize-handle::after {
+  content: "";
+  position: absolute;
+  left: 35%;
+  right: 35%;
+  top: 3px;
+  height: 2px;
+  border-radius: 2px;
+  background: white;
+}
+
+/* 🩸 CRIMSON – KOMPAKTER TERMIN-EDITOR */
+
+/* Nur Termin-Editoren mit Endzeit */
+body[data-theme="crimson"]
+#editor-fields:has(input[name="endTime"]) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 12px;
+  row-gap: 8px;
+}
+
+/* Titel und Datum bekommen eine eigene Zeile */
+body[data-theme="crimson"]
+#editor-fields:has(input[name="endTime"])
+.field:has(input[name="title"]),
+
+body[data-theme="crimson"]
+#editor-fields:has(input[name="endTime"])
+.field:has(input[name="date"]) {
+  grid-column: 1 / -1;
+}
+
+/* Beginn links, Ende rechts */
+body[data-theme="crimson"]
+#editor-fields:has(input[name="endTime"])
+.field:has(input[name="time"]) {
+  grid-column: 1;
+}
+
+body[data-theme="crimson"]
+#editor-fields:has(input[name="endTime"])
+.field:has(input[name="endTime"]) {
+  grid-column: 2;
+}
+
+/* Felder dürfen nicht über ihre Spalten hinausragen */
+body[data-theme="crimson"]
+#editor-fields:has(input[name="endTime"]) .field {
+  min-width: 0;
+  margin: 4px 0;
+}
+
+body[data-theme="crimson"]
+#editor-fields:has(input[name="endTime"]) input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Auch auf dem Handy kompakt */
+@media (max-width: 480px) {
+  body[data-theme="crimson"]
+  #editor-fields:has(input[name="endTime"]) {
+    column-gap: 8px;
+  }
+}
+
+/* 🩸 CRIMSON – DATUMSFELD KOMPAKTER */
+
+body[data-theme="crimson"]
+#editor-fields:has(input[name="endTime"])
+.field:has(input[name="date"]) {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: 260px;
+  min-width: 0;
+  justify-self: start;
+}
+
+body[data-theme="crimson"]
+#editor-fields:has(input[name="endTime"])
+input[name="date"] {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}

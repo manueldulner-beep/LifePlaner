@@ -352,23 +352,30 @@
          hidden>
 
 <!-- 🩸 LIFEPLANER – SERVICE WORKER -->
+
 <script>
   if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker
-        .register("./sw.js")
-        .then(() => {
-          console.log("🩸 LifePlaner PWA aktiviert");
-        })
-        .catch(error => {
-          console.error(
-            "LifePlaner PWA Fehler:",
-            error
-          );
-        });
-    });
+    navigator.serviceWorker
+      .register("./sw.js", { scope: "./" })
+      .then(registration => {
+        console.log(
+          "🩸 LifePlaner Service Worker registriert!",
+          registration.scope
+        );
+      })
+      .catch(error => {
+        console.error(
+          "❌ LifePlaner Service Worker Fehler:",
+          error
+        );
+      });
+  } else {
+    console.warn(
+      "Service Worker wird nicht unterstützt."
+    );
   }
 </script>
+
 
 </body>
 

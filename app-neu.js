@@ -4567,10 +4567,7 @@ function renderCrimsonCalendarDetails(key) {
   return `
     <div class="grid deluxe-day-details">
 
-      <article class="card">
-        <h2>📌 Termine</h2>
-        ${renderEvents(key)}
-      </article>
+  
 
       <article class="card">
         <div class="row crimson-tasks-header">
@@ -4713,8 +4710,8 @@ if (crimsonCalendarView === "day") {
         <button
           type="button"
           class="crimson-smart-event"
-          data-action="edit-event"
-          data-id="${event.id}">
+data-crimson-gesture-event="true"
+data-id="${event.id}"
           <span class="crimson-smart-event-time">
             ${event.time
               ? escapeHTML(event.time)

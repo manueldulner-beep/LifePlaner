@@ -74,13 +74,13 @@ border: 1px solid rgba(255, 45, 65, 0.85) !important;
 
 /* 📧 Oben */
 #lp-mail-button {
-  bottom: calc(65px + env(safe-area-inset-bottom)) !important;
+  bottom: calc(75px + env(safe-area-inset-bottom)) !important;
   font-size: 24px !important;
 }
 
 /* ➕ Unten */
 #lp-crimson-add-button {
-  bottom: calc(0px + env(safe-area-inset-bottom)) !important;
+  bottom: calc(10px + env(safe-area-inset-bottom)) !important;
   font-size: 32px !important;
   font-weight: 400 !important;
 }

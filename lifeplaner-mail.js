@@ -263,6 +263,105 @@ border: 1px solid rgba(255, 45, 65, 0.85) !important;
       opacity: .7;
       font-size: 13px;
     }
+
+
+/* 🩸 CRIMSON – CLEAN MINIMAL TERMINE */
+
+body[data-theme="crimson"] .crimson-smart-event {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+
+  width: 100% !important;
+  min-height: 44px !important;
+  padding: 7px 11px !important;
+  margin: 0 !important;
+
+  background: #17171c !important;
+  border: 1px solid #30252c !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+
+  color: #eee9eb !important;
+  text-align: left !important;
+}
+
+/* Dezenter roter Akzent links */
+body[data-theme="crimson"] .crimson-smart-event::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 11px;
+  bottom: 11px;
+  width: 2px;
+  background: #8e354a;
+  border-radius: 2px;
+}
+
+/* Uhrzeit – dunkelrot und minimal */
+body[data-theme="crimson"] .crimson-smart-event-time {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  flex: 0 0 auto !important;
+  min-width: 65px !important;
+  min-height: 27px !important;
+  padding: 5px 7px !important;
+  margin: 0 !important;
+
+  background: #291b23 !important;
+  border: 1px solid #70404b !important;
+  border-radius: 7px !important;
+
+  color: #dca1ae !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  box-shadow: none !important;
+}
+
+/* Terminname */
+body[data-theme="crimson"] .crimson-smart-event-title {
+  flex: 1 !important;
+  min-width: 0 !important;
+  color: #eee9eb !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+/* Pfeil rechts */
+body[data-theme="crimson"] .crimson-smart-event > span:last-child {
+  color: #86626c !important;
+  font-size: 17px !important;
+}
+
+/* Enger Abstand zwischen Terminen */
+body[data-theme="crimson"] .crimson-smart-event + .crimson-smart-event {
+  margin-top: 3px !important;
+}
+
+/* 🩸 CRIMSON – TERMINE ULTRA ENG */
+
+body[data-theme="crimson"] .crimson-smart-event-list {
+  gap: 0px !important;
+  row-gap: 1px !important;
+}
+
+body[data-theme="crimson"] .crimson-smart-event {
+  margin: 0 !important;
+  min-height: 40px !important;
+  padding: 5px 10px !important;
+}
+
+body[data-theme="crimson"]
+.crimson-smart-event + .crimson-smart-event {
+  margin-top: 0 !important;
+}
+
+
   `;
   document.head.appendChild(css);
 

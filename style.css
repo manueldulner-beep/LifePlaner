@@ -12091,3 +12091,373 @@ body[data-theme="crimson"]
 .field {
   min-width: 0;
 }
+/* 🩸 CRIMSON – NUR KLEINE TERMINPUNKTE + ZENTRIERTE ZAHLEN */
+
+/* Den zusätzlichen dicken Punkt hinter der Zahl entfernen */
+body[data-theme="crimson"]
+.calendar .day.has-event .day-number::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Alle Tageskästchen gleich ausrichten */
+body[data-theme="crimson"] .calendar .day {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: center !important;
+}
+
+/* Zahlen immer mittig und auf derselben Höhe */
+body[data-theme="crimson"] .calendar .day-number {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+  line-height: 16px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Kleine Terminpunkte mittig unter der Zahl */
+body[data-theme="crimson"] .calendar .chopper-calendar-dots {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  min-height: 6px !important;
+  margin-top: 2px !important;
+}
+
+/* Kleinen roten Terminpunkt sichtbar lassen */
+body[data-theme="crimson"] .calendar .event-dot {
+  display: block !important;
+  width: 5px !important;
+  height: 5px !important;
+  min-width: 5px !important;
+  border-radius: 50% !important;
+  background: #ff4565 !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}/* 🩸 CRIMSON – SAUBERE KALENDER-SYMBOLE */
+
+/* Tageskästchen einheitlich aufbauen */
+body[data-theme="crimson"] .calendar .day {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
+
+/* Tageszahlen exakt mittig */
+body[data-theme="crimson"] .calendar .day-number {
+  width: 100% !important;
+  height: 16px !important;
+  line-height: 16px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+  flex-shrink: 0 !important;
+}
+
+/* Dicken Zusatzpunkt entfernen */
+body[data-theme="crimson"]
+.calendar .day.has-event .day-number::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Platz für Punkt und Geburtstag */
+body[data-theme="crimson"] .calendar .chopper-calendar-dots {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  width: 100% !important;
+  height: 15px !important;
+  min-height: 15px !important;
+  margin: 1px 0 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  flex-shrink: 0 !important;
+}
+
+/* Kleiner roter Terminpunkt */
+body[data-theme="crimson"] .calendar .event-dot {
+  display: block !important;
+  width: 5px !important;
+  height: 5px !important;
+  min-width: 5px !important;
+  min-height: 5px !important;
+  border-radius: 50% !important;
+  background: #ff4565 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+/* Geburtstagssymbol */
+body[data-theme="crimson"]
+.calendar .crimson-calendar-birthday-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 11px !important;
+  line-height: 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Fokuskalender: genug Platz für Zahl + Symbole */
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .day {
+  height: 28px !important;
+min-height: 0 !important;
+  padding: 3px 1px !important;
+  overflow: visible !important;
+}
+
+/* Auch auf kleineren iPhones nichts abschneiden */
+@media (max-height: 750px) {
+  body[data-theme="crimson"]
+  #crimson-focus-content .calendar .day {
+    height: 28px !important;
+    min-height: 0 !important;
+  }
+}/* 🩸 CRIMSON – KALENDER FEINSCHLIFF */
+
+/* Keine alten zusätzlichen Terminpunkte */
+body[data-theme="crimson"] .calendar .day::before,
+body[data-theme="crimson"] .calendar .day::after,
+body[data-theme="crimson"] .calendar .day-number::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Normale Kalenderansicht: flachere Tageskästchen */
+body[data-theme="crimson"] #content
+.calendar .day {
+  min-height: 0 !important;
+  height: 57px !important;
+  padding: 5px 2px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: center !important;
+}
+
+/* Tageszahlen einheitlich ausrichten */
+body[data-theme="crimson"] .calendar .day-number {
+  display: block !important;
+  width: 100% !important;
+  height: 17px !important;
+  line-height: 17px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+  flex-shrink: 0 !important;
+}
+
+/* Kleiner roter Punkt unter der Zahl */
+body[data-theme="crimson"] .calendar .chopper-calendar-dots {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  width: 100% !important;
+  min-height: 12px !important;
+  margin-top: 2px !important;
+  overflow: visible !important;
+}
+
+body[data-theme="crimson"] .calendar .event-dot {
+  display: block !important;
+  width: 5px !important;
+  height: 5px !important;
+  min-width: 5px !important;
+  min-height: 5px !important;
+  background: #ff4565 !important;
+  border-radius: 50% !important;
+  margin: 0 !important;
+}
+
+/* Fokusfenster: kompakt bleiben */
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .day {
+  height: 28px !important;
+min-height: 0 !important;
+  padding: 2px 1px !important;
+}
+
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .day-number {
+  font-size: 12px !important;
+  height: 14px !important;
+  line-height: 14px !important;
+}
+
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .chopper-calendar-dots {
+  min-height: 11px !important;
+  margin-top: 1px !important;
+}/* 🩸 CRIMSON – DOPPELTE PUNKTE KORRIGIEREN */
+
+/* Normaler Kalender: unteren Punkt ausblenden */
+body[data-theme="crimson"]
+#content .calendar .chopper-calendar-dots .event-dot {
+  display: none !important;
+}
+
+/* Im Fokusfenster den kleinen Terminpunkt behalten */
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .chopper-calendar-dots .event-dot {
+  display: block !important;
+}/* 🩸 CRIMSON – FOKUSKALENDER SYMBOLE */
+
+/* Tageskästchen kompakt halten */
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .day {
+  height: 28px !important;
+min-height: 0 !important;
+  padding: 2px 1px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  overflow: hidden !important;
+}
+
+/* Tageszahlen gleichmäßig */
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .day-number {
+  height: 14px !important;
+  min-height: 14px !important;
+  line-height: 14px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+  flex-shrink: 0 !important;
+}
+
+/* Gemeinsame Symbolzeile */
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .chopper-calendar-dots {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 2px !important;
+  width: 100% !important;
+  height: 13px !important;
+  min-height: 13px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  flex-shrink: 0 !important;
+}
+
+/* Geburtstagssymbol */
+body[data-theme="crimson"]
+#crimson-focus-content .crimson-calendar-birthday-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 10px !important;
+  line-height: 12px !important;
+  height: 12px !important;
+  width: 12px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+/* Terminpunkt leicht höher */
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .event-dot {
+  position: relative !important;
+  top: -2px !important;
+  width: 5px !important;
+  height: 5px !important;
+  min-width: 5px !important;
+  min-height: 5px !important;
+  margin: 0 !important;
+}/* 🩸 CRIMSON – UNTERES GEBURTSTAGSSYMBOL AUSBLENDEN */
+
+/* Nur im normalen Kalender */
+body[data-theme="crimson"]
+#content .calendar .chopper-calendar-dots
+.crimson-calendar-birthday-icon {
+  display: none !important;
+}/* 🩸 CRIMSON – UNTERES GEBURTSTAGSSYMBOL AUSBLENDEN */
+
+/* Nur im normalen Kalender */
+body[data-theme="crimson"]
+#content .calendar .chopper-calendar-dots
+.crimson-calendar-birthday-icon {
+  display: none !important;
+}/* 🩸 CRIMSON – FOKUS: KLEINE SYMBOLE */
+
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .day-number {
+  height: 11px !important;
+  min-height: 11px !important;
+  line-height: 11px !important;
+  margin: 0 !important;
+}
+
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .chopper-calendar-dots {
+  position: relative !important;
+  top: -5px !important;
+  transform: none !important;
+
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  height: 8px !important;
+  min-height: 0 !important;
+  max-height: 8px !important;
+  gap: 2px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .event-dot {
+  position: static !important;
+  transform: none !important;
+
+  width: 3px !important;
+  height: 3px !important;
+  min-width: 3px !important;
+  min-height: 3px !important;
+  max-width: 3px !important;
+  max-height: 3px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body[data-theme="crimson"]
+#crimson-focus-content .crimson-calendar-birthday-icon {
+  position: static !important;
+  transform: none !important;
+
+  font-size: 8px !important;
+  line-height: 9px !important;
+  width: 9px !important;
+  height: 9px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+}

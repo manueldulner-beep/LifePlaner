@@ -3409,20 +3409,30 @@ function renderCalendar(compact = false) {
     const today = key === todayKey();
 
     html += `
-      <button class="day
-        ${outside ? "outside" : ""}
-        ${selected ? "selected" : ""}
-        ${today ? "today" : ""}
-        ${events.length ? "has-event" : ""}"
+      <button
+        type="button"
+        class="day
+          ${outside ? "outside" : ""}
+          ${selected ? "selected" : ""}
+          ${today ? "today" : ""}
+          ${data.theme !== "crimson" && events.length ? "has-event" : ""}"
         data-action="select-date"
         data-date="${key}">
 
         <div class="day-number">${date.getDate()}</div>
         
 <div class="chopper-calendar-dots">
-  ${events.length ? `
-    <span class="calendar-dot event-dot" title="Termin"></span>
-  ` : ""}
+  ${data.theme === "crimson" &&
+    typeof crimsonBirthdaysFor === "function" &&
+    crimsonBirthdaysFor(key).length
+      ? '<span class="crimson-calendar-birthday-icon">🎂</span>'
+      : ""
+  }
+
+  ${events.length
+    ? '<span class="calendar-dot event-dot" title="Termin"></span>'
+    : ""
+  }
 </div>
         ${compact ? "" : `
           <span class="tag">
@@ -4644,48 +4654,47 @@ const tabs = `
     calendarContent = renderCalendar(true);
   }
 
-  if (crimsonCalendarView === "week") {
-    const weekday = (selected.getDay() + 6) % 7;
-    const monday = new Date(selected);
+if (crimsonCalendarView === "week") {
+  // 121 Tage als durchgehende horizontale Leiste
+  const days = Array.from({ length: 121 }, (_, i) => {
+    const date = parseDate(key);
+    date.setDate(date.getDate() + i - 60);
 
-    monday.setDate(selected.getDate() - weekday);
+    const dayKey = dateKey(date);
 
-    const days = Array.from({ length: 7 }, (_, i) => {
-      const date = new Date(monday);
-      date.setDate(monday.getDate() + i);
+    return {
+      key: dayKey,
+      date,
+      events: eventsFor(dayKey)
+    };
+  });
 
-      return {
-        key: dateKey(date),
-        date,
-        events: eventsFor(dateKey(date))
-      };
-    });
-
-    calendarContent = `
-      <div class="crimson-calendar-week">
-        ${days.map(day => `
-          <button
-            type="button"
-            class="crimson-calendar-week-day ${
-              day.key === key ? "active" : ""
-            }"
-            data-action="select-date"
-            data-date="${day.key}">
-            <small>${day.date.toLocaleDateString("de-DE", {
-              weekday: "short"
-            })}</small>
-            <strong>${day.date.getDate()}</strong>
-            <span class="crimson-calendar-event-dot ${
-              day.events.length ? "visible" : ""
-            }"></span>
-          </button>
-        `).join("")}
-      </div>
-    `;
-  }
-
-
-
+  calendarContent = `
+    <div class="crimson-calendar-week"
+         data-crimson-week-scroll>
+      ${days.map(day => `
+        <button
+          type="button"
+          class="crimson-calendar-week-day ${
+            day.key === key ? "active" : ""
+          }"
+          data-action="select-date"
+          data-date="${day.key}">
+          <small>${day.date.toLocaleDateString("de-DE", {
+            weekday: "short"
+          })}</small>
+          <strong>${day.date.getDate()}</strong>
+                    ${crimsonBirthdaysFor(day.key).length
+            ? '<span title="Geburtstag">🎂</span>'
+            : `<span class="crimson-calendar-event-dot ${
+                day.events.length ? "visible" : ""
+              }"></span>`
+          }
+        </button>
+      `).join("")}
+    </div>
+  `;
+}
 
 if (crimsonCalendarView === "day") {
   calendarContent = `
@@ -4711,15 +4720,45 @@ if (crimsonCalendarView === "day") {
           type="button"
           class="crimson-smart-event"
 data-crimson-gesture-event="true"
-data-id="${event.id}"
-          <span class="crimson-smart-event-time">
-            ${event.time
-              ? escapeHTML(event.time)
-              : "Ganztägig"}
-          </span>
-          <span class="crimson-smart-event-title">
-            ${escapeHTML(event.title)}
-          </span>
+data-id="${event.id}">
+          
+<span
+  class="crimson-smart-event-time"
+  style="
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 66px;
+    min-width: 66px;
+    min-height: 36px;
+    padding: 6px 5px;
+    box-sizing: border-box;
+    background: #491f30;
+    border: 1px solid #ff5369;
+    border-radius: 10px;
+    color: #ff9aaa;
+    font-size: 13px;
+    font-weight: 800;
+    box-shadow: 0 0 10px rgba(255,45,65,0.25);
+  "
+>
+  ${event.time ? escapeHTML(event.time) : "Ganztägig"}
+</span>
+
+          
+<span class="crimson-smart-event-title">
+  ${
+    /training|fitness|sport|gym/i.test(event.title)
+      ? "💪 "
+      : /arzt|doktor|zahnarzt|termin/i.test(event.title)
+      ? "📅 "
+      : /anime|film|kino|abend/i.test(event.title)
+      ? "🌙 "
+      : "📌 "
+  }
+  ${escapeHTML(event.title)}
+</span>
+
           <span>›</span>
         </button>
       `).join("")
@@ -4738,23 +4777,47 @@ data-id="${event.id}"
           class="crimson-calendar-today"
           data-crimson-calendar-today>
           Heute
+        </button>        
+        <button
+          type="button"
+          class="crimson-birthday-add"
+          data-crimson-birthday-add
+          title="Geburtstag hinzufügen">
+          🎂
         </button>
       </div>
 
       ${tabs}
 
-      <div class="crimson-calendar-main">
-        ${calendarContent}
-      </div>
-
-
-        ${crimsonCalendarView === "day" ? "" : eventList}
-      </div>
-
+      
+    
      
-<div class="crimson-calendar-details">
-  ${renderCrimsonCalendarDetails(key)}
+<div class="crimson-calendar-main">
+  ${calendarContent}
 </div>
+
+${crimsonCalendarView === "day" ? "" : `
+  <div class="crimson-calendar-events-scroll">
+    <div class="crimson-focus-events-title">
+      Termine am ${escapeHTML(formatDate(key, {
+        day: "numeric",
+        month: "long"
+      }))}
+    </div>
+
+       <div class="crimson-focus-events-list">
+      ${renderCrimsonBirthdaysForDay(key)}
+      ${events.length || !crimsonBirthdaysFor(key).length
+        ? eventList
+        : ""}
+    </div>
+  </div>
+`}
+
+
+      <div class="crimson-calendar-details">
+        ${renderCrimsonCalendarDetails(key)}
+      </div>
 
     </section>
   `;
@@ -4769,7 +4832,6 @@ function changeMonth(direction) {
 
   render();
 }
-
 function selectDate(key) {
   const kommtVonAndererSeite = page !== "calendar";
 
@@ -4777,15 +4839,11 @@ function selectDate(key) {
   displayedMonth = startOfMonth(parseDate(key));
   page = "calendar";
 
+
   render();
 
-  // Nur beim echten Seitenwechsel nach oben springen
   if (kommtVonAndererSeite) {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "instant"
-    });
+    window.scrollTo(0, 0);
   }
 }
 
@@ -8279,7 +8337,6 @@ document.addEventListener("change", event => {
 }, true);
 
 /* 🩸 CRIMSON – AUTOMATISCH ZUR AKTUELLEN UHRZEIT */
-
 function crimsonScrollToCurrentTime() {
   if (data.theme !== "crimson") return;
   if (page !== "calendar") return;
@@ -8288,31 +8345,65 @@ function crimsonScrollToCurrentTime() {
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      const scrollBox = document.querySelector(
+      // Zuerst die Timeline im Fokusfenster suchen
+      const focus = document.querySelector(
+        "#crimson-focus-overlay.is-open"
+      );
+
+      const scope = focus || document;
+
+      const timeline = scope.querySelector(
         ".crimson-timeline-scroll"
       );
 
-      const canvas = document.querySelector(
+      const canvas = scope.querySelector(
         ".crimson-timeline-canvas"
       );
 
-      if (!scrollBox || !canvas) return;
+      if (!timeline || !canvas) return;
+
+      // Falls die Timeline selbst nicht scrollt,
+      // den sichtbaren Kalenderbereich verwenden.
+      const main = scope.querySelector(
+        ".crimson-calendar-main"
+      );
+
+      const scrollBox =
+        timeline.scrollHeight > timeline.clientHeight + 2
+          ? timeline
+          : main;
+
+      if (!scrollBox) return;
 
       const now = new Date();
-
       const minutes =
         now.getHours() * 60 + now.getMinutes();
 
-      // Dieselbe Skalierung wie die Timeline benutzen.
       const pixelsPerMinute =
         canvas.offsetHeight / 1440;
 
-      // Aktuelle Uhrzeit mit etwas Platz darüber.
-      const target =
+      // Aktuelle Uhrzeit, mit 45 Minuten Platz oben
+      const targetY =
         (minutes - 45) * pixelsPerMinute;
 
-      const maxScroll =
-        scrollBox.scrollHeight - scrollBox.clientHeight;
+      // Position des Kalenders im Scrollbereich
+      const scrollRect =
+        scrollBox.getBoundingClientRect();
+
+      const canvasRect =
+        canvas.getBoundingClientRect();
+
+      const target =
+        scrollBox.scrollTop +
+        canvasRect.top -
+        scrollRect.top +
+        targetY;
+
+      const maxScroll = Math.max(
+        0,
+        scrollBox.scrollHeight -
+        scrollBox.clientHeight
+      );
 
       scrollBox.scrollTop = Math.max(
         0,
@@ -8321,7 +8412,6 @@ function crimsonScrollToCurrentTime() {
     });
   });
 }
-
 
 /* 🩸 CRIMSON – TERMIN PER TIMELINE-KLICK */
 
@@ -8505,6 +8595,1330 @@ if (
   // Bestehende Aufgabe aktualisieren.
   // KEINE neue Aufgabe anlegen.
   task.time = time;
+
+  save();
+  render();
+});
+
+/* ==========================================
+   🩸 CRIMSON – SMOOTH CALENDAR V2
+   Monat: Wischen
+   Woche: frei seitlich scrollen
+   Tag: Wischen + aktuelle Uhrzeit
+   ========================================== */
+
+(() => {
+  let startX = 0;
+  let startY = 0;
+  let swipeStarted = false;
+  let blockClickUntil = 0;
+  let animating = false;
+
+  // Design nur für Crimson
+  const style = document.createElement("style");
+
+  style.textContent = `
+    body[data-theme="crimson"]
+    .crimson-calendar-week[data-crimson-week-scroll] {
+      display: flex !important;
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      gap: 6px !important;
+      padding: 8px 10px 12px !important;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+      touch-action: pan-x pan-y;
+      scrollbar-width: none;
+    }
+
+    body[data-theme="crimson"]
+    .crimson-calendar-week[data-crimson-week-scroll]
+   ::-webkit-scrollbar {
+      display: none;
+    }
+
+    body[data-theme="crimson"]
+    .crimson-calendar-week[data-crimson-week-scroll]
+    .crimson-calendar-week-day {
+      flex: 0 0 58px !important;
+      width: 58px !important;
+      min-width: 58px !important;
+      scroll-snap-align: center;
+      transition:
+        background .2s ease,
+        border-color .2s ease,
+        transform .2s ease;
+    }
+
+    body[data-theme="crimson"]
+    .crimson-calendar-week[data-crimson-week-scroll]
+    .crimson-calendar-week-day:active {
+      transform: scale(.96);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body[data-theme="crimson"]
+      .crimson-calendar-week-day {
+        transition: none !important;
+      }
+    }
+  `;
+
+  document.head.appendChild(style);
+
+  function calendarArea(target) {
+    if (data.theme !== "crimson") return null;
+    if (page !== "calendar") return null;
+
+    return target.closest(
+      ".crimson-smart-calendar .crimson-calendar-main"
+    );
+  }
+
+  // Wochenleiste beim Anzeigen auf den
+  // ausgewählten Tag zentrieren
+  const initializedWeeks = new WeakSet();
+
+  function centerWeek() {
+    const strip = document.querySelector(
+      "[data-crimson-week-scroll]"
+    );
+
+    if (!strip || initializedWeeks.has(strip)) return;
+
+    initializedWeeks.add(strip);
+
+    const active = strip.querySelector(
+      ".crimson-calendar-week-day.active"
+    );
+
+    if (!active) return;
+
+    requestAnimationFrame(() => {
+      const target =
+        active.offsetLeft -
+        strip.offsetLeft -
+        (strip.clientWidth - active.offsetWidth) / 2;
+
+      strip.scrollLeft = Math.max(0, target);
+    });
+  }
+
+  const observer = new MutationObserver(() => {
+    if (data.theme !== "crimson") return;
+    if (page !== "calendar") return;
+
+    centerWeek();
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+  centerWeek();
+
+  function animateCalendar(direction) {
+    const main = document.querySelector(
+      ".crimson-smart-calendar .crimson-calendar-main"
+    );
+
+    if (!main) return;
+
+    if (window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches) return;
+
+    if (!main.animate) return;
+
+    main.animate(
+      [
+        {
+          opacity: 0.55,
+          transform: `translateX(${direction * 15}px)`
+        },
+        {
+          opacity: 1,
+          transform: "translateX(0)"
+        }
+      ],
+      {
+        duration: 260,
+        easing: "cubic-bezier(.22,1,.36,1)"
+      }
+    );
+  }
+
+  document.addEventListener("touchstart", event => {
+    swipeStarted = false;
+
+    if (event.touches.length !== 1) return;
+    if (!calendarArea(event.target)) return;
+
+    // Woche hat eigenes natives Seitwärtsscrollen
+    if (crimsonCalendarView === "week") return;
+
+    // Termine und Timeline-Blöcke behalten
+    // ihre bisherigen Gesten
+    if (event.target.closest(
+      ".crimson-time-block, " +
+      ".crimson-smart-event, " +
+      "input, textarea, select, dialog"
+    )) return;
+
+    const touch = event.touches[0];
+
+    startX = touch.clientX;
+    startY = touch.clientY;
+    swipeStarted = true;
+  }, { passive: true });
+
+  document.addEventListener("touchend", event => {
+    if (!swipeStarted) return;
+
+    swipeStarted = false;
+
+    if (animating) return;
+    if (event.changedTouches.length !== 1) return;
+    if (!calendarArea(event.target)) return;
+
+    const touch = event.changedTouches[0];
+
+    const dx = touch.clientX - startX;
+    const dy = touch.clientY - startY;
+
+    // Horizontale Bewegung muss eindeutig sein
+    if (Math.abs(dx) < 55) return;
+    if (Math.abs(dx) < Math.abs(dy) * 1.4) return;
+
+    const direction = dx < 0 ? 1 : -1;
+
+    blockClickUntil = Date.now() + 450;
+    animating = true;
+
+    if (crimsonCalendarView === "month") {
+      displayedMonth = new Date(
+        displayedMonth.getFullYear(),
+        displayedMonth.getMonth() + direction,
+        1
+      );
+    }
+
+    if (crimsonCalendarView === "day") {
+      selectedDate = addDays(selectedDate, direction);
+
+      displayedMonth = startOfMonth(
+        parseDate(selectedDate)
+      );
+    }
+
+    render();
+
+    // Weiche Bewegung nach dem Wechsel
+    animateCalendar(direction);
+
+    // Bei Rückkehr zu heute:
+    // direkt wieder zur aktuellen Uhrzeit
+    if (
+      crimsonCalendarView === "day" &&
+      selectedDate === todayKey()
+    ) {
+      crimsonScrollToCurrentTime();
+    }
+
+    setTimeout(() => {
+      animating = false;
+    }, 280);
+
+  }, { passive: true });
+
+  document.addEventListener("touchcancel", () => {
+    swipeStarted = false;
+  }, { passive: true });
+
+  // Verhindert unbeabsichtigte Klicks
+  // unmittelbar nach einer Wischbewegung
+  document.addEventListener("click", event => {
+    if (Date.now() >= blockClickUntil) return;
+
+    if (calendarArea(event.target)) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  }, true);
+})();
+
+/* ==========================================
+   🩸 CRIMSON – KALENDER FOKUSMODUS
+   Schwebender Button / Fenster / Ansichten
+   Nur Crimson
+   ========================================== */
+
+(() => {
+  let focusOpen = false;
+  let previousPage = "home";
+
+  const css = document.createElement("style");
+
+  css.textContent = `
+    /* Schwebender Kalenderknopf */
+    #crimson-focus-fab {
+      position: fixed;
+      right: 18px;
+      bottom: 158px;
+      z-index: 950;
+      width: 49px;
+      height: 49px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 1px solid #70404b;
+      border-radius: 50%;
+      background: #21171d;
+      color: #e9a1b0;
+      font-size: 23px;
+      box-shadow: 0 5px 18px rgba(0,0,0,.3);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body[data-theme="crimson"]
+    #crimson-focus-fab.is-visible {
+      display: flex;
+    }
+
+    /* Button neben Heute */
+    body[data-theme="crimson"]
+    .crimson-focus-header-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 39px;
+      min-width: 39px;
+      height: 36px;
+      padding: 0;
+      margin-left: 7px;
+      border: 1px solid #70404b;
+      border-radius: 9px;
+      background: #21171d;
+      color: #e9a1b0;
+      font-size: 19px;
+      box-shadow: none;
+    }
+
+    /* Hintergrund */
+    #crimson-focus-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99990;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      padding-top: max(12px, env(safe-area-inset-top));
+      padding-bottom: max(12px, env(safe-area-inset-bottom));
+      background: rgba(0,0,0,.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    #crimson-focus-overlay.is-open {
+      display: flex;
+      animation: crimsonFocusFade .22s ease both;
+    }
+
+    /* Kalenderfenster */
+    #crimson-focus-window {
+      width: min(100%, 540px);
+      height: min(91dvh, 900px);
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #59303d;
+      border-radius: 19px;
+      background: #101014;
+      box-shadow: 0 22px 65px rgba(0,0,0,.55);
+      animation: crimsonFocusEnter .3s
+        cubic-bezier(.22,1,.36,1) both;
+    }
+
+    /* Eigene obere Leiste */
+    #crimson-focus-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-shrink: 0;
+      padding: 12px 14px;
+      border-bottom: 1px solid #30252c;
+    }
+
+    #crimson-focus-toolbar strong {
+      color: #f0dce2;
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    #crimson-focus-toolbar button {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      padding: 0;
+      border: 1px solid #50303a;
+      border-radius: 10px;
+      background: #251a21;
+      color: #e9a1b0;
+      font-size: 20px;
+      box-shadow: none;
+    }
+
+    #crimson-focus-toolbar .crimson-focus-actions {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    /* Nur Kalender, keine anderen Bereiche */
+    #crimson-focus-content {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #crimson-focus-content
+    .crimson-smart-calendar {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      height: 100%;
+      gap: 8px;
+      padding: 12px;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    #crimson-focus-content
+    .crimson-calendar-topbar,
+    #crimson-focus-content
+    .crimson-calendar-tabs {
+      flex-shrink: 0;
+    }
+
+    #crimson-focus-content
+    .crimson-calendar-main {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Tages-Timeline darf intern scrollen */
+    #crimson-focus-content
+    .crimson-timeline-scroll {
+      max-height: 100%;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Andere Kalender-Zusatzbereiche ausblenden */
+    #crimson-focus-content
+    .crimson-calendar-details {
+      display: none !important;
+    }
+
+    /* Keine zweite Fokus-Schaltfläche im Fenster */
+    #crimson-focus-content
+    .crimson-focus-header-button {
+      display: none !important;
+    }
+
+    body.crimson-focus-locked {
+      overflow: hidden !important;
+    }
+
+    @keyframes crimsonFocusFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes crimsonFocusEnter {
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(.975);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #crimson-focus-overlay,
+      #crimson-focus-window {
+        animation: none !important;
+      }
+    }
+  `;
+
+css.textContent += `
+  /* 🩸 GRÖSSERES KALENDERFENSTER */
+  #crimson-focus-overlay {
+    padding: 6px !important;
+    padding-top: max(6px, env(safe-area-inset-top)) !important;
+    padding-bottom: max(6px, env(safe-area-inset-bottom)) !important;
+  }
+
+  #crimson-focus-window {
+    width: min(100%, 620px) !important;
+    height: 94dvh !important;
+    max-height: 94dvh !important;
+    border-radius: 18px !important;
+  }
+
+  /* Heute und Kalenderbutton näher */
+  body[data-theme="crimson"]
+  .crimson-calendar-topbar {
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    gap: 5px !important;
+  }
+
+  body[data-theme="crimson"]
+  .crimson-calendar-topbar > strong {
+    margin-right: auto !important;
+  }
+
+  body[data-theme="crimson"]
+  .crimson-focus-header-button {
+    margin-left: 0 !important;
+    width: 36px !important;
+    min-width: 36px !important;
+    height: 36px !important;
+  }
+
+  /* Plus-Button mittig unten im Kalenderfenster */
+  #crimson-focus-toolbar
+  [data-crimson-focus-add] {
+    display: none !important;
+  }
+
+  #crimson-focus-window {
+    position: relative !important;
+  }
+
+  #crimson-focus-bottom {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 0 13px;
+    border-top: 1px solid #30252c;
+    background: #101014;
+  }
+
+  #crimson-focus-bottom
+  [data-crimson-focus-add] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 53px;
+    height: 53px;
+    min-width: 53px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid #985368;
+    background: #542637;
+    color: #ffe5eb;
+    font-size: 31px;
+    font-weight: 300;
+    box-shadow: 0 4px 16px rgba(0,0,0,.25);
+  }
+
+  #crimson-focus-bottom
+  [data-crimson-focus-add]:active {
+    transform: scale(.94);
+  }
+`;
+
+/* 🩸 KALENDER BLEIBT SICHTBAR –
+   NUR DIE TERMINE SCROLLEN */
+
+css.textContent += `
+  /* Monat und Woche behalten ihren Platz */
+  #crimson-focus-content
+  .crimson-smart-calendar:has(
+    .crimson-calendar-events-scroll
+  )
+  .crimson-calendar-main {
+    flex: 0 0 auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Terminliste: ungefähr 3 Einträge sichtbar */
+  #crimson-focus-content
+  .crimson-calendar-events-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: 180px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #633342 transparent;
+    padding: 2px 4px 5px 0;
+  }
+
+  /* Termine dürfen nicht zusammengedrückt werden */
+  #crimson-focus-content
+  .crimson-calendar-events-scroll
+  .crimson-smart-event {
+    flex-shrink: 0 !important;
+  }
+
+  /* Wochenleiste weiterhin seitlich wischbar */
+  #crimson-focus-content
+  .crimson-calendar-week {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+`;
+
+/* 🩸 FIX: Kalender sichtbar,
+   Termine scrollbar,
+   Plus außerhalb */
+
+css.textContent += `
+  /* Fenster und Plus untereinander */
+  #crimson-focus-overlay {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  /* Platz für den äußeren Plus-Button */
+  #crimson-focus-window {
+    flex: 0 1 auto !important;
+    height: 85dvh !important;
+    max-height: 85dvh !important;
+    min-height: 0 !important;
+  }
+
+  /* Kalender oben, Termine darunter */
+  #crimson-focus-content
+  .crimson-smart-calendar {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Kalender wird nicht von Terminen verdrängt */
+  #crimson-focus-content
+  .crimson-calendar-main {
+    flex: 0 0 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Termine bekommen ihren eigenen Platz */
+  #crimson-focus-content
+  .crimson-calendar-events-scroll {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 0 1 auto !important;
+    gap: 7px !important;
+    min-height: 0 !important;
+    max-height: 190px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 3px 2px 8px !important;
+  }
+
+  /* Termine bleiben sichtbar und lesbar */
+  #crimson-focus-content
+  .crimson-calendar-events-scroll
+  .crimson-smart-event,
+  #crimson-focus-content
+  .crimson-calendar-events-scroll
+  .crimson-calendar-empty {
+    display: flex !important;
+    flex-shrink: 0 !important;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Plus-Bereich außerhalb des Fensters */
+  #crimson-focus-bottom {
+    flex: 0 0 auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100%;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+  }
+
+  /* Runder Plus-Button */
+  #crimson-focus-bottom
+  [data-crimson-focus-add] {
+    display: flex !important;
+    width: 58px !important;
+    height: 58px !important;
+    min-width: 58px !important;
+    border-radius: 50% !important;
+    background: #542637 !important;
+    border: 1px solid #a65b72 !important;
+    color: #ffe5eb !important;
+    font-size: 32px !important;
+    box-shadow: 0 6px 24px rgba(0,0,0,.45);
+  }
+
+  /* Tagesansicht behält ihre Timeline */
+  #crimson-focus-content
+  .crimson-smart-calendar:not(
+    :has(.crimson-calendar-events-scroll)
+  )
+  .crimson-calendar-main {
+    flex: 1 1 auto !important;
+    overflow: auto !important;
+  }
+`;
+/* 🩸 CRIMSON – FOKUSKALENDER KOMPAKT */
+
+css.textContent += `
+
+  /* NUR FOKUSFENSTER */
+  #crimson-focus-content .crimson-smart-calendar {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    gap: 4px !important;
+    padding: 6px !important;
+    overflow: hidden !important;
+  }
+
+  /* Kopfbereich */
+  #crimson-focus-content .crimson-calendar-topbar,
+  #crimson-focus-content .crimson-calendar-tabs {
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+  }
+
+  /* Kalender bekommt keine zusätzliche Höhe */
+  #crimson-focus-content
+  .crimson-smart-calendar:has(.calendar)
+  .crimson-calendar-main {
+    flex: 0 0 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Monatsüberschrift */
+  #crimson-focus-content .calendar-head {
+    margin: 0 0 3px !important;
+    padding: 0 !important;
+  }
+
+  /* WICHTIG: Auch die Kalenderzeilen verkleinern */
+  #crimson-focus-content .calendar {
+    display: grid !important;
+    grid-template-rows: 16px repeat(6, 28px) !important;
+grid-auto-rows: 28px !important;
+    gap: 2px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    align-content: start !important;
+  }
+
+  #crimson-focus-content .calendar .weekday {
+    height: 16px !important;
+    min-height: 0 !important;
+    padding: 1px 0 !important;
+    font-size: 10px !important;
+    line-height: 14px !important;
+  }
+
+  /* Tageskästchen */
+  #crimson-focus-content .calendar .day {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+
+  width: 100% !important;
+  height: 28px !important;
+  min-height: 0 !important;
+  max-height: 28px !important;
+
+  margin: 0 !important;
+  padding: 2px 1px !important;
+  box-sizing: border-box !important;
+
+  border-radius: 6px !important;
+  line-height: 1 !important;
+  overflow: hidden !important;
+}
+  /* Tageszahlen */
+  #crimson-focus-content .calendar .day-number {
+    display: block !important;
+    width: 100% !important;
+    height: 13px !important;
+    min-height: 13px !important;
+    line-height: 13px !important;
+    font-size: 11px !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+#crimson-focus-content .calendar .chopper-calendar-dots {
+  position: relative !important;
+  top: -8px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  gap: 2px !important;
+  height: 9px !important;
+  min-height: 0 !important;
+  max-height: 9px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+  #crimson-focus-content .crimson-calendar-birthday-icon {
+  position: static !important;
+  top: auto !important;
+
+  font-size: 8px !important;
+  line-height: 9px !important;
+  width: 9px !important;
+  height: 9px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+ #crimson-focus-content .calendar .event-dot {
+  position: static !important;
+  top: auto !important;
+
+  display: block !important;
+  width: 3px !important;
+  height: 3px !important;
+  min-width: 3px !important;
+  min-height: 3px !important;
+  max-width: 3px !important;
+  max-height: 3px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+  /* Terminbereich erhält den freien Platz */
+  #crimson-focus-content
+  .crimson-calendar-events-scroll {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: hidden !important;
+    gap: 3px !important;
+    padding: 4px 0 0 !important;
+    border-top: 1px solid #50303b;
+  }
+
+  /* Überschrift */
+  #crimson-focus-content .crimson-focus-events-title {
+    flex: 0 0 auto !important;
+    margin: 0 0 3px !important;
+    font-size: 12px !important;
+    line-height: 16px !important;
+  }
+
+  /* Terminliste scrollt selbst */
+  #crimson-focus-content .crimson-focus-events-list {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    gap: 4px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    padding: 1px 2px 5px !important;
+  }
+
+  /* Terminkarten nicht zusammendrücken */
+  #crimson-focus-content
+  .crimson-focus-events-list .crimson-smart-event {
+    display: flex !important;
+    flex: 0 0 auto !important;
+    min-height: 38px !important;
+    padding: 4px 7px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+  }
+
+  /* Tagesansicht bleibt scrollbar */
+  #crimson-focus-content
+  .crimson-smart-calendar:not(:has(.crimson-calendar-events-scroll))
+  .crimson-calendar-main {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow: auto !important;
+  }
+
+`;
+document.head.appendChild(css);
+  /* Schwebenden Button einmal erstellen */
+
+  const fab = document.createElement("button");
+  fab.id = "crimson-focus-fab";
+  fab.type = "button";
+  fab.innerHTML = `
+  <svg width="23" height="23" viewBox="0 0 24 24"
+       fill="none" stroke="currentColor"
+       stroke-width="1.8" stroke-linecap="round"
+       stroke-linejoin="round">
+    <rect x="3" y="5" width="18" height="16" rx="2"/>
+    <path d="M7 3v4M17 3v4M3 10h18"/>
+    <path d="M8 14h2M14 14h2M8 18h2"/>
+  </svg>
+`;
+  fab.setAttribute(
+    "aria-label",
+    "Kalender-Fokusmodus öffnen"
+  );
+
+  document.body.appendChild(fab);
+
+  /* Fenster einmal erstellen */
+
+  const overlay = document.createElement("div");
+  overlay.id = "crimson-focus-overlay";
+
+  overlay.innerHTML = `
+    <div
+      id="crimson-focus-window"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Kalender-Fokusmodus"
+    >
+      <div id="crimson-focus-toolbar">
+        <strong>🩸 Mein Kalender</strong>
+
+        <div class="crimson-focus-actions">
+          <button
+            type="button"
+            data-crimson-focus-add
+            aria-label="Termin hinzufügen"
+          >＋</button>
+
+          <button
+            type="button"
+            data-crimson-focus-close
+            aria-label="Schließen"
+          >×</button>
+        </div>
+      </div>
+
+      <div id="crimson-focus-content"></div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+/* 🩸 Plus-Button unten mittig platzieren */
+const focusWindow = overlay.querySelector(
+  "#crimson-focus-window"
+);
+
+const bottomBar = document.createElement("div");
+bottomBar.id = "crimson-focus-bottom";
+
+const addButton = overlay.querySelector(
+  "[data-crimson-focus-add]"
+);
+
+if (addButton) {
+  bottomBar.appendChild(addButton);
+}
+
+overlay.appendChild(bottomBar);
+
+  const content = overlay.querySelector(
+    "#crimson-focus-content"
+  );
+
+  function updateButton() {
+    const crimson = data.theme === "crimson";
+    const onCalendar = page === "calendar";
+
+    fab.classList.toggle(
+      "is-visible",
+      crimson && !onCalendar && !focusOpen
+    );
+
+    // Alten Button entfernen, falls vorhanden
+    document.querySelectorAll(
+      "#content .crimson-focus-header-button"
+    ).forEach(button => button.remove());
+
+    if (!crimson || !onCalendar || focusOpen) {
+      return;
+    }
+
+    const today = document.querySelector(
+      "#content .crimson-calendar-today"
+    );
+
+    if (!today) return;
+
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className =
+      "crimson-focus-header-button";
+
+    button.innerHTML = fab.innerHTML;
+    button.setAttribute(
+      "aria-label",
+      "Kalender-Fokusmodus öffnen"
+    );
+
+    today.insertAdjacentElement(
+      "afterend",
+      button
+    );
+  }
+
+  function refreshFocus() {
+    if (!focusOpen) return;
+    if (data.theme !== "crimson") {
+      closeFocus();
+      return;
+    }
+
+    // Derselbe Kalender, dieselben Termine
+    content.innerHTML = renderCrimsonSmartCalendar();
+if (
+  crimsonCalendarView === "day" &&
+  selectedDate === todayKey()
+) {
+  crimsonScrollToCurrentTime();
+}
+    // Wochenleiste auf den gewählten Tag setzen
+    const strip = content.querySelector(
+      "[data-crimson-week-scroll]"
+    );
+
+    const active = strip?.querySelector(
+      ".crimson-calendar-week-day.active"
+    );
+
+    if (strip && active) {
+      requestAnimationFrame(() => {
+        strip.scrollLeft =
+          active.offsetLeft -
+          strip.offsetLeft -
+          (strip.clientWidth - active.offsetWidth) / 2;
+      });
+    }
+
+    if (
+      crimsonCalendarView === "day" &&
+      selectedDate === todayKey()
+    ) {
+      requestAnimationFrame(() => {
+        crimsonScrollToCurrentTime();
+      });
+    }
+  }
+
+  function openFocus() {
+    if (data.theme !== "crimson") return;
+    if (focusOpen) return;
+
+    previousPage = page;
+
+    // Kalenderfunktionen erwarten page === calendar
+    page = "calendar";
+    focusOpen = true;
+
+    document.body.classList.add(
+      "crimson-focus-locked"
+    );
+
+    overlay.classList.add("is-open");
+
+    render();
+    refreshFocus();
+    updateButton();
+  }
+
+  function closeFocus() {
+    if (!focusOpen) return;
+
+    focusOpen = false;
+
+    overlay.classList.remove("is-open");
+    document.body.classList.remove(
+      "crimson-focus-locked"
+    );
+
+    content.innerHTML = "";
+
+    // Zur ursprünglichen Seite zurückkehren
+    page = previousPage;
+
+    render();
+    updateButton();
+  }
+
+  /* Öffnen und Schließen */
+
+  document.addEventListener("click", event => {
+    const openButton = event.target.closest(
+      "#crimson-focus-fab, " +
+      ".crimson-focus-header-button"
+    );
+
+    if (openButton) {
+      event.preventDefault();
+      openFocus();
+      return;
+    }
+
+    if (event.target.closest(
+      "[data-crimson-focus-close]"
+    )) {
+      event.preventDefault();
+      closeFocus();
+      return;
+    }
+
+    if (event.target.closest(
+      "[data-crimson-focus-add]"
+    )) {
+      event.preventDefault();
+      eventEditor(null, selectedDate);
+    }
+  }, true);
+
+  // Klick auf den dunklen Hintergrund schließt
+  overlay.addEventListener("click", event => {
+    if (event.target === overlay) {
+      closeFocus();
+    }
+  });
+
+  // Nach jedem normalen Rendern das
+  // Kalenderfenster synchron halten
+  const originalRender = render;
+
+  render = function(...args) {
+    const result = originalRender.apply(this, args);
+
+    updateButton();
+
+    if (focusOpen) {
+      refreshFocus();
+    }
+
+    return result;
+  };
+
+  updateButton();
+})();
+/* 🩸 CRIMSON – GEBURTSTAGE */
+
+function crimsonBirthdaysFor(key) {
+  if (data.theme !== "crimson") return [];
+
+  const birthdays = Array.isArray(data.birthdays)
+    ? data.birthdays
+    : [];
+
+  const monthDay = key.slice(5);
+
+  return birthdays.filter(birthday =>
+    birthday.date?.slice(5) === monthDay
+  );
+}
+
+function renderCrimsonBirthdaysForDay(key) {
+  const birthdays = crimsonBirthdaysFor(key);
+
+  return birthdays.map(birthday => {
+    const birthYear = Number(birthday.date.slice(0, 4));
+    const currentYear = Number(key.slice(0, 4));
+
+    const age = currentYear - birthYear;
+
+    return `
+      <button
+        type="button"
+        class="crimson-smart-event crimson-birthday-event"
+        data-crimson-birthday-id="${escapeHTML(birthday.id)}"
+        style="
+          display:flex;
+          align-items:center;
+          gap:10px;
+          width:100%;
+          min-height:43px;
+          padding:7px 10px;
+          border:1px solid #b46a91;
+          border-radius:10px;
+          background:#391b31;
+          color:#ffe0ee;
+          text-align:left;
+          flex-shrink:0;
+        ">
+        <span style="font-size:22px">🎂</span>
+        <span style="flex:1">
+          <strong>${escapeHTML(birthday.name)}</strong>
+          <small style="display:block;opacity:.75">
+            Wird ${age} Jahre alt
+          </small>
+        </span>
+        <span>✎</span>
+      </button>
+    `;
+  }).join("");
+}
+
+document.addEventListener("click", event => {
+  if (data.theme !== "crimson") return;
+
+  const addButton = event.target.closest(
+    "[data-crimson-birthday-add]"
+  );
+
+  if (addButton) {
+    const name = prompt(
+      "🎂 Für wen möchtest du einen Geburtstag eintragen?"
+    );
+
+    if (name === null || !name.trim()) return;
+
+    const date = prompt(
+      "Geburtsdatum eingeben (JJJJ-MM-TT):",
+      selectedDate
+    );
+
+    if (date === null) return;
+
+    const validFormat = /^\d{4}-\d{2}-\d{2}$/.test(date);
+
+    const parsed = validFormat
+      ? parseDate(date)
+      : null;
+
+    if (
+      !parsed ||
+      Number.isNaN(parsed.getTime()) ||
+      dateKey(parsed) !== date ||
+      parsed > new Date()
+    ) {
+      alert("Bitte ein gültiges Geburtsdatum eingeben.");
+      return;
+    }
+
+    if (!Array.isArray(data.birthdays)) {
+      data.birthdays = [];
+    }
+
+    data.birthdays.push({
+      id: uid(),
+      name: name.trim(),
+      date
+    });
+
+    save();
+    render();
+    return;
+  }
+
+  const birthdayButton = event.target.closest(
+    "[data-crimson-birthday-id]"
+  );
+
+  if (!birthdayButton) return;
+
+  const birthday = (data.birthdays || []).find(
+    item => item.id === birthdayButton.dataset.crimsonBirthdayId
+  );
+
+  if (!birthday) return;
+
+  const newName = prompt(
+    "🎂 Namen bearbeiten (leer = Geburtstag löschen):",
+    birthday.name
+  );
+
+  if (newName === null) return;
+
+  if (!newName.trim()) {
+    if (!confirm(
+      `Geburtstag von ${birthday.name} wirklich löschen?`
+    )) return;
+
+    data.birthdays = data.birthdays.filter(
+      item => item.id !== birthday.id
+    );
+  } else {
+    const newDate = prompt(
+      "Geburtsdatum bearbeiten (JJJJ-MM-TT):",
+      birthday.date
+    );
+
+    if (newDate === null) return;
+
+    const validFormat = /^\d{4}-\d{2}-\d{2}$/.test(newDate);
+    const parsed = validFormat ? parseDate(newDate) : null;
+
+    if (
+      !parsed ||
+      Number.isNaN(parsed.getTime()) ||
+      dateKey(parsed) !== newDate ||
+      parsed > new Date()
+    ) {
+      alert("Ungültiges Geburtsdatum.");
+      return;
+    }
+
+    birthday.name = newName.trim();
+    birthday.date = newDate;
+  }
 
   save();
   render();

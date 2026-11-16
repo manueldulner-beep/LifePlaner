@@ -2066,6 +2066,66 @@ if (crimson) {
     ".crimson-enable-notifications"
   );
 
+const testButton = document.createElement("button");
+
+testButton.type = "button";
+testButton.className = "secondary";
+testButton.textContent = "🧪 Test-Benachrichtigung senden";
+testButton.style.cssText = "width:100%;margin-top:8px";
+
+reminderBox.appendChild(testButton);
+
+testButton.addEventListener("click", async () => {
+  const status = reminderBox.querySelector(
+    ".crimson-notification-status"
+  );
+
+  if (!("Notification" in window)) {
+    status.textContent =
+      "❌ Dieses Gerät unterstützt keine Web-Benachrichtigungen.";
+    return;
+  }
+
+  if (Notification.permission !== "granted") {
+    status.textContent =
+      "❌ Benachrichtigungen sind nicht erlaubt: " +
+      Notification.permission;
+    return;
+  }
+
+  if (!("serviceWorker" in navigator)) {
+    status.textContent =
+      "❌ Service Worker wird nicht unterstützt.";
+    return;
+  }
+
+  try {
+    const registration = await navigator.serviceWorker.getRegistration();
+
+    if (!registration) {
+      status.textContent =
+        "❌ Kein Service Worker registriert.";
+      return;
+    }
+
+    await registration.showNotification(
+      "🩸 LifePlaner Test",
+      {
+        body: "Deine Crimson-Benachrichtigungen funktionieren! 🔔",
+        icon: "./icon-192.png",
+        tag: "lifeplaner-test-" + Date.now()
+      }
+    );
+
+    status.textContent =
+      "✅ Test wurde an iOS übergeben.";
+  } catch (error) {
+    status.textContent =
+      "❌ Fehler: " + error.message;
+    console.error(error);
+  }
+});
+
   permissionButton.addEventListener("click", async () => {
     const status = reminderBox.querySelector(
       ".crimson-notification-status"

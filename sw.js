@@ -1,7 +1,7 @@
 
 /* 🩸 LIFEPLANER PWA – SERVICE WORKER */
 
-const CACHE_NAME = "lifeplaner-v1";
+const CACHE_NAME = "lifeplaner-v2";
 
 const APP_FILES = [
   "./",

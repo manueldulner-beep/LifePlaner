@@ -109,7 +109,9 @@
   const button = document.createElement("button");
   button.id = "lp-mail-button";
   button.type = "button";
-  button.textContent = "📧 Mail-Termine";
+  button.textContent = "📧";
+button.title = "Mail-Termine";
+button.setAttribute("aria-label", "Mail-Termine öffnen");
 
   const overlay = document.createElement("div");
   overlay.id = "lp-mail-overlay";
@@ -126,11 +128,18 @@
   }
 
   function updateVisibility() {
-    button.hidden = !isCrimson();
-    button.style.display = isCrimson() ? "block" : "none";
+  const visible =
+    isCrimson() &&
+    typeof page !== "undefined" &&
+    page === "calendar";
 
-    if (!isCrimson()) overlay.style.display = "none";
+  button.hidden = !visible;
+  button.style.display = visible ? "block" : "none";
+
+  if (!visible) {
+    overlay.style.display = "none";
   }
+}
 
   function saveProposals() {
     localStorage.setItem(KEY, JSON.stringify(proposals));

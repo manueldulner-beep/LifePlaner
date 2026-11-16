@@ -1944,6 +1944,12 @@ if (crimson) {
   );
 
   updated.location = (values.location || "").trim();
+updated.reminderMinutes = [
+  ...document.querySelectorAll(
+    ".crimson-event-reminders input[data-crimson-reminder]:checked"
+  )
+].map(input => Number(input.dataset.crimsonReminder));
+
 }
 
 
@@ -1964,8 +1970,11 @@ if (crimson) {
             time: extra.time,
             duration: extra.duration,
             
+
 crimsonCategory: updated.crimsonCategory,
-location: extra.location
+location: extra.location,
+reminderMinutes: [...updated.reminderMinutes]
+
 
           });
         }
@@ -1981,6 +1990,108 @@ location: extra.location
       render();
     }
   );
+
+/* 🩸 CRIMSON – ERINNERUNGEN IM TERMIN-EDITOR */
+
+if (crimson) {
+  const editorFields = document.getElementById("editor-fields");
+
+  const reminderBox = document.createElement("div");
+  reminderBox.className = "crimson-event-reminders";
+
+  reminderBox.style.cssText = `
+    grid-column:1 / -1;
+    padding:14px;
+    margin-top:12px;
+    border:1px solid rgba(190,45,75,.35);
+    border-radius:12px;
+    background:rgba(130,20,45,.08);
+  `;
+
+  const savedReminders = Array.isArray(event?.reminderMinutes)
+    ? event.reminderMinutes
+    : [];
+
+  const options = [
+    [5, "5 Minuten"],
+    [15, "15 Minuten"],
+    [30, "30 Minuten"],
+    [60, "1 Stunde"],
+    [1440, "1 Tag"]
+  ];
+
+  reminderBox.innerHTML = `
+    <strong>🔔 Erinnerungen</strong>
+
+    <p style="font-size:12px;opacity:.7;margin:6px 0 12px">
+      Du kannst mehrere Erinnerungen auswählen.
+    </p>
+
+    <div style="display:grid;gap:10px">
+      ${options.map(([minutes, label]) => `
+        <label style="
+          display:flex;
+          align-items:center;
+          gap:10px;
+          font-size:14px;
+        ">
+          <input
+            type="checkbox"
+            data-crimson-reminder="${minutes}"
+            ${savedReminders.includes(minutes) ? "checked" : ""}
+            style="width:18px;height:18px;flex-shrink:0"
+          >
+          ${label} vorher
+        </label>
+      `).join("")}
+    </div>
+
+    <button
+      type="button"
+      class="secondary crimson-enable-notifications"
+      style="width:100%;margin-top:14px"
+    >
+      🔔 iPhone-Benachrichtigungen erlauben
+    </button>
+
+    <small class="crimson-notification-status"
+      style="display:block;margin-top:8px;opacity:.75">
+      Erinnerungen funktionieren zunächst bei geöffneter App.
+    </small>
+  `;
+
+  editorFields.appendChild(reminderBox);
+
+  const permissionButton = reminderBox.querySelector(
+    ".crimson-enable-notifications"
+  );
+
+  permissionButton.addEventListener("click", async () => {
+    const status = reminderBox.querySelector(
+      ".crimson-notification-status"
+    );
+
+    if (!("Notification" in window)) {
+      status.textContent =
+        "Benachrichtigungen werden hier nicht unterstützt.";
+      return;
+    }
+
+    try {
+      const permission = await Notification.requestPermission();
+
+      status.textContent = permission === "granted"
+        ? "✅ Benachrichtigungen sind erlaubt!"
+        : permission === "denied"
+          ? "⚠️ Benachrichtigungen sind blockiert."
+          : "Benachrichtigungen wurden noch nicht erlaubt.";
+    } catch (error) {
+      status.textContent =
+        "Benachrichtigungen konnten nicht aktiviert werden.";
+      console.error(error);
+    }
+  });
+}
 
   // 🩸 Zusätzliche Eingabefelder nur bei neuen Crimson-Terminen.
   if (!allowFollowups) return;
@@ -2193,6 +2304,185 @@ const mainLocation = editorFields.querySelector(
 
 
 /* 🩸 CRIMSON – LIVE-STARTZEIT, ENDZEIT & DAUER */
+
+/* ==========================================
+   🩸 CRIMSON SMART REMINDERS
+   Benachrichtigungen bei geöffneter App
+   ========================================== */
+
+const CRIMSON_REMINDER_STORAGE =
+  "lifeplaner_crimson_reminders_sent_v1";
+
+let crimsonReminderChecking = false;
+
+function crimsonGetSentReminders() {
+  try {
+    return JSON.parse(
+      localStorage.getItem(CRIMSON_REMINDER_STORAGE) || "{}"
+    );
+  } catch (error) {
+    return {};
+  }
+}
+
+function crimsonSaveSentReminders(sent) {
+  try {
+    localStorage.setItem(
+      CRIMSON_REMINDER_STORAGE,
+      JSON.stringify(sent)
+    );
+  } catch (error) {
+    console.error("Erinnerungsstatus konnte nicht gespeichert werden", error);
+  }
+}
+
+function crimsonEventDateTime(event) {
+  if (!event.date || !event.time) return null;
+
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(event.date);
+  const time = /^(\d{2}):(\d{2})$/.exec(event.time);
+
+  if (!match || !time) return null;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]) - 1;
+  const day = Number(match[3]);
+  const hours = Number(time[1]);
+  const minutes = Number(time[2]);
+
+  if (hours > 23 || minutes > 59) return null;
+
+  const date = new Date(
+    year, month, day, hours, minutes, 0, 0
+  );
+
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month ||
+    date.getDate() !== day
+  ) {
+    return null;
+  }
+
+  return date;
+}
+
+async function crimsonShowEventNotification(event, minutes) {
+  if (!("Notification" in window)) return;
+  if (Notification.permission !== "granted") return;
+  if (!("serviceWorker" in navigator)) return;
+
+  const registration = await navigator.serviceWorker.ready;
+
+  const description = minutes >= 1440
+    ? "Morgen"
+    : minutes >= 60
+      ? `In ${minutes / 60} Stunde(n)`
+      : `In ${minutes} Minuten`;
+
+  const body = [
+    description + ": " + event.title,
+    event.time ? "🕐 " + event.time + " Uhr" : "",
+    event.location ? "📍 " + event.location : ""
+  ].filter(Boolean).join("\n");
+
+  await registration.showNotification(
+    "🩸 LifePlaner – Terminerinnerung",
+    {
+      body,
+      icon: "./icon-192.png",
+      badge: "./icon-192.png",
+      tag: "crimson-" + event.id + "-" + minutes,
+      data: {
+        url: "./index.html"
+      }
+    }
+  );
+}
+
+async function crimsonCheckEventReminders() {
+  if (crimsonReminderChecking) return;
+  if (data.theme !== "crimson") return;
+  if (!("Notification" in window)) return;
+  if (Notification.permission !== "granted") return;
+
+  crimsonReminderChecking = true;
+
+  try {
+    const now = Date.now();
+    const sent = crimsonGetSentReminders();
+
+    for (const event of data.events) {
+      const start = crimsonEventDateTime(event);
+
+      if (!start) continue;
+
+      const reminders = Array.isArray(event.reminderMinutes)
+        ? event.reminderMinutes
+        : [];
+
+      for (const minutes of reminders) {
+        const offset = Number(minutes);
+
+        if (!Number.isFinite(offset) || offset <= 0) {
+          continue;
+        }
+
+        const reminderTime =
+          start.getTime() - offset * 60 * 1000;
+
+        const reminderKey = [
+          event.id,
+          start.getTime(),
+          offset
+        ].join("|");
+
+        if (sent[reminderKey]) continue;
+
+        // Nur aktuelle Erinnerungen anzeigen.
+        // Nach langer Abwesenheit keine alten Meldungen nachholen.
+        if (
+          now >= reminderTime &&
+          now - reminderTime < 2 * 60 * 1000
+        ) {
+          try {
+            await crimsonShowEventNotification(event, offset);
+
+            sent[reminderKey] = now;
+            crimsonSaveSentReminders(sent);
+          } catch (error) {
+            console.error("Crimson Erinnerung fehlgeschlagen:", error);
+          }
+        }
+      }
+    }
+
+    // Alte Einträge nach 60 Tagen aufräumen.
+    for (const key of Object.keys(sent)) {
+      if (now - sent[key] > 60 * 86400000) {
+        delete sent[key];
+      }
+    }
+
+    crimsonSaveSentReminders(sent);
+  } finally {
+    crimsonReminderChecking = false;
+  }
+}
+
+// Regelmäßig prüfen, solange LifePlaner läuft.
+setInterval(crimsonCheckEventReminders, 30000);
+
+// Auch beim Zurückkehren in die App prüfen.
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    crimsonCheckEventReminders();
+  }
+});
+
+window.addEventListener("focus", crimsonCheckEventReminders);
+
+window.addEventListener("load", crimsonCheckEventReminders);
 
 function crimsonSetupEventTimeFields() {
   if (data.theme !== "crimson") return;

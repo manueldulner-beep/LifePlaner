@@ -3422,12 +3422,6 @@ function renderCalendar(compact = false) {
         <div class="day-number">${date.getDate()}</div>
         
 <div class="chopper-calendar-dots">
-  ${data.theme === "crimson" &&
-    typeof crimsonBirthdaysFor === "function" &&
-    crimsonBirthdaysFor(key).length
-      ? '<span class="crimson-calendar-birthday-icon">🎂</span>'
-      : ""
-  }
 
   ${events.length
     ? '<span class="calendar-dot event-dot" title="Termin"></span>'
@@ -4574,6 +4568,9 @@ setInterval(() => {
 }, 30000);
 
 function renderCrimsonCalendarDetails(key) {
+  const work = workAt(key);
+  const training = trainingAt(key);
+
   return `
     <div class="grid deluxe-day-details">
 
@@ -4615,6 +4612,56 @@ function renderCrimsonCalendarDetails(key) {
           class="note-feedback"
           role="status"
           hidden></p>
+            </article>
+
+      <!-- 🩸 CRIMSON – TAGESÜBERSICHT -->
+      <article class="card" style="
+        grid-column: 1 / -1;
+        padding: 12px;
+      ">
+        <h2 style="
+          font-size: 13px;
+          margin-bottom: 10px;
+        ">🩸 Tagesübersicht</h2>
+
+        <div style="
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        ">
+
+          <div style="
+            background: rgba(120, 20, 40, 0.15);
+            border: 1px solid #652032;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+          ">
+            <div style="font-size: 11px; opacity: 0.7;">
+              💼 Arbeit
+            </div>
+            <strong style="font-size: 12px;">
+              ${escapeHTML(work)}
+            </strong>
+          </div>
+
+          <div style="
+            background: rgba(120, 20, 40, 0.15);
+            border: 1px solid #652032;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+          ">
+            <div style="font-size: 11px; opacity: 0.7;">
+              💪 Training
+            </div>
+            <strong style="font-size: 12px;">
+              ${trainingIcon(training)}
+              ${escapeHTML(training)}
+            </strong>
+          </div>
+
+        </div>
       </article>
 
     </div>

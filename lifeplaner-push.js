@@ -1,6 +1,5 @@
 // LifePlaner Push – Grundeinstellungen
-const LIFEPLANER_PUSH_SERVER =
-  "https://fragrant-meadow-e91dlifeplaner-push.manuel-dulner.workers.dev";
+const LIFEPLANER_PUSH_SERVER = "https://lifeplaner-push.manuel-dulner.workers.dev";
 
 // Hier kommt gleich dein oeffentlicher VAPID-Schluessel hinein.
 const LIFEPLANER_VAPID_PUBLIC_KEY =

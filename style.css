@@ -12403,33 +12403,116 @@ body[data-theme="crimson"]
 .crimson-calendar-birthday-icon {
   display: none !important;
 }/* 🩸 CRIMSON – FOKUS: KLEINE SYMBOLE */
+/* 🩸 CRIMSON – FOKUS: SYMBOLE SAUBER POSITIONIEREN */
 
+/* Nur die Tageskästchen im Fokusfenster */
 body[data-theme="crimson"]
-#crimson-focus-content .calendar .day-number {
-  height: 11px !important;
-  min-height: 11px !important;
-  line-height: 11px !important;
-  margin: 0 !important;
+#crimson-focus-content .calendar .day {
+  position: relative !important;
+
+  height: 28px !important;
+  min-height: 0 !important;
+  max-height: 28px !important;
+
+  padding: 1px !important;
+  overflow: hidden !important;
 }
 
+/* Tageszahl oben */
 body[data-theme="crimson"]
-#crimson-focus-content .calendar .chopper-calendar-dots {
+#crimson-focus-content .calendar .day-number {
   position: relative !important;
-  top: -5px !important;
-  transform: none !important;
+
+  height: 12px !important;
+  min-height: 12px !important;
+  max-height: 12px !important;
+
+  line-height: 12px !important;
+  font-size: 10px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Symbole unabhängig von der Tageszahl positionieren */
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .day
+.chopper-calendar-dots {
+  position: absolute !important;
+
+  top: 13px !important;
+  left: 0 !important;
+  right: 0 !important;
+
+  width: 100% !important;
+  height: 8px !important;
+  min-height: 0 !important;
+  max-height: 8px !important;
 
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
   justify-content: center !important;
 
-  height: 8px !important;
-  min-height: 0 !important;
-  max-height: 8px !important;
   gap: 2px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+
+  transform: none !important;
+  overflow: visible !important;
+}
+
+/* Rote Terminpunkte: 3 × 3 Pixel */
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .day
+.chopper-calendar-dots .event-dot {
+  position: static !important;
+
+  display: block !important;
+
+  width: 3px !important;
+  height: 3px !important;
+
+  min-width: 3px !important;
+  min-height: 3px !important;
+  max-width: 3px !important;
+  max-height: 3px !important;
+
+  border-radius: 50% !important;
+  background: #ff4565 !important;
 
   margin: 0 !important;
   padding: 0 !important;
+  transform: none !important;
+
+  flex: 0 0 3px !important;
+}
+
+/* Geburtstagstorte */
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .day
+.chopper-calendar-dots .crimson-calendar-birthday-icon {
+  position: static !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: 10px !important;
+  height: 10px !important;
+
+  min-width: 10px !important;
+  min-height: 10px !important;
+  max-width: 10px !important;
+  max-height: 10px !important;
+
+  font-size: 9px !important;
+  line-height: 10px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  transform: none !important;
 }
 
 body[data-theme="crimson"]
@@ -12460,4 +12543,78 @@ body[data-theme="crimson"]
 
   margin: 0 !important;
   padding: 0 !important;
+}/* 🩸 CRIMSON FOKUS – DOPPELTEN PUNKT ENTFERNEN */
+
+/* Großen Punkt aus dem zweiten Markierungssystem ausblenden */
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .lp-calendar-dot {
+  display: none !important;
+}/* 🩸 CRIMSON FOKUS – FEIERTAGE UND GEBURTSTAGE */
+
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .day
+.lp-calendar-markers {
+  position: absolute !important;
+
+  top: 13px !important;
+  left: 0 !important;
+  right: 0 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-wrap: nowrap !important;
+
+  gap: 2px !important;
+
+  width: 100% !important;
+  height: 10px !important;
+  min-height: 0 !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  transform: none !important;
+  overflow: visible !important;
+}
+
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .day
+.lp-calendar-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  font-size: 9px !important;
+  line-height: 10px !important;
+
+  width: 10px !important;
+  height: 10px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  transform: none !important;
+}/* 🩸 CRIMSON FOKUS – TERMINPUNKT NEBEN EMOJI */
+
+/* Nur wenn Geburtstag oder Feiertag UND Termin zusammenfallen */
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .day:has(.lp-calendar-icon)
+.chopper-calendar-dots {
+  left: calc(50% - 14px) !important;
+  right: auto !important;
+
+  width: 3px !important;
+
+  justify-content: center !important;
+  padding: 0 !important;
+}
+
+/* Kleiner Terminpunkt bleibt sichtbar */
+body[data-theme="crimson"]
+#crimson-focus-content .calendar .day:has(.lp-calendar-icon)
+.chopper-calendar-dots .event-dot {
+  display: block !important;
+  width: 3px !important;
+  height: 3px !important;
 }

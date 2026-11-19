@@ -86,3 +86,36 @@ async function lifePlanerActivatePush() {
 
   alert("LifePlaner Push wurde aktiviert!");
 }
+async function lifePlanerTestPush() {
+  const token = localStorage.getItem("lifeplaner_push_token");
+
+  if (!token) {
+    alert("Bitte zuerst Push aktivieren!");
+    return;
+  }
+
+  const response = await fetch(
+    LIFEPLANER_PUSH_SERVER + "/api/reminders",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify({
+        id: crypto.randomUUID(),
+        title: "🩸 LifePlaner Test-Push!",
+        remindAt: new Date(Date.now() + 2 * 60 * 1000).toISOString(),
+        kind: "test"
+      })
+    }
+  );
+
+  const result = await response.text();
+
+  if (!response.ok) {
+    throw new Error("HTTP " + response.status + ": " + result);
+  }
+
+  alert("🔔 Test-Erinnerung für in 2 Minuten geplant!");
+}

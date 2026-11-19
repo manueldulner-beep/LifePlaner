@@ -4,7 +4,7 @@ const LIFEPLANER_PUSH_SERVER =
 
 // Hier kommt gleich dein oeffentlicher VAPID-Schluessel hinein.
 const LIFEPLANER_VAPID_PUBLIC_KEY =
-  "HIER_DEINEN_VAPID_PUBLIC_KEY_EINFUEGEN";
+  "BERpcV81IJvJLz6lz63Awo6OGYjmCOEJdIOvoYVmwAsLXDhekDdxBbZ8C46MZZ0JEleeFiwR36qZ7oACW8tBSkU";
 
 function lifePlanerUrlBase64ToUint8Array(base64String) {
   const padding = "=".repeat((4 - base64String.length % 4) % 4);

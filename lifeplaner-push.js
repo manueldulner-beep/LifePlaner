@@ -3,7 +3,7 @@ const LIFEPLANER_PUSH_SERVER = "https://lifeplaner-push.manuel-dulner.workers.de
 
 // Hier kommt gleich dein oeffentlicher VAPID-Schluessel hinein.
 const LIFEPLANER_VAPID_PUBLIC_KEY =
-  "BERpcV81IJvJLz6lz63Awo6OGYjmCOEJdIOvoYVmwAsLXDhekDdxBbZ8C46MZZ0JEleeFiwR36qZ7oACW8tBSkU";
+  "BOMueRiIuikr0X2GkzVrzSAFJSK4Gyvfb3Re92Ysv4GAbh001DL6UVvg8xoBn0PYrIbnVp0-USz1uBIpNWs3Heg";
 
 function lifePlanerUrlBase64ToUint8Array(base64String) {
   const padding = "=".repeat((4 - base64String.length % 4) % 4);

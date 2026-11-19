@@ -378,7 +378,34 @@
   }
 </script>
 
+<!-- LifePlaner Push -->
+<script src="./lifeplaner-push.js?v=1"></script>
 
+<button
+  id="lifeplaner-push-button"
+  type="button"
+  onclick="lifePlanerActivatePush().catch(error => {
+    console.error('LifePlaner Push:', error);
+    alert('Push konnte nicht aktiviert werden: ' + error.message);
+  })"
+  style="
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    padding: 14px 18px;
+    border: none;
+    border-radius: 14px;
+    background: #9b163c;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    box-shadow: 0 4px 18px #0006;
+    cursor: pointer;
+  "
+>
+  🔔 Push aktivieren
+</button>
 </body>
 
 </html>

@@ -1,7 +1,7 @@
 
 /* 🩸 LIFEPLANER SERVICE WORKER */
 
-const CACHE_NAME = "lifeplaner-v3";
+const CACHE_NAME = "lifeplaner-v4";
 
 const APP_FILES = [
   "./",
@@ -75,4 +75,114 @@ self.addEventListener("fetch", event => {
       }
     })()
   );
+});
+/* 🩸 LIFEPLANER – PUSH-BENACHRICHTIGUNGEN */
+
+self.addEventListener("push", event => {
+  let payload = {};
+
+  try {
+    payload = event.data ? event.data.json() : {};
+  } catch (error) {
+    payload = {
+      body: event.data ? event.data.text() : ""
+    };
+  }
+
+  const title = payload.title || "🩸 LifePlaner";
+  const options = {
+    body: payload.body || "Du hast eine Erinnerung.",
+    icon: "./icon-192.png",
+    badge: "./icon-192.png",
+    tag: payload.tag || "lifeplaner-reminder",
+    data: {
+      url: "./index.html"
+    }
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
+});
+
+/* 🩸 MITTEILUNG ANTIPPEN → LIFEPLANER ÖFFNEN */
+
+self.addEventListener("notificationclick", event => {
+  event.notification.close();
+
+  event.waitUntil(
+    (async () => {
+      const url = new URL(
+        event.notification.data?.url || "./index.html",
+        self.registration.scope
+      );
+
+      // Nur Seiten innerhalb unserer eigenen App öffnen.
+      if (!url.href.startsWith(self.registration.scope)) {
+        return;
+      }
+
+      const windows = await clients.matchAll({
+        type: "window",
+        includeUncontrolled: true
+      });
+
+      for (const windowClient of windows) {
+        if (windowClient.url.startsWith(self.registration.scope)) {
+          await windowClient.focus();
+          return;
+        }
+      }
+
+      await clients.openWindow(url.href);
+    })()
+  );
+});// LifePlaner: Push-Benachrichtigungen
+self.addEventListener("push", (event) => {
+  let data = {};
+
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch (error) {
+    data = {
+      body: event.data ? event.data.text() : "Neue Erinnerung"
+    };
+  }
+
+  const title = data.title || "LifePlaner";
+
+  const options = {
+    body: data.body || "Du hast eine neue Erinnerung!",
+    icon: "./icons/icon-192.png",
+    badge: "./icons/icon-192.png",
+    tag: data.tag || "lifeplaner-reminder",
+    data: {
+      url: new URL("./", self.registration.scope).href
+    }
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
+});
+
+// LifePlaner: App beim Antippen der Nachricht öffnen
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  event.waitUntil((async () => {
+    const url = new URL("./", self.registration.scope).href;
+    const windows = await clients.matchAll({
+      type: "window",
+      includeUncontrolled: true
+    });
+
+    for (const windowClient of windows) {
+      if (windowClient.url.startsWith(self.registration.scope)) {
+        return windowClient.focus();
+      }
+    }
+
+    return clients.openWindow(url);
+  })());
 });

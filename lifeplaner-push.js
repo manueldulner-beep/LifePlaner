@@ -176,4 +176,42 @@ async function lifePlanerScheduleTaskPush(key, task) {
       response.status
     );
   }
+}async function lifePlanerScheduleEventPush(event) {
+  const token = localStorage.getItem("lifeplaner_push_token");
+  if (!token || !event.time) return;
+
+  const start = new Date(`${event.date}T${event.time}:00`);
+
+  if (!Number.isFinite(start.getTime())) return;
+
+  for (const minutes of event.reminderMinutes || []) {
+    const remindAt = new Date(
+      start.getTime() - minutes * 60 * 1000
+    );
+
+    if (remindAt.getTime() <= Date.now()) continue;
+
+    const response = await fetch(
+      LIFEPLANER_PUSH_SERVER + "/api/reminders",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+          id: crypto.randomUUID(),
+          title: "📅 " + event.title,
+          remindAt: remindAt.toISOString(),
+          kind: "event"
+        })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        "Termin-Push fehlgeschlagen: HTTP " + response.status
+      );
+    }
+  }
 }

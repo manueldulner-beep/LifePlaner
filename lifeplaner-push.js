@@ -85,8 +85,7 @@ async function lifePlanerActivatePush() {
   }
 
   alert("LifePlaner Push wurde aktiviert!");
-}
-async function lifePlanerTestPush() {
+}async function lifePlanerTestPush() {
   const token = localStorage.getItem("lifeplaner_push_token");
 
   if (!token) {
@@ -118,8 +117,7 @@ async function lifePlanerTestPush() {
   }
 
   alert("🔔 Test-Erinnerung für in 2 Minuten geplant!");
-}
-async function lifePlanerPushNeuVerbinden() {
+}async function lifePlanerPushNeuVerbinden() {
   const registration = await navigator.serviceWorker.ready;
   const oldSubscription = await registration.pushManager.getSubscription();
 
@@ -131,4 +129,51 @@ async function lifePlanerPushNeuVerbinden() {
   }
 
   await lifePlanerActivatePush();
+}// ========================================
+// AUTOMATISCHE AUFGABEN-ERINNERUNGEN
+// ========================================
+
+async function lifePlanerScheduleTaskPush(key, task) {
+  if (!task.time || task.done) return;
+
+  const token = localStorage.getItem("lifeplaner_push_token");
+
+  if (!token) {
+    console.warn("LifePlaner: Push ist nicht aktiviert.");
+    return;
+  }
+
+  const remindAt = new Date(`${key}T${task.time}:00`);
+
+  // Keine Erinnerungen in der Vergangenheit erstellen
+  if (
+    !Number.isFinite(remindAt.getTime()) ||
+    remindAt.getTime() <= Date.now()
+  ) {
+    return;
+  }
+
+  const response = await fetch(
+    LIFEPLANER_PUSH_SERVER + "/api/reminders",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify({
+        id: crypto.randomUUID(),
+        title: "✅ " + task.title,
+        remindAt: remindAt.toISOString(),
+        kind: "todo"
+      })
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      "Aufgaben-Erinnerung fehlgeschlagen: HTTP " +
+      response.status
+    );
+  }
 }

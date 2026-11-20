@@ -106,7 +106,7 @@ async function lifePlanerTestPush() {
         id: crypto.randomUUID(),
         title: "🩸 LifePlaner Test-Push!",
         remindAt: new Date(Date.now() + 2 * 60 * 1000).toISOString(),
-        kind: "test"
+        kind: "todo"
       })
     }
   );

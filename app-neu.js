@@ -452,10 +452,14 @@ function addTask(key) {
 
     if (crimson) task.duration = duration;
 
-    data.tasks[key].push(task);
+      data.tasks[key].push(task);
 
     save();
     render();
+
+    lifePlanerScheduleTaskPush(key, task).catch(error => {
+      console.error("Aufgaben-Push fehlgeschlagen:", error);
+    });
   });
 }
 
@@ -6278,7 +6282,20 @@ ${pages.map(([id, icon, title], index) => `
           das mit den Regeln deines Arbeitgebers ab.
         </p>
       </article>
+      <article class="card wide">
+        <h2>🔔 Benachrichtigungen</h2>
 
+        <p class="muted">
+          Aktiviere Erinnerungen für deine Aufgaben
+          und Termine auf deinem iPhone.
+        </p>
+
+        <button
+          type="button"
+          onclick="lifePlanerActivatePush().catch(e => alert('Push fehlgeschlagen: ' + e.message))">
+          🔔 Push aktivieren
+        </button>
+      </article>
       <article class="card">
         <h2>💾 Datensicherung</h2>
 

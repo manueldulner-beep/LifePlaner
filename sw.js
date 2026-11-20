@@ -1,7 +1,7 @@
 
 /* 🩸 LIFEPLANER SERVICE WORKER */
 
-const CACHE_NAME = "lifeplaner-v4";
+const CACHE_NAME = "lifeplaner-v5";
 
 const APP_FILES = [
   "./",
@@ -137,52 +137,4 @@ self.addEventListener("notificationclick", event => {
       await clients.openWindow(url.href);
     })()
   );
-});// LifePlaner: Push-Benachrichtigungen
-self.addEventListener("push", (event) => {
-  let data = {};
-
-  try {
-    data = event.data ? event.data.json() : {};
-  } catch (error) {
-    data = {
-      body: event.data ? event.data.text() : "Neue Erinnerung"
-    };
-  }
-
-  const title = data.title || "LifePlaner";
-
-  const options = {
-    body: data.body || "Du hast eine neue Erinnerung!",
-    icon: "./icons/icon-192.png",
-    badge: "./icons/icon-192.png",
-    tag: data.tag || "lifeplaner-reminder",
-    data: {
-      url: new URL("./", self.registration.scope).href
-    }
-  };
-
-  event.waitUntil(
-    self.registration.showNotification(title, options)
-  );
-});
-
-// LifePlaner: App beim Antippen der Nachricht öffnen
-self.addEventListener("notificationclick", (event) => {
-  event.notification.close();
-
-  event.waitUntil((async () => {
-    const url = new URL("./", self.registration.scope).href;
-    const windows = await clients.matchAll({
-      type: "window",
-      includeUncontrolled: true
-    });
-
-    for (const windowClient of windows) {
-      if (windowClient.url.startsWith(self.registration.scope)) {
-        return windowClient.focus();
-      }
-    }
-
-    return clients.openWindow(url);
-  })());
 });

@@ -119,3 +119,16 @@ async function lifePlanerTestPush() {
 
   alert("🔔 Test-Erinnerung für in 2 Minuten geplant!");
 }
+async function lifePlanerPushNeuVerbinden() {
+  const registration = await navigator.serviceWorker.ready;
+  const oldSubscription = await registration.pushManager.getSubscription();
+
+  if (oldSubscription) {
+    const removed = await oldSubscription.unsubscribe();
+    if (!removed) {
+      throw new Error("Alte Push-Anmeldung konnte nicht entfernt werden.");
+    }
+  }
+
+  await lifePlanerActivatePush();
+}

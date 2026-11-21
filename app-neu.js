@@ -1955,7 +1955,9 @@ updated.reminderMinutes = [
 ].map(input => Number(input.dataset.crimsonReminder));
 
 }
-
+      const alteErinnerungen = event
+        ? [...(event.reminderMinutes || [])]
+        : [];
 
       if (event) {
         Object.assign(event, updated);
@@ -1990,8 +1992,30 @@ reminderMinutes: [...updated.reminderMinutes]
         parseDate(selectedDate)
       );
 
-      save();
+               save();
       render();
+
+      if (event) {
+        (async () => {
+          for (const minutes of alteErinnerungen) {
+            await lifePlanerDeleteEventPush(event.id, minutes);
+          }
+
+          await lifePlanerScheduleEventPush(event);
+        })().catch(error => {
+          console.error("Termin-Erinnerungen aktualisieren fehlgeschlagen:", error);
+        });
+      } else {
+        const neueTermine = data.events.slice(
+          -(extraEvents.length + 1)
+        );
+
+        for (const termin of neueTermine) {
+          lifePlanerScheduleEventPush(termin).catch(error => {
+            console.error("Termin-Push fehlgeschlagen:", error);
+          });
+        }
+      }
     }
   );
 
@@ -2687,6 +2711,16 @@ function crimsonSetupEventTimeFields() {
 
 function deleteEvent(id) {
   if (!confirm("Termin wirklich löschen?")) return;
+
+  const termin = data.events.find(e => e.id === id);
+
+  if (termin) {
+    for (const minutes of termin.reminderMinutes || []) {
+      lifePlanerDeleteEventPush(termin.id, minutes).catch(error => {
+        console.error("Termin-Push löschen fehlgeschlagen:", error);
+      });
+    }
+  }
 
   data.events = data.events.filter(e => e.id !== id);
   save();

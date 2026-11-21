@@ -162,7 +162,7 @@ async function lifePlanerScheduleTaskPush(key, task) {
         "Authorization": "Bearer " + token
       },
       body: JSON.stringify({
-        id: crypto.randomUUID(),
+        id: "task_" + task.id,
         title: "✅ " + task.title,
         remindAt: remindAt.toISOString(),
         kind: "todo"
@@ -176,7 +176,34 @@ async function lifePlanerScheduleTaskPush(key, task) {
       response.status
     );
   }
-}async function lifePlanerScheduleEventPush(event) {
+}
+// 🩸 Push-Erinnerung einer Aufgabe löschen
+async function lifePlanerDeleteTaskPush(taskId) {
+  const token = localStorage.getItem("lifeplaner_push_token");
+  if (!token) return;
+
+  const reminderId = "task_" + taskId;
+
+  const response = await fetch(
+    LIFEPLANER_PUSH_SERVER +
+      "/api/reminders/" +
+      encodeURIComponent(reminderId),
+    {
+      method: "DELETE",
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      "Aufgaben-Push löschen fehlgeschlagen: HTTP " +
+      response.status
+    );
+  }
+}
+async function lifePlanerScheduleEventPush(event) {
   const token = localStorage.getItem("lifeplaner_push_token");
   if (!token || !event.time) return;
 
@@ -233,4 +260,38 @@ async function lifePlanerScheduleTaskPush(key, task) {
   if (!response.ok) {
     throw new Error("Termin-Erinnerung löschen fehlgeschlagen: HTTP " + response.status);
   }
+}// 🩸 Alte To-do-Erinnerungen prüfen
+async function lifePlanerCheckOldTaskPush() {
+  const token = localStorage.getItem("lifeplaner_push_token");
+
+  if (!token) {
+    alert("Push ist nicht aktiviert.");
+    return;
+  }
+
+  const response = await fetch(
+    LIFEPLANER_PUSH_SERVER + "/api/reminders",
+    {
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("HTTP " + response.status);
+  }
+
+  const result = await response.json();
+
+  const oldReminders = result.reminders.filter(reminder =>
+    reminder.kind === "todo" &&
+    reminder.status === "pending" &&
+    !reminder.id.startsWith("task_")
+  );
+
+  alert(
+    "Alte offene To-do-Erinnerungen: " +
+    oldReminders.length
+  );
 }

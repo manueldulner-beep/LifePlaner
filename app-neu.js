@@ -763,9 +763,63 @@ if (data.theme === "crimson") {
     }
 
     save();
-    render();
+    render();    
+      // 🩸 Aufgaben-Push beim Bearbeiten synchronisieren
+    if (data.theme === "crimson") {
+      (async () => {
+        if (
+  !task.time ||
+  task.done ||
+  new Date(`${targetKey}T${task.time}:00`).getTime() <= Date.now()
+) {
+          await lifePlanerDeleteTaskPush(task.id);
+        } else {
+          await lifePlanerScheduleTaskPush(targetKey, task);
+        }
+      })().catch(error => {
+        console.error(
+          "Aufgaben-Push aktualisieren fehlgeschlagen:",
+          error
+        );
+      });
+    }
   });
+  // 🩸 Verschieben-Button oben rechts im To-do-Editor
+  if (data.theme === "crimson") {
+    const editor = $("editor");
 
+    editor.querySelector("#crimson-move-task")?.remove();
+
+    const moveButton = document.createElement("button");
+    moveButton.id = "crimson-move-task";
+    moveButton.type = "button";
+    moveButton.className = "secondary";
+    moveButton.textContent = "📅 Verschieben";
+
+    moveButton.style.cssText = `
+      display:block;
+      margin:0 0 12px auto;
+      font-size:13px;
+    `;
+
+    moveButton.addEventListener("click", () => {
+      const dateField = editor.querySelector('input[name="date"]');
+      if (!dateField) return;
+
+      const choice = confirm(
+        "Auf morgen verschieben?\n\nOK = Morgen\nAbbrechen = Datum selbst auswählen"
+      );
+
+      if (choice) {
+        dateField.value = addDays(todayKey(), 1);
+      } else {
+        dateField.focus();
+        dateField.showPicker?.();
+      }
+    });
+
+    $("editor-fields").prepend(moveButton);
+  }
   $("editor").dataset.taskDate = key;
   $("editor-delete-task").dataset.id = id;
   $("editor-delete-task").hidden = false;
@@ -863,7 +917,16 @@ function toggleTask(key, id) {
 
   save();
   render();
-
+  // 🩸 Push beim Abhaken aktualisieren
+  if (task.done) {
+    lifePlanerDeleteTaskPush(task.id).catch(error => {
+      console.error("Aufgaben-Push löschen fehlgeschlagen:", error);
+    });
+  } else {
+    lifePlanerScheduleTaskPush(key, task).catch(error => {
+      console.error("Aufgaben-Push planen fehlgeschlagen:", error);
+    });
+  }
   if (data.theme === "crimson") {
     const isComplete =
       crimsonDayGoalProgress(key).complete;
@@ -877,11 +940,21 @@ function toggleTask(key, id) {
 
 
 function deleteTask(key, id) {
- if (!window.crimsonSwipeDeleting &&
-    !confirm("Diese Aufgabe löschen?")) return;
+  if (!window.crimsonSwipeDeleting &&
+      !confirm("Diese Aufgabe löschen?")) return;
+
   data.tasks[key] = tasksFor(key).filter(t => t.id !== id);
+
   save();
   render();
+
+  // 🩸 Zugehörige Push-Erinnerung löschen
+  lifePlanerDeleteTaskPush(id).catch(error => {
+    console.error(
+      "Aufgaben-Push löschen fehlgeschlagen:",
+      error
+    );
+  });
 }
 
 function addTaskFromRoutineEditor(routineId) {
@@ -1368,7 +1441,25 @@ return [...normalTasks, ...routineTasks].sort(
 );
 
 }
+function lifePlanerMoveTask(key, id, newDate) {
+  if (!newDate || newDate === key) return;
 
+  const tasks = data.tasks[key] || [];
+  const index = tasks.findIndex(task => task.id === id);
+
+  if (index === -1) return;
+
+  const [task] = tasks.splice(index, 1);
+
+  if (!data.tasks[newDate]) {
+    data.tasks[newDate] = [];
+  }
+
+  data.tasks[newDate].push(task);
+
+  save();
+  render();
+}
 function renderTasks(key) {
   
   
@@ -6229,6 +6320,12 @@ ${pages.map(([id, icon, title], index) => `
           type="button"
           onclick="lifePlanerActivatePush().catch(e => alert('Push fehlgeschlagen: ' + e.message))">
           🔔 Push aktivieren
+        </button>
+                <button
+          type="button"
+          class="secondary"
+          onclick="lifePlanerCheckOldTaskPush().catch(e => alert(e.message))">
+          🔍 Alte Erinnerungen prüfen
         </button>
       </article>
       <article class="card">

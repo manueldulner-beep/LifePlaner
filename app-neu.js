@@ -802,20 +802,13 @@ if (data.theme === "crimson") {
       font-size:13px;
     `;
 
-    moveButton.addEventListener("click", () => {
+       moveButton.addEventListener("click", () => {
       const dateField = editor.querySelector('input[name="date"]');
       if (!dateField) return;
 
-      const choice = confirm(
-        "Auf morgen verschieben?\n\nOK = Morgen\nAbbrechen = Datum selbst auswählen"
-      );
+      dateField.value = addDays(todayKey(), 1);
 
-      if (choice) {
-        dateField.value = addDays(todayKey(), 1);
-      } else {
-        dateField.focus();
-        dateField.showPicker?.();
-      }
+      $("editor-form").requestSubmit();
     });
 
     $("editor-fields").prepend(moveButton);
@@ -4595,7 +4588,7 @@ setInterval(() => {
       ":" +
       String(now.getMinutes()).padStart(2, "0");
   }
-}, 30000);
+}, 1000);
 
 function renderCrimsonCalendarDetails(key) {
   const work = workAt(key);

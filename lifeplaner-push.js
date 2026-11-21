@@ -260,7 +260,7 @@ async function lifePlanerScheduleEventPush(event) {
   if (!response.ok) {
     throw new Error("Termin-Erinnerung löschen fehlgeschlagen: HTTP " + response.status);
   }
-}// 🩸 Alte To-do-Erinnerungen prüfen
+}// 🩸 Geplante Push-Erinnerungen prüfen
 async function lifePlanerCheckOldTaskPush() {
   const token = localStorage.getItem("lifeplaner_push_token");
 
@@ -290,8 +290,20 @@ async function lifePlanerCheckOldTaskPush() {
     !reminder.id.startsWith("task_")
   );
 
+  const plannedReminders = result.reminders.filter(reminder =>
+    reminder.status === "pending"
+  );
+
+  const details = plannedReminders.map(reminder =>
+    reminder.title + "\n" +
+    new Date(reminder.remindAt).toLocaleString("de-DE")
+  ).join("\n\n");
+
   alert(
-    "Alte offene To-do-Erinnerungen: " +
-    oldReminders.length
+    "🩸 LifePlaner Push-Kontrolle\n\n" +
+    "Alte To-do-Erinnerungen: " + oldReminders.length + "\n" +
+    "Geplante Erinnerungen: " + plannedReminders.length +
+    "\n\n" +
+    (details || "Keine offenen Erinnerungen vorhanden.")
   );
 }

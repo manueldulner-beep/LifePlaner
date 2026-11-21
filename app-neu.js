@@ -2074,111 +2074,12 @@ if (crimson) {
       `).join("")}
     </div>
 
-    <button
-      type="button"
-      class="secondary crimson-enable-notifications"
-      style="width:100%;margin-top:14px"
-    >
-      🔔 iPhone-Benachrichtigungen erlauben
-    </button>
-
-    <small class="crimson-notification-status"
-      style="display:block;margin-top:8px;opacity:.75">
-      Erinnerungen funktionieren zunächst bei geöffneter App.
-    </small>
+   
   `;
 
   editorFields.appendChild(reminderBox);
 
-  const permissionButton = reminderBox.querySelector(
-    ".crimson-enable-notifications"
-  );
 
-const testButton = document.createElement("button");
-
-testButton.type = "button";
-testButton.className = "secondary";
-testButton.textContent = "🧪 Test-Benachrichtigung senden";
-testButton.style.cssText = "width:100%;margin-top:8px";
-
-reminderBox.appendChild(testButton);
-
-testButton.addEventListener("click", async () => {
-  const status = reminderBox.querySelector(
-    ".crimson-notification-status"
-  );
-
-  if (!("Notification" in window)) {
-    status.textContent =
-      "❌ Dieses Gerät unterstützt keine Web-Benachrichtigungen.";
-    return;
-  }
-
-  if (Notification.permission !== "granted") {
-    status.textContent =
-      "❌ Benachrichtigungen sind nicht erlaubt: " +
-      Notification.permission;
-    return;
-  }
-
-  if (!("serviceWorker" in navigator)) {
-    status.textContent =
-      "❌ Service Worker wird nicht unterstützt.";
-    return;
-  }
-
-  try {
-    const registration = await navigator.serviceWorker.getRegistration();
-
-    if (!registration) {
-      status.textContent =
-        "❌ Kein Service Worker registriert.";
-      return;
-    }
-
-    await registration.showNotification(
-      "🩸 LifePlaner Test",
-      {
-        body: "Deine Crimson-Benachrichtigungen funktionieren! 🔔",
-        icon: "./icon-192.png",
-        tag: "lifeplaner-test-" + Date.now()
-      }
-    );
-
-    status.textContent =
-      "✅ Test wurde an iOS übergeben.";
-  } catch (error) {
-    status.textContent =
-      "❌ Fehler: " + error.message;
-    console.error(error);
-  }
-});
-
-  permissionButton.addEventListener("click", async () => {
-    const status = reminderBox.querySelector(
-      ".crimson-notification-status"
-    );
-
-    if (!("Notification" in window)) {
-      status.textContent =
-        "Benachrichtigungen werden hier nicht unterstützt.";
-      return;
-    }
-
-    try {
-      const permission = await Notification.requestPermission();
-
-      status.textContent = permission === "granted"
-        ? "✅ Benachrichtigungen sind erlaubt!"
-        : permission === "denied"
-          ? "⚠️ Benachrichtigungen sind blockiert."
-          : "Benachrichtigungen wurden noch nicht erlaubt.";
-    } catch (error) {
-      status.textContent =
-        "Benachrichtigungen konnten nicht aktiviert werden.";
-      console.error(error);
-    }
-  });
 }
 
   // 🩸 Zusätzliche Eingabefelder nur bei neuen Crimson-Terminen.

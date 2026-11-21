@@ -200,7 +200,7 @@ async function lifePlanerScheduleTaskPush(key, task) {
           "Authorization": "Bearer " + token
         },
         body: JSON.stringify({
-          id: crypto.randomUUID(),
+         id: "event_" + event.id + "_" + minutes,
           title: "📅 " + event.title,
           remindAt: remindAt.toISOString(),
           kind: "event"
@@ -213,5 +213,24 @@ async function lifePlanerScheduleTaskPush(key, task) {
         "Termin-Push fehlgeschlagen: HTTP " + response.status
       );
     }
+  }
+}async function lifePlanerDeleteEventPush(eventId, minutes) {
+  const token = localStorage.getItem("lifeplaner_push_token");
+  if (!token) return;
+
+  const reminderId = "event_" + eventId + "_" + minutes;
+
+  const response = await fetch(
+    LIFEPLANER_PUSH_SERVER + "/api/reminders/" + encodeURIComponent(reminderId),
+    {
+      method: "DELETE",
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Termin-Erinnerung löschen fehlgeschlagen: HTTP " + response.status);
   }
 }

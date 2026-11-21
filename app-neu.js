@@ -1016,7 +1016,44 @@ function crimsonArenaDamage(damage) {
   }
 
   return true;
+}// 🩸 CRIMSON ARENA – Shinobi-Kapitulation
+function crimsonArenaSurrender() {
+  if (data.theme !== "crimson") return false;
+
+  const arena = crimsonArenaData();
+  const battle = arena.activeBoss;
+
+  if (!battle || battle.hp <= 0) return false;
+  if (Date.now() >= battle.endsAt) return false;
+
+  const boss = CRIMSON_ARENA_BOSSES.find(
+    item => item.id === battle.id
+  );
+
+  if (!boss) return false;
+
+  const penalty = Math.min(arena.xp, boss.hp);
+
+  arena.xp -= penalty;
+
+  arena.history.push({
+    id: "surrender_" + battle.battleId,
+    amount: -penalty,
+    source: "Kapitulation gegen " + boss.name,
+    date: todayKey(),
+    timestamp: Date.now()
+  });
+
+  arena.pendingAttacks = (arena.pendingAttacks || [])
+    .filter(attack => attack.battleId !== battle.battleId);
+
+  arena.activeBoss = null;
+
+  save();
+
+  return true;
 }
+
 function crimsonArenaStartBoss(bossId) {
   if (data.theme !== "crimson") return false;
 
@@ -1036,6 +1073,9 @@ function crimsonArenaStartBoss(bossId) {
     alert("⚔️ Du befindest dich bereits im Kampf!");
     return false;
   }
+
+    // 🩸 CRIMSON ARENA – Alten Kampf bereinigen
+  arena.pendingAttacks = [];
 
   const now = Date.now();
 
@@ -1079,7 +1119,12 @@ function crimsonArenaAddXP(rewardId, amount, source) {
   )) return false;
 
   arena.rewards[rewardId] = true;
-  arena.xp += amount;
+    // 🩸 CRIMSON ARENA – Offenen EP-Ausgleich begleichen
+  const debt = arena.xpDebt || 0;
+  const repayment = Math.min(debt, amount);
+
+  arena.xpDebt = debt - repayment;
+  arena.xp += amount - repayment;
   // 🩸 CRIMSON ARENA – Automatische Boss-Angriffe
   let damage = 0;
 
@@ -1093,9 +1138,42 @@ function crimsonArenaAddXP(rewardId, amount, source) {
     damage = 200;
   }
 
-  if (damage > 0) {
-    crimsonArenaDamage(damage);
+  // 🩸 CRIMSON ARENA – Schaden pro Belohnung speichern
+  const battle = arena.activeBoss;
+
+  const previousHp = battle ? battle.hp : 0;
+
+  const battleId = battle ? battle.battleId : null;
+
+   // 🩸 CRIMSON ARENA – Angriffe an Kampf binden
+  if (!arena.rewardBattleLocks) {
+    arena.rewardBattleLocks = {};
   }
+
+  if (damage > 0) {
+    if (!Object.prototype.hasOwnProperty.call(
+      arena.rewardBattleLocks, rewardId
+    )) {
+      arena.rewardBattleLocks[rewardId] = battleId;
+    }
+
+    if (
+      battle &&
+      arena.rewardBattleLocks[rewardId] === battleId
+    ) {
+      crimsonArenaDamage(damage);
+    }
+  }
+
+  if (!arena.rewardDetails) {
+    arena.rewardDetails = {};
+  }
+
+  arena.rewardDetails[rewardId] = {
+    xp: amount,
+    damage: battle ? previousHp - battle.hp : 0,
+    battleId: battleId
+  };
   arena.history.push({
     id: rewardId,
     amount,
@@ -1151,6 +1229,30 @@ crimsonArenaEffectsStyle.textContent = `
 `;
 
 document.head.appendChild(crimsonArenaEffectsStyle);
+// 🩸 LIFEPLANER – iPhone Touch-Optimierung
+const lifePlanerTouchStyle = document.createElement("style");
+
+lifePlanerTouchStyle.textContent = `
+  html, body {
+    touch-action: manipulation;
+  }
+
+  button, a, label, [role="button"],
+  #mobile-menu-toggle,
+  #mobile-menu-toggle * {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #mobile-menu-toggle img {
+    -webkit-user-drag: none;
+  }
+`;
+
+document.head.appendChild(lifePlanerTouchStyle);
 // 🩸 CRIMSON ARENA – Jutsu-Treffereffekte
 // 🩸 CRIMSON ARENA – Kampfsequenz
 async function crimsonArenaPlayPendingAttacks() {
@@ -1237,7 +1339,14 @@ function crimsonArenaPlayFinisher() {
   if (!effects || !image || !battlefield) return;
 
   battlefield.dataset.alive = "false";
+  const status = document.getElementById(
+    "crimson-arena-battle-status"
+  );
 
+  if (status) {
+    status.textContent = "🏆 BOSS BESIEGT";
+    status.style.color = "#ffd166";
+  }
   image.style.transition = "filter 1s ease";
   image.style.filter = "grayscale(1) brightness(.35)";
 
@@ -1411,7 +1520,7 @@ function renderCrimsonArenaBattle() {
   const hours = Math.floor(remaining / 3600000) % 24;
   const minutes = Math.floor(remaining / 60000) % 60;
 
-  const status = battle.hp <= 0
+    const status = displayHp <= 0
     ? "🏆 BOSS BESIEGT"
     : remaining <= 0
       ? "💀 ZEIT ABGELAUFEN"
@@ -1427,12 +1536,13 @@ function renderCrimsonArenaBattle() {
       text-align:center;
     ">
 
-      <small style="color:#ff5369;letter-spacing:2px;">
+      <small id="crimson-arena-battle-status"
+       style="color:#ff5369;letter-spacing:2px;">
         ${status}
       </small>
       <div
                 id="crimson-arena-battlefield"
-        data-alive="${battle.hp > 0 && remaining > 0}"
+        data-alive="${displayHp > 0 && remaining > 0}"
         style="
           --boss-aura:${{
             zabuza: "#69dfff",
@@ -1457,7 +1567,7 @@ function renderCrimsonArenaBattle() {
             display:block;
             width:100%;
             height:auto;
-            filter:${battle.hp <= 0
+            filter:${displayHp <= 0
               ? "grayscale(1) brightness(.5)"
               : "none"};
           "
@@ -1529,7 +1639,28 @@ function renderCrimsonArenaBattle() {
       ">
         🏆 Siegesbelohnung: +${boss.reward} EP
       </div>
-
+      ${battle.hp > 0 && remaining > 0 ? `
+        <button
+          type="button"
+          data-arena-surrender
+          style="
+            width:100%;
+            margin-top:20px;
+            padding:14px;
+            background:#350810;
+            color:#ff5369;
+            border:1px solid #a42c49;
+            border-radius:12px;
+            font-weight:bold;
+          "
+        >
+          🏳️ Kampf aufgeben
+          <br>
+          <small>
+            Strafe: −${boss.hp.toLocaleString("de-DE")} EP
+          </small>
+        </button>
+      ` : ""}
     </article>
   `;
 }
@@ -1749,6 +1880,42 @@ function crimsonOpenArena() {
       });
     });
 
+// 🩸 CRIMSON ARENA – Kapitulation bestätigen
+  const surrenderButton = dialog.querySelector(
+    "[data-arena-surrender]"
+  );
+
+  if (surrenderButton) {
+    surrenderButton.addEventListener("click", () => {
+      const arena = crimsonArenaData();
+      const battle = arena.activeBoss;
+
+      if (!battle) return;
+
+      const boss = CRIMSON_ARENA_BOSSES.find(
+        item => item.id === battle.id
+      );
+
+      if (!boss) return;
+
+      const penalty = Math.min(arena.xp, boss.hp);
+
+      if (!confirm(
+        "☠️ SHINOBI-KAPITULATION\n\n" +
+        "Du gibst den Kampf gegen " + boss.name + " auf!\n\n" +
+        "Verlust: " + penalty.toLocaleString("de-DE") + " EP\n" +
+        "Dein Kampffortschritt geht verloren.\n" +
+        "Ein Rangabstieg ist möglich!\n\n" +
+        "Willst du wirklich kapitulieren?"
+      )) return;
+
+      if (crimsonArenaSurrender()) {
+        dialog.close();
+        dialog.remove();
+        crimsonOpenArena();
+      }
+    });
+  }
 
   dialog.querySelector("[data-arena-close]")
     .addEventListener("click", () => dialog.close());
@@ -1855,6 +2022,91 @@ function crimsonArenaRank() {
   if (level >= 5) return "🥷 Genin";
 
   return "📜 Akademieschüler";
+}// 🩸 CRIMSON ARENA – Belohnung rückgängig machen
+function crimsonArenaRemoveXP(rewardId) {
+  const arena = crimsonArenaData();
+
+  if (!Object.prototype.hasOwnProperty.call(
+    arena.rewards, rewardId
+  )) return false;
+
+    if (!arena.rewardDetails) {
+    arena.rewardDetails = {};
+  }
+
+  const oldReward = arena.history.find(
+    item => item.id === rewardId
+  );
+
+  const details = arena.rewardDetails[rewardId] ||
+    (oldReward ? {
+      xp: oldReward.amount,
+      damage: 0,
+      battleId: null
+    } : null);
+
+  if (!details) return false;
+    // 🩸 CRIMSON ARENA – Alte Angriffssperren übernehmen
+  if (!arena.rewardBattleLocks) {
+    arena.rewardBattleLocks = {};
+  }
+
+  if (!Object.prototype.hasOwnProperty.call(
+    arena.rewardBattleLocks, rewardId
+  )) {
+    arena.rewardBattleLocks[rewardId] =
+      details.battleId ?? null;
+  }
+  // 🩸 CRIMSON ARENA – Boss-Schaden rückgängig machen
+  const battle = arena.activeBoss;
+
+  if (
+    battle &&
+    details.battleId === battle.battleId &&
+    details.damage > 0
+  ) {
+    const wasDefeated = battle.hp === 0;
+
+    battle.hp = Math.min(
+      battle.maxHp,
+      battle.hp + details.damage
+    );
+
+    battle.damageDealt = Math.max(
+      0,
+      battle.damageDealt - details.damage
+    );
+
+    // Versehentlichen Boss-Sieg rückgängig machen
+    if (wasDefeated && battle.hp > 0) {
+      crimsonArenaRemoveXP(
+        "boss_victory_" + battle.battleId
+      );
+
+      arena.trophies = arena.trophies.filter(
+        trophy => trophy.battleId !== battle.battleId
+      );
+    }
+
+    // Veraltete Kampfanimationen entfernen
+    arena.pendingAttacks = (arena.pendingAttacks || [])
+      .filter(attack => attack.battleId !== battle.battleId);
+  }
+    // 🩸 CRIMSON ARENA – EP-Verlust absichern
+  const missingXP = Math.max(0, details.xp - arena.xp);
+
+  arena.xpDebt = (arena.xpDebt || 0) + missingXP;
+
+  arena.xp = Math.max(0, arena.xp - details.xp);
+
+  delete arena.rewards[rewardId];
+  delete arena.rewardDetails[rewardId];
+
+  arena.history = arena.history.filter(
+    item => item.id !== rewardId
+  );
+
+  return true;
 }
 function crimsonArenaLevel() {
   const arena = crimsonArenaData();
@@ -1872,24 +2124,34 @@ function toggleTask(key, id) {
 
   task.done = !task.done;
   // 🩸 CRIMSON ARENA – Aufgabenbelohnung
-  if (task.done) {
-    crimsonArenaAddXP(
-      "task_" + task.id,
-      10,
-      "Aufgabe erledigt"
-    );
-  }  // 🩸 CRIMSON ARENA – Tageszielbonus
-  if (
-    data.theme === "crimson" &&
-    !wasComplete &&
-    crimsonDayGoalProgress(key).complete
-  ) {
-    crimsonArenaAddXP(
-      "day_complete_" + key,
-      50,
-      "Tagesziel erreicht"
-    );
-  }
+    if (data.theme === "crimson") {
+    if (task.done) {
+      crimsonArenaAddXP(
+        "task_" + task.id,
+        10,
+        "Aufgabe erledigt"
+      );
+    } else {
+      crimsonArenaRemoveXP("task_" + task.id);
+    }
+  } 
+  // 🩸 CRIMSON ARENA – Tagesbonus überprüfen
+  if (data.theme === "crimson") {
+    const dayComplete = crimsonDayGoalProgress(key).complete;
+
+    if (dayComplete && !wasComplete) {
+      crimsonArenaAddXP(
+        "day_complete_" + key,
+        50,
+        "Tagesziel erreicht"
+      );
+    } else if (!dayComplete) {
+      crimsonArenaRemoveXP(
+        "day_complete_" + key
+      );
+    }
+    }
+
   save();
   render();
   // 🩸 Push beim Abhaken aktualisieren
@@ -1956,14 +2218,37 @@ const wasComplete =
   progress[taskId] = !progress[taskId];
 
    // 🩸 CRIMSON ARENA – Routinenbelohnung
-  if (progress[taskId]) {
-    crimsonArenaAddXP(
-      `routine_${key}_${routineId}_${taskId}`,
-      20,
-      "Routine-Aufgabe erledigt"
-    );
+   if (data.theme === "crimson") {
+    const rewardId =
+      `routine_${key}_${routineId}_${taskId}`;
+
+    if (progress[taskId]) {
+      crimsonArenaAddXP(
+        rewardId,
+        20,
+        "Routine-Aufgabe erledigt"
+      );
+    } else {
+      crimsonArenaRemoveXP(rewardId);
+    }
   }
-save();
+  // 🩸 CRIMSON ARENA – Tagesbonus überprüfen
+  if (data.theme === "crimson") {
+    const dayComplete = crimsonDayGoalProgress(key).complete;
+
+    if (dayComplete && !wasComplete) {
+      crimsonArenaAddXP(
+        "day_complete_" + key,
+        50,
+        "Tagesziel erreicht"
+      );
+    } else if (!dayComplete) {
+      crimsonArenaRemoveXP(
+        "day_complete_" + key
+      );
+    }
+  }
+  save();
 render();
 
 if (data.theme === "crimson") {

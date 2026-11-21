@@ -918,6 +918,949 @@ function crimsonUpdateGoalUI(key, animate = false) {
   }
 }
 
+// ========================================
+// 🩸 CRIMSON ARENA – EP SYSTEM
+// ========================================
+// 🩸 CRIMSON ARENA – Legendäre Bosse
+const CRIMSON_ARENA_BOSSES = [
+  {
+    id: "zabuza",
+    name: "Zabuza",
+    title: "Dämon des Nebels",
+    hp: 1000,
+    days: 7,
+    reward: 500,
+    image: "arena-zabuza.png"
+  },
+  {
+    id: "orochimaru",
+    name: "Orochimaru",
+    title: "Die weiße Schlange",
+    hp: 2500,
+    days: 14,
+    reward: 1250,
+    image: "arena-orochimaru.png"
+  },
+  {
+    id: "pain",
+    name: "Pain",
+    title: "Gott des Schmerzes",
+    hp: 5000,
+    days: 21,
+    reward: 2500,
+    image: "arena-pain.png"
+  },
+  {
+    id: "madara",
+    name: "Madara",
+    title: "Die lebende Legende",
+    hp: 10000,
+    days: 30,
+    reward: 5000,
+    image: "arena-madara.png"
+  }
+];
+// 🩸 CRIMSON ARENA – Bosskampf starten
+// 🩸 CRIMSON ARENA – Boss-Schaden
+function crimsonArenaDamage(damage) {
+  if (data.theme !== "crimson") return false;
+
+  const arena = crimsonArenaData();
+  const battle = arena.activeBoss;
+
+  if (!battle) return false;
+  if (battle.hp <= 0) return false;
+  if (Date.now() >= battle.endsAt) return false;
+  if (!Number.isFinite(damage) || damage <= 0) return false;
+
+  const actualDamage = Math.min(battle.hp, damage);
+
+  battle.hp -= actualDamage;
+  battle.damageDealt += actualDamage;
+    // 🩸 CRIMSON ARENA – Angriffe zwischenspeichern
+  if (!Array.isArray(arena.pendingAttacks)) {
+    arena.pendingAttacks = [];
+  }
+
+  arena.pendingAttacks.push({
+    battleId: battle.battleId,
+    damage: actualDamage,
+    attackType: damage,
+    remainingHp: battle.hp,
+    timestamp: Date.now(),
+    critical: battle.hp === 0
+  });
+  // 🩸 CRIMSON ARENA – Boss-Sieg
+  if (battle.hp === 0) {
+    const boss = CRIMSON_ARENA_BOSSES.find(
+      item => item.id === battle.id
+    );
+
+    if (boss) {
+      arena.trophies.push({
+        bossId: boss.id,
+        battleId: battle.battleId,
+        name: boss.name,
+        title: boss.title,
+        defeatedAt: Date.now(),
+        damageDealt: battle.damageDealt,
+        reward: boss.reward
+      });
+
+      crimsonArenaAddXP(
+        "boss_victory_" + battle.battleId,
+        boss.reward,
+        boss.name + " besiegt"
+      );
+    }
+  }
+
+  return true;
+}
+function crimsonArenaStartBoss(bossId) {
+  if (data.theme !== "crimson") return false;
+
+  const arena = crimsonArenaData();
+
+  const boss = CRIMSON_ARENA_BOSSES.find(
+    item => item.id === bossId
+  );
+
+  if (!boss) return false;
+
+  if (
+    arena.activeBoss &&
+    arena.activeBoss.hp > 0 &&
+    Date.now() < arena.activeBoss.endsAt
+  ) {
+    alert("⚔️ Du befindest dich bereits im Kampf!");
+    return false;
+  }
+
+  const now = Date.now();
+
+  arena.activeBoss = {
+    id: boss.id,
+    battleId: uid(),
+    hp: boss.hp,
+    maxHp: boss.hp,
+    startedAt: now,
+    endsAt: now + boss.days * 86400000,
+    damageDealt: 0
+  };
+
+  save();
+
+  return true;
+}
+
+function crimsonArenaData() {
+  if (!data.crimsonArena) {
+    data.crimsonArena = {
+      xp: 0,
+      rewards: {},
+      history: [],
+      activeBoss: null,
+      trophies: []
+    };
+  }
+
+  return data.crimsonArena;
+}
+
+function crimsonArenaAddXP(rewardId, amount, source) {
+  if (data.theme !== "crimson") return false;
+
+  const arena = crimsonArenaData();
+
+  // Doppelte Belohnungen verhindern
+  if (Object.prototype.hasOwnProperty.call(
+    arena.rewards, rewardId
+  )) return false;
+
+  arena.rewards[rewardId] = true;
+  arena.xp += amount;
+  // 🩸 CRIMSON ARENA – Automatische Boss-Angriffe
+  let damage = 0;
+
+  if (rewardId.startsWith("task_")) {
+    damage = 25;
+  } else if (rewardId.startsWith("routine_")) {
+    damage = 50;
+  } else if (rewardId.startsWith("training_")) {
+    damage = 150;
+  } else if (rewardId.startsWith("day_complete_")) {
+    damage = 200;
+  }
+
+  if (damage > 0) {
+    crimsonArenaDamage(damage);
+  }
+  arena.history.push({
+    id: rewardId,
+    amount,
+    source,
+    date: todayKey(),
+    timestamp: Date.now()
+  });
+
+  return true;
+}
+// 🩸 CRIMSON ARENA – Shinobi-Ränge// 🩸 CRIMSON ARENA – Shinobi-Profil
+// 🩸 CRIMSON ARENA – Hauptfenster// 🩸 CRIMSON ARENA – Boss-Auswahl
+// 🩸 CRIMSON ARENA – Aktiver Bosskampf
+// 🩸 CRIMSON ARENA – Chakra-Animationen
+const crimsonArenaEffectsStyle = document.createElement("style");
+
+crimsonArenaEffectsStyle.textContent = `
+  @keyframes crimsonBossAura {
+    0%, 100% {
+      box-shadow:0 0 12px var(--boss-aura);
+    }
+
+    50% {
+      box-shadow:0 0 32px var(--boss-aura);
+    }
+  }
+
+  @keyframes crimsonBossBreathing {
+    0%, 100% {
+      transform:scale(1);
+    }
+
+    50% {
+      transform:scale(1.035);
+    }
+  }
+
+  #crimson-arena-battlefield[data-alive="true"] {
+    animation:crimsonBossAura 3s ease-in-out infinite;
+  }
+
+  #crimson-arena-battlefield[data-alive="true"]
+  #crimson-arena-boss-image {
+    animation:crimsonBossBreathing 5s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #crimson-arena-battlefield,
+    #crimson-arena-boss-image {
+      animation:none !important;
+    }
+  }
+`;
+
+document.head.appendChild(crimsonArenaEffectsStyle);
+// 🩸 CRIMSON ARENA – Jutsu-Treffereffekte
+// 🩸 CRIMSON ARENA – Kampfsequenz
+async function crimsonArenaPlayPendingAttacks() {
+  const arena = crimsonArenaData();
+  const battle = arena.activeBoss;
+
+  const dialog = document.getElementById(
+    "crimson-arena-dialog"
+  );
+
+  if (!battle || !dialog) return;
+  if (!Array.isArray(arena.pendingAttacks)) return;
+
+  if (dialog.dataset.playingAttacks === "true") return;
+
+  dialog.dataset.playingAttacks = "true";
+
+  try {
+    while (dialog.isConnected && dialog.open) {
+      const index = arena.pendingAttacks.findIndex(
+        attack => attack.battleId === battle.battleId
+      );
+
+      if (index === -1) break;
+
+      const attack = arena.pendingAttacks[index];
+
+      crimsonArenaPlayHit(attack);
+      // 🩸 CRIMSON ARENA – HP-Anzeige aktualisieren
+      const hpBar = document.getElementById(
+        "crimson-arena-hp-bar"
+      );
+
+      const hpText = document.getElementById(
+        "crimson-arena-hp-text"
+      );
+
+      const newHp = Math.max(0, attack.remainingHp);
+      const newPercent = newHp / battle.maxHp * 100;
+
+      if (hpBar) {
+        hpBar.style.width = newPercent + "%";
+      }
+
+      if (hpText) {
+        hpText.textContent =
+          newHp + " / " + battle.maxHp + " HP";
+      }
+      arena.pendingAttacks.splice(index, 1);
+
+      save();
+
+      await new Promise(resolve =>
+        setTimeout(resolve, 1700)
+      );
+            // 🩸 CRIMSON ARENA – Tödlicher Treffer
+      if (
+        attack.critical &&
+        dialog.isConnected &&
+        dialog.open
+      ) {
+        crimsonArenaPlayFinisher();
+        break;
+      }
+    }
+  } finally {
+    delete dialog.dataset.playingAttacks;
+  }
+}
+// 🩸 CRIMSON ARENA – Finisher-Animation
+function crimsonArenaPlayFinisher() {
+  const effects = document.getElementById(
+    "crimson-arena-combat-effects"
+  );
+
+  const image = document.getElementById(
+    "crimson-arena-boss-image"
+  );
+
+  const battlefield = document.getElementById(
+    "crimson-arena-battlefield"
+  );
+
+  if (!effects || !image || !battlefield) return;
+
+  battlefield.dataset.alive = "false";
+
+  image.style.transition = "filter 1s ease";
+  image.style.filter = "grayscale(1) brightness(.35)";
+
+  const victory = document.createElement("div");
+
+  victory.style.cssText = `
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.55);
+    color:#ffd166;
+    text-shadow:0 0 20px #ff9500;
+    font-weight:900;
+    text-align:center;
+  `;
+
+  victory.innerHTML = `
+    <div style="font-size:65px;">🏆</div>
+
+    <div style="font-size:32px;">
+      FINISHER
+    </div>
+
+    <div style="font-size:24px;color:#fff;">
+      BOSS BESIEGT
+    </div>
+
+    <div style="margin-top:12px;">
+      ☁️ SHINOBI VICTORY ☁️
+    </div>
+  `;
+
+  effects.appendChild(victory);
+
+  if (!window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches) {
+    victory.animate([
+      { opacity:0, transform:"scale(.8)" },
+      { opacity:1, transform:"scale(1)" }
+    ], {
+      duration:1000,
+      easing:"ease-out"
+    });
+  }
+}
+
+function crimsonArenaPlayHit(attack) {
+  const effects = document.getElementById(
+    "crimson-arena-combat-effects"
+  );
+
+  const image = document.getElementById(
+    "crimson-arena-boss-image"
+  );
+
+  if (!effects || !image) return;
+
+  const jutsu = {
+    25: { name: "SHURIKEN", color: "#dcefff", icon: "✦" },
+    50: { name: "KATON", color: "#ff6500", icon: "🔥" },
+    150: { name: "AMATERASU", color: "#a855f7", icon: "🔥" },
+    200: { name: "SUSANOO", color: "#ffd166", icon: "⚔️" }
+  }[attack.attackType] || {
+    name: "ANGRIFF",
+    color: "#ff5369",
+    icon: "💥"
+  };
+
+  const hit = document.createElement("div");
+
+  hit.style.cssText = `
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    color:${jutsu.color};
+    background:radial-gradient(
+      circle, ${jutsu.color}66, transparent 75%
+    );
+    text-shadow:0 0 18px ${jutsu.color},
+      2px 2px 4px #000;
+    font-weight:900;
+    pointer-events:none;
+  `;
+
+  hit.innerHTML = `
+    <div style="font-size:55px;">
+      ${jutsu.icon}
+    </div>
+
+    <div style="font-size:22px;letter-spacing:3px;">
+      ${jutsu.name}
+    </div>
+
+    <div style="font-size:48px;color:#fff;">
+      −${attack.damage} HP
+    </div>
+  `;
+
+  effects.appendChild(hit);
+
+  if (window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches) {
+    setTimeout(() => hit.remove(), 1200);
+    return;
+  }
+
+  image.animate([
+    { transform:"translateX(0)" },
+    { transform:"translateX(-9px)", filter:"brightness(1.8)" },
+    { transform:"translateX(9px)" },
+    { transform:"translateX(-5px)" },
+    { transform:"translateX(0)" }
+  ], {
+    duration:450
+  });
+
+  hit.animate([
+    { opacity:0, transform:"scale(.65)" },
+    { opacity:1, transform:"scale(1.1)", offset:.2 },
+    { opacity:1, transform:"translateY(-15px)", offset:.65 },
+    { opacity:0, transform:"translateY(-65px)" }
+  ], {
+    duration:1400,
+    easing:"ease-out"
+  });
+
+  setTimeout(() => hit.remove(), 1400);
+}
+
+function renderCrimsonArenaBattle() {
+  const arena = crimsonArenaData();
+  const battle = arena.activeBoss;
+
+  if (!battle) return "";
+
+  const boss = CRIMSON_ARENA_BOSSES.find(
+    item => item.id === battle.id
+  );
+
+  if (!boss) return "";
+
+   // 🩸 CRIMSON ARENA – Lebenspunkte vor Kampfsequenz
+  const pendingAttacks = (arena.pendingAttacks || [])
+    .filter(attack => attack.battleId === battle.battleId);
+
+  const pendingDamage = pendingAttacks.reduce(
+    (sum, attack) => sum + attack.damage, 0
+  );
+
+  const displayHp = Math.min(
+    battle.maxHp,
+    battle.hp + pendingDamage
+  );
+
+  const percent = Math.max(
+    0, Math.min(100, displayHp / battle.maxHp * 100)
+  );
+  const remaining = Math.max(
+    0, battle.endsAt - Date.now()
+  );
+
+  const days = Math.floor(remaining / 86400000);
+  const hours = Math.floor(remaining / 3600000) % 24;
+  const minutes = Math.floor(remaining / 60000) % 60;
+
+  const status = battle.hp <= 0
+    ? "🏆 BOSS BESIEGT"
+    : remaining <= 0
+      ? "💀 ZEIT ABGELAUFEN"
+      : "⚔️ KAMPF LÄUFT";
+
+  return `
+    <article style="
+      margin-top:18px;
+      padding:18px;
+      background:linear-gradient(145deg,#30101c,#160e15);
+      border:1px solid #a42c49;
+      border-radius:18px;
+      text-align:center;
+    ">
+
+      <small style="color:#ff5369;letter-spacing:2px;">
+        ${status}
+      </small>
+      <div
+                id="crimson-arena-battlefield"
+        data-alive="${battle.hp > 0 && remaining > 0}"
+        style="
+          --boss-aura:${{
+            zabuza: "#69dfff",
+            orochimaru: "#ad42ff",
+            pain: "#ff294c",
+            madara: "#295aff"
+          }[boss.id] || "#ff5369"};
+          position:relative;
+          overflow:hidden;
+          border-radius:14px;
+          border:1px solid #ff5369;
+          margin-top:16px;
+          background:#09060c;
+          box-shadow:0 0 24px rgba(255,30,70,.25);
+        "
+      >
+        <img
+          id="crimson-arena-boss-image"
+          src="${boss.image}"
+          alt="${boss.name}"
+          style="
+            display:block;
+            width:100%;
+            height:auto;
+            filter:${battle.hp <= 0
+              ? "grayscale(1) brightness(.5)"
+              : "none"};
+          "
+        >
+
+        <div
+          id="crimson-arena-combat-effects"
+          style="
+            position:absolute;
+            inset:0;
+            pointer-events:none;
+            overflow:hidden;
+          "
+        ></div>
+      </div>
+
+      <h2 style="color:#ff5369;margin-bottom:4px;">
+        ${boss.name.toUpperCase()}
+      </h2>
+
+      <small>${boss.title}</small>
+
+      <div style="margin-top:22px;text-align:left;">
+        ❤️ Lebenspunkte
+      </div>
+
+      <div id="crimson-arena-hp-text"
+     style="text-align:right;color:#ff829a;">
+  ${displayHp} / ${battle.maxHp} HP
+</div>
+
+      <div style="
+        height:14px;
+        background:#41212b;
+        border-radius:20px;
+        overflow:hidden;
+        margin:8px 0 20px;
+      ">
+        <div id="crimson-arena-hp-bar" style="width:${percent}%;
+          height:100%;
+          background:linear-gradient(90deg,#85243e,#ff365a);
+          border-radius:20px;
+          transition:width .6s ease;
+        "></div>
+      </div>
+
+      <div style="
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:12px;
+      ">
+        <div>
+          <small>⏳ Verbleibende Zeit</small>
+          <h3>${days} T ${hours} Std. ${minutes} Min.</h3>
+        </div>
+
+        <div>
+          <small>⚔️ Gesamtschaden</small>
+          <h3 style="color:#ff5369;">
+            ${battle.damageDealt} HP
+          </h3>
+        </div>
+      </div>
+
+      <div style="
+        border-top:1px solid #682436;
+        padding-top:16px;
+        color:#ffd166;
+      ">
+        🏆 Siegesbelohnung: +${boss.reward} EP
+      </div>
+
+    </article>
+  `;
+}
+function renderCrimsonArenaBossSelection() {
+  return `
+    <h3 style="color:#ff5369;margin-top:24px;">
+      ⚔️ Wähle deinen Gegner
+    </h3>
+
+    ${CRIMSON_ARENA_BOSSES.map(boss => `
+      <article style="
+        background:#28141e;
+        border:1px solid #682436;
+        border-radius:16px;
+        padding:14px;
+        margin-bottom:12px;
+      ">        <img
+          src="${boss.image}"
+          alt="${boss.name}"
+          loading="lazy"
+          style="
+            display:block;
+            width:100%;
+            height:220px;
+            object-fit:cover;
+            object-position:center 25%;
+            border-radius:12px;
+            border:1px solid #a42c49;
+            margin-bottom:14px;
+            box-shadow:0 0 18px rgba(255,30,70,.2);
+          "
+        >
+        <h3 style="color:#ff829a;margin:0;">
+          ${boss.name.toUpperCase()}
+        </h3>
+
+        <small>${boss.title}</small>
+
+        <div style="margin:12px 0;">
+          ❤️ ${boss.hp.toLocaleString("de-DE")} HP
+          <br>
+          ⏳ ${boss.days} Tage
+          <br>
+          <span style="color:#ffd166;">
+            🏆 +${boss.reward.toLocaleString("de-DE")} EP
+          </span>
+        </div>
+
+        <button
+          type="button"
+          data-arena-start-boss="${boss.id}"
+          style="
+            width:100%;
+            padding:12px;
+            background:#85243e;
+            color:white;
+            border:1px solid #ff5369;
+            border-radius:10px;
+          ">
+          ⚔️ Herausfordern
+        </button>
+      </article>
+    `).join("")}
+  `;
+}
+// 🩸 CRIMSON ARENA – Ruhmeshalle
+function renderCrimsonArenaTrophies() {
+  const arena = crimsonArenaData();
+
+  const defeated = CRIMSON_ARENA_BOSSES.filter(
+    boss => arena.trophies.some(
+      trophy => trophy.bossId === boss.id
+    )
+  ).length;
+
+  return `
+    <h3 style="color:#ffd166;margin-top:26px;">
+      🏆 Ruhmeshalle
+    </h3>
+
+    <p style="color:#ff829a;font-size:13px;">
+      ${defeated} von 4 legendären Gegnern besiegt
+    </p>
+
+    <div style="
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    ">
+
+      ${CRIMSON_ARENA_BOSSES.map(boss => {
+        const victories = arena.trophies.filter(
+          trophy => trophy.bossId === boss.id
+        );
+
+        const unlocked = victories.length > 0;
+
+        return `
+          <article style="
+            padding:14px 8px;
+            text-align:center;
+            border-radius:14px;
+            background:${unlocked ? "#30241a" : "#211920"};
+            border:1px solid ${unlocked ? "#d4a72c" : "#49303c"};
+            opacity:${unlocked ? 1 : .55};
+          ">
+
+            <div style="font-size:36px;">
+              ${unlocked ? "🏅" : "🔒"}
+            </div>
+
+            <h3 style="
+              color:${unlocked ? "#ffd166" : "#927783"};
+              margin:8px 0;
+            ">
+              ${boss.name}
+            </h3>
+
+            <small>
+              ${unlocked
+                ? victories.length + "x besiegt"
+                : "Noch nicht besiegt"}
+            </small>
+
+            ${unlocked ? `
+              <div style="color:#ffd166;margin-top:8px;">
+                +${victories.length * boss.reward} EP
+              </div>
+            ` : ""}
+
+          </article>
+        `;
+      }).join("")}
+
+    </div>
+  `;
+}
+
+function crimsonOpenArena() {
+  if (data.theme !== "crimson") return;
+
+  if (document.getElementById("crimson-arena-dialog")) {
+    return;
+  }
+
+  const dialog = document.createElement("dialog");
+
+  dialog.id = "crimson-arena-dialog";
+
+  dialog.style.cssText = `
+    width:calc(100% - 20px);
+    max-width:450px;
+    max-height:85dvh;
+    box-sizing:border-box;
+    padding:14px;
+    background:#160e15;
+    color:#ffe0ee;
+    border:1px solid #a42c49;
+    border-radius:20px;
+    overflow-y:auto;
+    box-shadow:0 0 40px rgba(255,30,70,.2);
+  `;
+
+  dialog.innerHTML = `
+    <div style="
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:18px;
+    ">
+      <h2 style="margin:0;color:#ff5369;">
+        ⚔️ Crimson Arena
+      </h2>
+
+      <button type="button"
+        class="secondary"
+        data-arena-close>✕</button>
+    </div>
+
+    ${renderCrimsonArenaProfile()}
+
+         ${renderCrimsonArenaBattle()}
+
+    ${(
+      !crimsonArenaData().activeBoss ||
+      crimsonArenaData().activeBoss.hp <= 0 ||
+      Date.now() >= crimsonArenaData().activeBoss.endsAt
+    ) ? renderCrimsonArenaBossSelection() : ""}
+        ${renderCrimsonArenaTrophies()}
+  `;
+
+  document.body.appendChild(dialog);
+  // 🩸 CRIMSON ARENA – Boss herausfordern
+  dialog.querySelectorAll("[data-arena-start-boss]")
+    .forEach(button => {
+      button.addEventListener("click", () => {
+        const bossId = button.dataset.arenaStartBoss;
+
+        const boss = CRIMSON_ARENA_BOSSES.find(
+          item => item.id === bossId
+        );
+
+        if (!boss) return;
+
+        if (!confirm(
+          "⚔️ " + boss.name + " herausfordern?\n\n" +
+          "❤️ " + boss.hp + " HP\n" +
+          "⏳ " + boss.days + " Tage Zeit\n" +
+          "🏆 +" + boss.reward + " EP bei Sieg"
+        )) return;
+
+        if (crimsonArenaStartBoss(bossId)) {
+          dialog.close();
+          dialog.remove();
+          crimsonOpenArena();
+        }
+      });
+    });
+
+
+  dialog.querySelector("[data-arena-close]")
+    .addEventListener("click", () => dialog.close());
+
+  dialog.addEventListener("close", () => dialog.remove());
+
+    dialog.showModal();
+
+  // 🩸 CRIMSON ARENA – Kampfsequenz starten
+  setTimeout(() => {
+    if (dialog.isConnected && dialog.open) {
+      crimsonArenaPlayPendingAttacks();
+    }
+  }, 700);
+}
+function renderCrimsonArenaProfile() {
+  const arena = crimsonArenaData();
+  const level = crimsonArenaLevel();
+  const rank = crimsonArenaRank();
+  const currentXP = arena.xp % 1000;
+  const percent = currentXP / 10;
+
+  const todayXP = arena.history
+    .filter(item => item.date === todayKey())
+    .reduce((sum, item) => sum + item.amount, 0);
+
+  return `
+    <article style="
+      background:linear-gradient(145deg,#30101c,#160e15);
+      border:1px solid #a42c49;
+      border-radius:18px;
+      padding:18px;
+      color:#ffe0ee;
+      box-shadow:0 0 20px rgba(255,30,70,.12);
+    ">
+      <small style="color:#ff829a;letter-spacing:2px;">
+        ☁️ CRIMSON ARENA
+      </small>
+
+      <div style="font-size:32px;font-weight:bold;color:#ff5369;margin-top:12px;">
+        LEVEL ${level}
+      </div>
+
+      <div style="margin:6px 0 16px;">
+        ${rank}
+      </div>
+
+      <div style="height:10px;background:#41212b;border-radius:20px;overflow:hidden;">
+        <div style="
+          height:100%;
+          width:${percent}%;
+          background:linear-gradient(90deg,#85243e,#ff5369);
+          border-radius:20px;
+          transition:width .5s ease;
+        "></div>
+      </div>
+
+      <small style="display:block;text-align:right;margin-top:8px;">
+        ${currentXP} / 1000 EP
+      </small>
+
+      <div style="
+        display:grid;
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:8px;
+        text-align:center;
+        border-top:1px solid #682436;
+        margin-top:16px;
+        padding-top:16px;
+      ">
+        <div>
+          <small>Gesamt-EP</small>
+          <div style="font-size:22px;color:#ff829a;">
+            ${arena.xp}
+          </div>
+        </div>
+
+        <div>
+          <small>Heute</small>
+          <div style="font-size:22px;color:#ff829a;">
+            +${todayXP}
+          </div>
+        </div>
+
+        <div>
+          <small>Boss-Siege</small>
+          <div style="font-size:22px;color:#ff829a;">
+            ${arena.trophies.length}
+          </div>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function crimsonArenaRank() {
+  const level = crimsonArenaLevel();
+
+  if (level >= 50) return "👁️ Crimson-Legende";
+  if (level >= 30) return "☁️ Akatsuki";
+  if (level >= 20) return "🎭 ANBU";
+  if (level >= 15) return "🔥 Jōnin";
+  if (level >= 10) return "⚔️ Chūnin";
+  if (level >= 5) return "🥷 Genin";
+
+  return "📜 Akademieschüler";
+}
+function crimsonArenaLevel() {
+  const arena = crimsonArenaData();
+
+  return Math.floor(arena.xp / 1000) + 1;
+}
 
 function toggleTask(key, id) {
   const task = tasksFor(key).find(t => t.id === id);
@@ -928,7 +1871,25 @@ function toggleTask(key, id) {
     crimsonDayGoalProgress(key).complete;
 
   task.done = !task.done;
-
+  // 🩸 CRIMSON ARENA – Aufgabenbelohnung
+  if (task.done) {
+    crimsonArenaAddXP(
+      "task_" + task.id,
+      10,
+      "Aufgabe erledigt"
+    );
+  }  // 🩸 CRIMSON ARENA – Tageszielbonus
+  if (
+    data.theme === "crimson" &&
+    !wasComplete &&
+    crimsonDayGoalProgress(key).complete
+  ) {
+    crimsonArenaAddXP(
+      "day_complete_" + key,
+      50,
+      "Tagesziel erreicht"
+    );
+  }
   save();
   render();
   // 🩸 Push beim Abhaken aktualisieren
@@ -994,7 +1955,14 @@ const wasComplete =
   crimsonDayGoalProgress(key).complete;
   progress[taskId] = !progress[taskId];
 
- 
+   // 🩸 CRIMSON ARENA – Routinenbelohnung
+  if (progress[taskId]) {
+    crimsonArenaAddXP(
+      `routine_${key}_${routineId}_${taskId}`,
+      20,
+      "Routine-Aufgabe erledigt"
+    );
+  }
 save();
 render();
 
@@ -3142,6 +4110,74 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(menu);
   }
 });
+// 🩸 CRIMSON ARENA – Geheimer Itachi-Zugang
+let crimsonArenaHoldTimer = null;
+let crimsonArenaLongPress = false;
+let crimsonArenaStartX = 0;
+let crimsonArenaStartY = 0;
+
+document.addEventListener("pointerdown", event => {
+  const toggle = event.target.closest("#mobile-menu-toggle");
+
+  if (!toggle || data.theme !== "crimson") return;
+  if (!event.isPrimary || event.button !== 0) return;
+
+  crimsonArenaLongPress = false;
+
+  crimsonArenaStartX = event.clientX;
+  crimsonArenaStartY = event.clientY;
+
+  clearTimeout(crimsonArenaHoldTimer);
+
+  crimsonArenaHoldTimer = setTimeout(() => {
+    crimsonArenaLongPress = true;
+
+    closeMobileMenu();
+
+    const itachi = toggle.querySelector(
+      ".mobile-menu-itachi-image"
+    );
+
+    if (itachi) {
+      itachi.src = "mini-itachi-mangekyo.png";
+    }
+
+    crimsonOpenArena();
+
+    setTimeout(() => {
+      if (itachi) {
+        itachi.src = "mini-itachi.png";
+      }
+    }, 800);
+
+  }, 1000);
+});
+
+document.addEventListener("pointermove", event => {
+  if (
+    Math.abs(event.clientX - crimsonArenaStartX) > 12 ||
+    Math.abs(event.clientY - crimsonArenaStartY) > 12
+  ) {
+    clearTimeout(crimsonArenaHoldTimer);
+  }
+});
+
+document.addEventListener("pointerup", () => {
+  clearTimeout(crimsonArenaHoldTimer);
+});
+
+document.addEventListener("pointercancel", () => {
+  clearTimeout(crimsonArenaHoldTimer);
+});
+
+document.addEventListener("contextmenu", event => {
+  if (
+    data.theme === "crimson" &&
+    event.target.closest("#mobile-menu-toggle")
+  ) {
+    event.preventDefault();
+  }
+});
 
 function closeMobileMenu() {
   const panel = document.getElementById("mobile-menu-panel");
@@ -3168,8 +4204,19 @@ document.addEventListener("click", function (event) {
 
   if (!panel) return;
 
-  // Menübutton antippen
+    // Menübutton antippen
   if (toggle) {
+
+    // 🩸 CRIMSON ARENA – Langes Drücken abfangen
+    if (
+      data.theme === "crimson" &&
+      crimsonArenaLongPress
+    ) {
+      crimsonArenaLongPress = false;
+      event.preventDefault();
+      return;
+    }
+
     const opening = panel.hidden;
     
   // 👁️ CRIMSON – Mini-Itachi erweckt sein Mangekyō
@@ -5303,9 +6350,6 @@ const tomorrowEvents = data.events
   return `
     <div class="grid neo-command-center itachi-home">
 
-      <!-- GEWICHT -->
-      ${renderWeightDashboard()}
-
       <!-- HEUTE -->
       <article class="card itachi-home-today">
         <h2>📌 Heute</h2>
@@ -5378,7 +6422,8 @@ const tomorrowEvents = data.events
   ${renderTasks(today)}
 
 </article>
-
+<!-- GEWICHT -->
+      ${renderWeightDashboard()}
       <!-- ARBEIT -->
       
 <!-- TRAINING -->
@@ -5569,7 +6614,44 @@ return `
 // ========================================
 // TRAININGSSEITE
 // ========================================
+// 🩸 CRIMSON ARENA – Training abschließen// 
+// 🩸 CRIMSON ARENA – Trainingsbutton
+document.addEventListener("click", event => {
+  const button = event.target.closest(
+    "[data-crimson-training-complete]"
+  );
 
+  if (!button || button.disabled) return;
+  if (data.theme !== "crimson") return;
+
+  if (!confirm("💪 Heutiges Training wirklich abgeschlossen?")) {
+    return;
+  }
+
+  crimsonArenaCompleteTraining();
+});
+function crimsonArenaCompleteTraining() {
+  if (data.theme !== "crimson") return;
+
+  const key = todayKey();
+  const training = trainingAt(key);
+
+  if (
+    training !== "Oberkörper" &&
+    training !== "Unterkörper"
+  ) return;
+
+  const rewarded = crimsonArenaAddXP(
+    "training_" + key,
+    100,
+    "Training abgeschlossen"
+  );
+
+  if (!rewarded) return;
+
+  save();
+  render();
+}
 function renderTraining() {
   let rows = "";
 
@@ -5607,7 +6689,24 @@ function renderTraining() {
   return `
     <article class="card">
       <h2>💪 Dein Trainingsrhythmus</h2>
+${data.theme === "crimson" &&
+  ["Oberkörper", "Unterkörper"].includes(trainingAt(todayKey()))
+  ? `
+    <button
+      type="button"
+      data-crimson-training-complete
+      style="width:100%;margin:12px 0;padding:14px;
+        background:#85243e;color:#fff;
+        border:1px solid #ff5369;border-radius:12px;"
+      ${crimsonArenaData().rewards["training_" + todayKey()]
+        ? "disabled" : ""}>
 
+      ${crimsonArenaData().rewards["training_" + todayKey()]
+        ? "✓ Training abgeschlossen"
+        : "⚔️ Training abschließen · +100 EP"}
+
+    </button>
+  ` : ""}
       <p>
         Start: 3. November 2026 mit Oberkörper.
         Die Reihenfolge lautet Oberkörper, Unterkörper,
@@ -9870,6 +10969,315 @@ if (
   updateButton();
 })();
 /* 🩸 CRIMSON – GEBURTSTAGE */
+// 🩸 Geburtstagsübersicht – Countdown und Alter
+function crimsonUpcomingBirthdays() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const birthdays = Array.isArray(data.birthdays)
+    ? data.birthdays
+    : [];
+
+  return birthdays.map(birthday => {
+    const birth = parseDate(birthday.date);
+
+    let year = today.getFullYear();
+
+    function birthdayInYear(y) {
+      const month = birth.getMonth();
+      const lastDay = new Date(y, month + 1, 0).getDate();
+
+      return new Date(
+        y,
+        month,
+        Math.min(birth.getDate(), lastDay)
+      );
+    }
+
+    let next = birthdayInYear(year);
+
+    if (next < today) {
+      year++;
+      next = birthdayInYear(year);
+    }
+
+    const days = Math.round(
+      (next.getTime() - today.getTime()) / 86400000
+    );
+
+    const age = year - birth.getFullYear();
+
+    return {
+      ...birthday,
+      next,
+      days,
+      age,
+      countdown:
+        days === 0 ? "🎉 Heute Geburtstag!" :
+        days === 1 ? "Morgen Geburtstag!" :
+        `Noch ${days} Tage`
+    };
+  }).sort((a, b) => a.days - b.days);
+}// 🩸 CRIMSON – Geburtstagseditor
+function crimsonEditBirthday(birthday = null) {
+  const overview = document.getElementById(
+    "crimson-birthday-overview"
+  );
+
+  if (overview?.open) overview.close();
+
+  openEditor(
+    birthday ? "🎂 Geburtstag bearbeiten" : "🎂 Geburtstag hinzufügen",
+    [
+      {
+        name: "name",
+        label: "Name",
+        value: birthday?.name || "",
+        required: true
+      },
+      {
+        name: "date",
+        label: "Geburtsdatum",
+        type: "date",
+        value: birthday?.date || "",
+        required: true
+      }
+    ],
+    values => {
+      const name = values.name.trim();
+      const date = values.date;
+      const parsed = parseDate(date);
+
+      if (
+        !name ||
+        !parsed ||
+        Number.isNaN(parsed.getTime()) ||
+        dateKey(parsed) !== date ||
+        parsed > new Date()
+      ) {
+        alert("Bitte einen Namen und ein gültiges Geburtsdatum eingeben.");
+        return false;
+      }
+
+      if (!Array.isArray(data.birthdays)) {
+        data.birthdays = [];
+      }
+
+      if (birthday) {
+        birthday.name = name;
+        birthday.date = date;
+      } else {
+        data.birthdays.push({
+          id: uid(),
+          name,
+          date
+        });
+      }
+
+      save();
+      render();
+    }
+  );
+
+  $("editor-title").hidden = false;
+  if (birthday) {
+    const deleteButton = document.createElement("button");
+
+    deleteButton.type = "button";
+    deleteButton.textContent = "🗑️ Geburtstag löschen";
+
+    deleteButton.style.cssText = `
+      width:100%;
+      margin-top:16px;
+      padding:12px;
+      background:#39131e;
+      color:#ff829a;
+      border:1px solid #a42c49;
+      border-radius:10px;
+    `;
+
+    deleteButton.addEventListener("click", () => {
+      if (!confirm(
+        `Geburtstag von ${birthday.name} wirklich löschen?`
+      )) return;
+
+      data.birthdays = data.birthdays.filter(
+        item => item.id !== birthday.id
+      );
+
+      save();
+      render();
+
+      $("editor").close();
+      editorSave = null;
+    });
+
+    $("editor-fields").appendChild(deleteButton);
+  }
+  const dateInput = $("editor").querySelector(
+    'input[name="date"]'
+  );
+
+  if (dateInput) {
+    dateInput.max = todayKey();
+    dateInput.style.setProperty("width", "85%", "important");
+    dateInput.style.setProperty("max-width", "85%", "important");
+    dateInput.style.setProperty("min-width", "0", "important");
+    dateInput.style.boxSizing = "border-box";
+  }
+
+  $("editor").addEventListener(
+    "close",
+    () => crimsonOpenBirthdayOverview(),
+    { once: true }
+  );
+}
+
+// 🩸 CRIMSON – Geburtstagsfenster
+function crimsonOpenBirthdayOverview() {
+  document.getElementById("crimson-birthday-overview")?.remove();
+
+  const birthdays = crimsonUpcomingBirthdays();
+
+  const dialog = document.createElement("dialog");
+  dialog.id = "crimson-birthday-overview";
+
+  dialog.style.cssText = `
+    width:calc(100% - 28px);
+    max-width:420px;
+    max-height:80dvh;
+    box-sizing:border-box;
+    padding:16px;
+    border:1px solid #a42c49;
+    border-radius:18px;
+    background:#160e15;
+    color:#ffe0ee;
+    overflow-y:auto;
+    box-shadow:0 0 30px rgba(255,30,70,.18);
+  `;
+
+  dialog.innerHTML = `
+    <div style="
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:16px;
+    ">
+      <h2 style="margin:0;color:#ff829a">
+        🎂 Geburtstage
+      </h2>
+
+      <button type="button"
+        data-birthday-close
+        class="secondary">
+        ✕
+      </button>
+    </div>
+
+    <button type="button"
+      data-birthday-new
+      style="
+        width:100%;
+        margin-bottom:18px;
+        background:#85243e;
+        color:white;
+        border-radius:10px;
+      ">
+      ＋ Geburtstag hinzufügen
+    </button>
+
+    ${birthdays.length ? birthdays.map((birthday, index) => `
+      <div style="
+        padding:12px;
+        margin-bottom:10px;
+        border:1px solid ${index === 0 ? "#ff5369" : "#682436"};
+        border-radius:14px;
+        background:${index === 0 ? "#361420" : "#24151e"};
+      ">
+        ${index === 0 ? `
+          <small style="color:#ff829a">
+            NÄCHSTER GEBURTSTAG
+          </small>
+        ` : ""}
+
+        <div style="
+          display:flex;
+          align-items:center;
+          gap:12px;
+          margin-top:8px;
+        ">
+          <div style="
+            background:#481b2b;
+            border-radius:10px;
+            padding:10px;
+            min-width:48px;
+            text-align:center;
+          ">
+            <strong style="
+              font-size:24px;
+              color:#ff829a;
+            ">
+              ${birthday.next.getDate()}
+            </strong>
+
+            <small style="display:block">
+              ${birthday.next.toLocaleDateString("de-DE", {
+                month:"short"
+              })}
+            </small>
+          </div>
+
+          <div style="flex:1;min-width:0;overflow-wrap:anywhere">
+            <strong>
+              🎂 ${escapeHTML(birthday.name)}
+            </strong>
+
+            <small style="display:block;opacity:.75">
+              Wird ${birthday.age} Jahre alt
+            </small>
+
+            <small style="
+              display:block;
+              color:#ff829a;
+              margin-top:5px;
+            ">
+              ${birthday.countdown}
+            </small>
+          </div>
+
+          <button type="button"
+            class="secondary"
+            data-birthday-edit="${escapeHTML(birthday.id)}">
+            ✎
+          </button>
+        </div>
+      </div>
+    `).join("") : `
+      <p style="
+        text-align:center;
+        opacity:.65;
+        padding:20px 0;
+      ">
+        🎂 Noch keine Geburtstage eingetragen.
+      </p>
+    `}
+  `;
+
+  document.body.appendChild(dialog);
+
+  dialog.querySelector("[data-birthday-close]")
+    .addEventListener("click", () => dialog.close());
+
+  dialog.addEventListener("close", () => dialog.remove());
+
+  dialog.addEventListener("click", event => {
+    if (event.target === dialog) {
+      dialog.close();
+    }
+  });
+
+  dialog.showModal();
+}
 
 function crimsonBirthdaysFor(key) {
   if (data.theme !== "crimson") return [];
@@ -9929,107 +11337,38 @@ function renderCrimsonBirthdaysForDay(key) {
 document.addEventListener("click", event => {
   if (data.theme !== "crimson") return;
 
-  const addButton = event.target.closest(
+ const overviewButton = event.target.closest(
     "[data-crimson-birthday-add]"
   );
 
-  if (addButton) {
-    const name = prompt(
-      "🎂 Für wen möchtest du einen Geburtstag eintragen?"
-    );
-
-    if (name === null || !name.trim()) return;
-
-    const date = prompt(
-      "Geburtsdatum eingeben (JJJJ-MM-TT):",
-      selectedDate
-    );
-
-    if (date === null) return;
-
-    const validFormat = /^\d{4}-\d{2}-\d{2}$/.test(date);
-
-    const parsed = validFormat
-      ? parseDate(date)
-      : null;
-
-    if (
-      !parsed ||
-      Number.isNaN(parsed.getTime()) ||
-      dateKey(parsed) !== date ||
-      parsed > new Date()
-    ) {
-      alert("Bitte ein gültiges Geburtsdatum eingeben.");
-      return;
-    }
-
-    if (!Array.isArray(data.birthdays)) {
-      data.birthdays = [];
-    }
-
-    data.birthdays.push({
-      id: uid(),
-      name: name.trim(),
-      date
-    });
-
-    save();
-    render();
+  if (overviewButton) {
+    crimsonOpenBirthdayOverview();
     return;
   }
 
-  const birthdayButton = event.target.closest(
-    "[data-crimson-birthday-id]"
+  const addButton = event.target.closest(
+    "[data-birthday-new]"
+  );
+if (addButton) {
+    crimsonEditBirthday();
+    return;
+  }
+
+   const birthdayButton = event.target.closest(
+    "[data-crimson-birthday-id], [data-birthday-edit]"
   );
 
   if (!birthdayButton) return;
 
+  const birthdayId =
+    birthdayButton.dataset.crimsonBirthdayId ||
+    birthdayButton.dataset.birthdayEdit;
+
   const birthday = (data.birthdays || []).find(
-    item => item.id === birthdayButton.dataset.crimsonBirthdayId
+    item => item.id === birthdayId
   );
 
   if (!birthday) return;
 
-  const newName = prompt(
-    "🎂 Namen bearbeiten (leer = Geburtstag löschen):",
-    birthday.name
-  );
-
-  if (newName === null) return;
-
-  if (!newName.trim()) {
-    if (!confirm(
-      `Geburtstag von ${birthday.name} wirklich löschen?`
-    )) return;
-
-    data.birthdays = data.birthdays.filter(
-      item => item.id !== birthday.id
-    );
-  } else {
-    const newDate = prompt(
-      "Geburtsdatum bearbeiten (JJJJ-MM-TT):",
-      birthday.date
-    );
-
-    if (newDate === null) return;
-
-    const validFormat = /^\d{4}-\d{2}-\d{2}$/.test(newDate);
-    const parsed = validFormat ? parseDate(newDate) : null;
-
-    if (
-      !parsed ||
-      Number.isNaN(parsed.getTime()) ||
-      dateKey(parsed) !== newDate ||
-      parsed > new Date()
-    ) {
-      alert("Ungültiges Geburtsdatum.");
-      return;
-    }
-
-    birthday.name = newName.trim();
-    birthday.date = newDate;
-  }
-
-  save();
-  render();
+  crimsonEditBirthday(birthday);
 });

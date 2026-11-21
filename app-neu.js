@@ -796,10 +796,14 @@ if (data.theme === "crimson") {
     moveButton.className = "secondary";
     moveButton.textContent = "📅 Verschieben";
 
-    moveButton.style.cssText = `
-      display:block;
-      margin:0 0 12px auto;
+   moveButton.style.cssText = `
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin:0 0 0 auto;
       font-size:13px;
+      width:auto;
+      flex-shrink:0;
     `;
 
        moveButton.addEventListener("click", () => {
@@ -811,7 +815,24 @@ if (data.theme === "crimson") {
       $("editor-form").requestSubmit();
     });
 
-    $("editor-fields").prepend(moveButton);
+    const titleRow = editor.querySelector(".editor-title-row");
+
+titleRow.style.display = "flex";
+titleRow.style.alignItems = "center";
+titleRow.style.width = "100%";
+
+moveButton.style.marginLeft = "auto";
+titleRow.appendChild(moveButton);
+
+// 🩸 Datumsfeld kompakt halten
+const dateInput = editor.querySelector('input[name="date"]');
+
+if (dateInput) {
+  dateInput.style.setProperty("width", "85%", "important");
+  dateInput.style.setProperty("max-width", "85%", "important");
+  dateInput.style.setProperty("min-width", "0", "important");
+  dateInput.style.setProperty("box-sizing", "border-box", "important");
+}
   }
   $("editor").dataset.taskDate = key;
   $("editor-delete-task").dataset.id = id;
